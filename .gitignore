@@ -1,0 +1,13 @@
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.next/
+out/
+build/
+.env
+.env.local
+.env.*.local
+.DS_Store
+*.swp

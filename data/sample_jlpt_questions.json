@@ -1,0 +1,368 @@
+{
+  "exam_metadata": {
+    "exam_code": "JLPT-N5-MOCK-01",
+    "level": "N5",
+    "test_number": 1,
+    "is_premium": false,
+    "title": "JLPT N5 Full Mock Exam 01",
+    "total_time_minutes": 90,
+    "passing_criteria": {
+      "total_score_required": 80,
+      "max_total_score": 180,
+      "sectional_minimums": {
+        "language_knowledge_and_reading": 38,
+        "listening": 19
+      }
+    }
+  },
+  "sections": [
+    {
+      "section_number": 1,
+      "section_code": "VOCAB",
+      "section_title_ja": "言語知識（文字・語彙）",
+      "section_title_en": "Language Knowledge (Vocabulary)",
+      "time_limit_minutes": 20,
+      "mondai_groups": [
+        {
+          "mondai_number": 1,
+          "question_type": "kanji_reading",
+          "instruction_ja": "問題1　＿＿＿の　ことばは　ひらがなで　どう　かきますか。1・2・3・4から　いちばん　いい　ものを　ひとつ　えらんで　ください。",
+          "questions": [
+            {
+              "question_number": 1,
+              "prompt_html": "あしたの　<u>朝</u>は　7時に　おきます。",
+              "options": [
+                {
+                  "index": 1,
+                  "text": "あさ"
+                },
+                {
+                  "index": 2,
+                  "text": "ひる"
+                },
+                {
+                  "index": 3,
+                  "text": "ばん"
+                },
+                {
+                  "index": 4,
+                  "text": "よる"
+                }
+              ],
+              "correct_option": 1,
+              "points": 1,
+              "explanation": {
+                "en": "「朝」 is read as あさ (morning).",
+                "vi": "「朝」 được đọc là あさ (buổi sáng).",
+                "zh": "「朝」读作 あさ（早上）。",
+                "ko": "「朝」는 あさ(아침)라고 읽습니다.",
+                "bn": "「朝」-এর সঠিক উচ্চারণ হলো あさ (সকাল)।",
+                "hi": "「朝」 को あさ (सुबह) पढ़ा जाता है।"
+              }
+            }
+          ]
+        },
+        {
+          "mondai_number": 2,
+          "question_type": "orthography",
+          "instruction_ja": "問題2　＿＿＿の　ことばは　どう　かきますか。1・2・3・4から　いちばん　いい　ものを　ひとつ　えらんで　ください。",
+          "questions": [
+            {
+              "question_number": 2,
+              "prompt_html": "その　<u>くるま</u>は　とても　あたらしいです。",
+              "options": [
+                {
+                  "index": 1,
+                  "text": "東"
+                },
+                {
+                  "index": 2,
+                  "text": "車"
+                },
+                {
+                  "index": 3,
+                  "text": "電"
+                },
+                {
+                  "index": 4,
+                  "text": "駅"
+                }
+              ],
+              "correct_option": 2,
+              "points": 1,
+              "explanation": {
+                "en": "「くるま」 (car) is written with the kanji 車.",
+                "vi": "「くるま」 (xe ô tô) được viết bằng chữ Hán 車.",
+                "zh": "「くるま」（汽车）写作汉字「車」。",
+                "ko": "「くるま」(자동차)는 한자로 車라고 씁니다.",
+                "bn": "「くるま」 (গাড়ি) কাঞ্জিতে 車 হিসেবে লেখা হয়।",
+                "hi": "「くるま」 (कार) को कांजी में 車 लिखा जाता है।"
+              }
+            }
+          ]
+        },
+        {
+          "mondai_number": 3,
+          "question_type": "contextually_defined_expressions",
+          "instruction_ja": "問題3　（　　　）に　なにを　いれますか。1・2・3・4から　いちばん　いい　ものを　ひとつ　えらんで　ください。",
+          "questions": [
+            {
+              "question_number": 3,
+              "prompt_html": "まいにち　<ruby>図書館<rt>としょかん</rt></ruby>で　<ruby>本<rt>ほん</rt></ruby>を　（　　　）。",
+              "options": [
+                {
+                  "index": 1,
+                  "text": "のみます"
+                },
+                {
+                  "index": 2,
+                  "text": "かります"
+                },
+                {
+                  "index": 3,
+                  "text": "のります"
+                },
+                {
+                  "index": 4,
+                  "text": "はきます"
+                }
+              ],
+              "correct_option": 2,
+              "points": 1,
+              "explanation": {
+                "en": "「本をかります」 means 'to borrow books' from the library.",
+                "vi": "「本をかります」 có nghĩa là 'mượn sách' ở thư viện.",
+                "zh": "「本をかります」的意思是在图书馆“借书”。",
+                "ko": "「本をかります」는 도서관에서 '책을 빌리다'라는 뜻입니다.",
+                "bn": "「本をかります」 অর্থ লাইব্রেরি থেকে 'বই ধার নেওয়া'।",
+                "hi": "「本をかります」 का अर्थ पुस्तकालय से 'किताबें उधार लेना' है।"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_number": 2,
+      "section_code": "GRAMMAR_READING",
+      "section_title_ja": "言語知識（文法）・読解",
+      "section_title_en": "Language Knowledge (Grammar) & Reading",
+      "time_limit_minutes": 40,
+      "mondai_groups": [
+        {
+          "mondai_number": 1,
+          "question_type": "sentence_grammar_1",
+          "instruction_ja": "問題1　（　　　）に　なにを　いれますか。1・2・3・4から　いちばん　いい　ものを　ひとつ　えらんで　ください。",
+          "questions": [
+            {
+              "question_number": 4,
+              "prompt_html": "わたしは　<ruby>毎日<rt>まいにち</rt></ruby>　バス（　　　）　<ruby>会社<rt>かいしゃ</rt></ruby>へ　<ruby>行<rt>い</rt></ruby>きます。",
+              "options": [
+                {
+                  "index": 1,
+                  "text": "を"
+                },
+                {
+                  "index": 2,
+                  "text": "に"
+                },
+                {
+                  "index": 3,
+                  "text": "で"
+                },
+                {
+                  "index": 4,
+                  "text": "へ"
+                }
+              ],
+              "correct_option": 3,
+              "points": 1,
+              "explanation": {
+                "en": "The particle 「で」 indicates the means of transportation (by bus).",
+                "vi": "Trợ từ 「で」 chỉ phương tiện di chuyển (bằng xe buýt).",
+                "zh": "助词「で」表示交通工具（乘公交车）。",
+                "ko": "조사 「で」는 교통수단(버스로)을 나타냅니다.",
+                "bn": "「で」 পার্টিকেলটি যাতায়াতের মাধ্যম (বাসে করে) নির্দেশ করে।",
+                "hi": "पार्टिकल 「で」 यातायात के साधन (बस द्वारा) को दर्शाता है।"
+              }
+            }
+          ]
+        },
+        {
+          "mondai_number": 2,
+          "question_type": "sentence_grammar_2_star",
+          "instruction_ja": "問題2　★に　はいる　ものは　どれですか。1・2・3・4から　いちばん　いい　ものを　ひとつ　えらんで　ください。",
+          "questions": [
+            {
+              "question_number": 5,
+              "prompt_html": "きのう　＿＿＿　＿＿＿　<u>　★　</u>　＿＿＿　とても　おいしかったです。",
+              "options": [
+                {
+                  "index": 1,
+                  "text": "たべた"
+                },
+                {
+                  "index": 2,
+                  "text": "レストランで"
+                },
+                {
+                  "index": 3,
+                  "text": "カレーは"
+                },
+                {
+                  "index": 4,
+                  "text": "あの"
+                }
+              ],
+              "correct_option": 1,
+              "correct_sequence": [
+                4,
+                2,
+                1,
+                3
+              ],
+              "points": 2,
+              "explanation": {
+                "en": "Full sentence: きのう [あの(4)] [レストランで(2)] [たべた(1)] [カレーは(3)] とても おいしかったです。The ★ position (3rd slot) is 1 (たべた).",
+                "vi": "Câu hoàn chỉnh: きのう [あの(4)] [レストランで(2)] [たべた(1)] [カレーは(3)] とても おいしかったです. Vị trí ★ (ô thứ 3) là 1 (たべた).",
+                "zh": "完整句子：きのう [あの(4)] [レストランで(2)] [たべた(1)] [カレーは(3)] とても おいしかったです。★（第3个空）是 1（たべた）。",
+                "ko": "완성된 문장: きのう [あの(4)] [レストランで(2)] [たべた(1)] [カレーは(3)] とても おいしかったです. ★ 위치(3번째 칸)는 1(たべた)입니다.",
+                "bn": "সম্পূর্ণ বাক্য: きのう [あの(4)] [レストランで(2)] [たべた(1)] [カレーは(3)] とても おいしかったです। ★ চিহ্নিত ৩য় স্থানে 1 (たべた) বসবে।",
+                "hi": "पूरा वाक्य: きのう [あの(4)] [レストランで(2)] [たべた(1)] [カレーは(3)] とても おいしかったです। ★ स्थान (तीसरा स्थान) पर 1 (たべた) आएगा।"
+              }
+            }
+          ]
+        },
+        {
+          "mondai_number": 4,
+          "question_type": "reading_short_passage",
+          "instruction_ja": "問題4　つぎの　ぶんしょうを　よんで、しつもんに　こたえて　ください。こたえは　1・2・3・4から　いちばん　いい　ものを　ひとつ　えらんで　ください。",
+          "passage_html": "<p>わたしの　<ruby>部屋<rt>へや</rt></ruby>は　あまり　<ruby>広<rt>ひろ</rt></ruby>くありませんが、とても　きれいです。<ruby>窓<rt>まど</rt></ruby>の　そばに　<ruby>机<rt>つくえ</rt></ruby>が　あります。<ruby>机<rt>つくえ</rt></ruby>の　<ruby>上<rt>うえ</rt></ruby>に　パソコンと　<ruby>写真<rt>しゃしん</rt></ruby>が　あります。<ruby>ベッド<rt></rt></ruby>は　ありません。</p>",
+          "questions": [
+            {
+              "question_number": 6,
+              "prompt_html": "<ruby>机<rt>つくえ</rt></ruby>の　<ruby>上<rt>うえ</rt></ruby>に　なにが　ありますか。",
+              "options": [
+                {
+                  "index": 1,
+                  "text": "パソコンと　ベッド"
+                },
+                {
+                  "index": 2,
+                  "text": "パソコンと　<ruby>写真<rt>しゃしん</rt></ruby>"
+                },
+                {
+                  "index": 3,
+                  "text": "<ruby>写真<rt>しゃしん</rt></ruby>と　<ruby>窓<rt>まど</rt></ruby>"
+                },
+                {
+                  "index": 4,
+                  "text": "ベッドと　<ruby>写真<rt>しゃしん</rt></ruby>"
+                }
+              ],
+              "correct_option": 2,
+              "points": 3,
+              "explanation": {
+                "en": "The text states: 「机の 上に パソコンと 写真が あります。」 (There is a PC and a photo on the desk).",
+                "vi": "Đoạn văn nêu rõ: 「机の 上に パソコンと 写真が あります。」 (Trên bàn có máy tính và bức ảnh).",
+                "zh": "文中提到：「机の 上に パソコンと 写真が あります。」（桌子上有电脑和照片）。",
+                "ko": "지문에 「机の 上に パソコンと 写真が あります。」(책상 위에 컴퓨터와 사진이 있습니다)라고 나와 있습니다.",
+                "bn": "অনুচ্ছেদে বলা হয়েছে: 「机の 上に パソコンと 写真が あります。」 (টেবিলের ওপর কম্পিউটার এবং ছবি আছে)।",
+                "hi": "गद्यांश में लिखा है: 「机の 上に パソコンと 写真が あります。」 (मेज़ पर कंप्यूटर और तस्वीर है)।"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_number": 3,
+      "section_code": "LISTENING",
+      "section_title_ja": "聴解",
+      "section_title_en": "Listening",
+      "time_limit_minutes": 30,
+      "mondai_groups": [
+        {
+          "mondai_number": 1,
+          "question_type": "task_based_comprehension",
+          "instruction_ja": "問題1　問題1では、はじめに　しつもんを　きいて　ください。それから　はなしを　きいて、もんだいようしの　1から　4の　なかから、いちばん　いい　ものを　ひとつ　えらんで　ください。",
+          "questions": [
+            {
+              "question_number": 7,
+              "audio_url": "jlpt/n5/mock01/listening_q7.mp3",
+              "image_url": "jlpt/n5/mock01/listening_q7_sheet.png",
+              "transcript_ja": "男：すみません、駅は　どこですか。\n女：ああ、駅ですね。この　みちを　まっすぐ　行って、ひとつめの　かどを　みぎに　まがってください。\n男：ひとつめの　かどを　みぎですね。わかりました。",
+              "prompt_html": "男の人は　まず　どうしますか。",
+              "options": [
+                {
+                  "index": 1,
+                  "text": "まっすぐ　行って、みぎに　まがります。"
+                },
+                {
+                  "index": 2,
+                  "text": "まっすぐ　行って、ひだりに　まがります。"
+                },
+                {
+                  "index": 3,
+                  "text": "ふたつめの　かどを　みぎに　まがります。"
+                },
+                {
+                  "index": 4,
+                  "text": "ふたつめの　かどを　ひだりに　まがります。"
+                }
+              ],
+              "correct_option": 1,
+              "points": 2,
+              "explanation": {
+                "en": "The woman instructs him to go straight (まっすぐ行って) and turn right at the first corner (ひとつめのかどをみぎにまがる).",
+                "vi": "Người phụ nữ hướng dẫn đi thẳng (まっすぐ行って) và rẽ phải ở góc đầu tiên (ひとつめのかどをみぎにまがる).",
+                "zh": "女士指示他直走（まっすぐ行って），然后在第一个拐角右转（ひとつめのかどをみぎにまがる）。",
+                "ko": "여자는 직진해서(まっすぐ行って) 첫 번째 모퉁이에서 오른쪽으로 돌라고(ひとつめのかどをみぎにまがる) 안내합니다.",
+                "bn": "মহিলাটি তাকে সোজা যেতে (まっすぐ行って) এবং প্রথম মোড়ে ডানদিকে ঘুরতে (ひとつめのかどをみぎにまがる) বলেছেন।",
+                "hi": "महिला उसे सीधे जाने (まっすぐ行って) और पहले मोड़ पर दाएं मुड़ने (ひとつめのかどをみぎにまがる) का निर्देश देती है।"
+              }
+            }
+          ]
+        },
+        {
+          "mondai_number": 4,
+          "question_type": "quick_response",
+          "instruction_ja": "問題4　問題4では、えなどが　ありません。ぶんを　きいて、1から　3の　なかから、いちばん　いい　ものを　ひとつ　えらんで　ください。",
+          "questions": [
+            {
+              "question_number": 8,
+              "audio_url": "jlpt/n5/mock01/listening_q8.mp3",
+              "image_url": null,
+              "transcript_ja": "女：すみません、いま　なんじですか。",
+              "prompt_html": "（音声のみ / Audio Only - 3 Options）",
+              "options": [
+                {
+                  "index": 1,
+                  "text": "3じ　15ふんです。"
+                },
+                {
+                  "index": 2,
+                  "text": "3がつ　15にちです。"
+                },
+                {
+                  "index": 3,
+                  "text": "300えんです。"
+                }
+              ],
+              "correct_option": 1,
+              "points": 2,
+              "explanation": {
+                "en": "The woman asks 'What time is it now?' (いま なんじですか). Option 1 ('3:15') is the only time response.",
+                "vi": "Người phụ nữ hỏi 'Bây giờ là mấy giờ?' (いま なんじですか). Đáp án 1 ('3 giờ 15 phút') là câu trả lời về giờ duy nhất.",
+                "zh": "女士问“现在几点了？”（いま なんじですか）。选项1（“3点15分”）是唯一回答时间的选项。",
+                "ko": "여자가 '지금 몇 시입니까?'(いま なんじですか)라고 물었습니다. 1번('3시 15분입니다')만이 시간에 대한 대답입니다.",
+                "bn": "মহিলাটি জিজ্ঞাসা করেছেন 'এখন কয়টা বাজে?' (いま なんじですか)। অপশন ১ ('৩টা ১৫ মিনিট') একমাত্র সঠিক সময়ের উত্তর।",
+                "hi": "महिला पूछती है 'अभी क्या समय हुआ है?' (いま なんじですか)। विकल्प 1 ('3 बजकर 15 मिनट') ही समय का सही उत्तर है।"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
