@@ -2,7 +2,11 @@ export type JlptLevel = "N5" | "N4" | "N3" | "N2" | "N1";
 
 export type SupportedLang = "en" | "vi" | "zh" | "ko" | "bn" | "hi";
 
-export const SUPPORTED_LANGUAGES: { code: SupportedLang; label: string; native: string }[] = [
+export const SUPPORTED_LANGUAGES: {
+  code: SupportedLang;
+  label: string;
+  native: string;
+}[] = [
   { code: "en", label: "English", native: "English" },
   { code: "vi", label: "Vietnamese", native: "Tiếng Việt" },
   { code: "zh", label: "Chinese", native: "中文" },
@@ -33,6 +37,41 @@ export interface Exam {
   created_at: string;
 }
 
+export interface ExamSection {
+  id: string;
+  exam_id: string;
+  section_number: number;
+  section_code: string;
+  section_title_ja: string;
+  section_title_en: string;
+  time_limit_minutes: number;
+}
+
+export interface MondaiGroup {
+  id: string;
+  section_id: string;
+  mondai_number: number;
+  question_type: string;
+  instruction_ja: string;
+  passage_html: string | null;
+}
+
+export interface QuestionOption {
+  index: number;
+  text: string;
+}
+
+export interface PublicQuestion {
+  id: string;
+  mondai_group_id: string;
+  question_number: number;
+  prompt_html: string;
+  options: QuestionOption[];
+  points: number;
+  audio_url: string | null;
+  image_url: string | null;
+}
+
 export interface UserAttempt {
   id: string;
   user_id: string;
@@ -51,4 +90,14 @@ export interface UserAttempt {
     title: string;
     max_total_score: number;
   };
+}
+
+export interface UserAnswer {
+  id?: string;
+  attempt_id: string;
+  question_id: string;
+  selected_option: number | null;
+  is_flagged: boolean;
+  is_correct?: boolean | null;
+  updated_at?: string;
 }
