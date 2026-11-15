@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { gradeAndCompleteAttempt } from "@/app/actions/gradeAttempt";
 
 export async function startExamAttempt(examId: string): Promise<void> {
   const supabase = await createClient();
@@ -129,6 +130,7 @@ export async function submitCurrentSection(
   }
 
   if (attempt.status === "completed") {
+    await gradeAndCompleteAttempt(attempt.id);
     return {
       completed: true,
       redirectTo: `/attempts/${attempt.id}/results`,
@@ -161,19 +163,8 @@ export async function submitCurrentSection(
     return { nextSection, completed: false };
   }
 
-  // Final section finished: mark completed (Phase 5 grading engine refines scoring)
-  const { error: finishErr } = await supabase
-    .from("user_attempts")
-    .update({
-      status: "completed",
-      completed_at: new Date().toISOString(),
-    })
-    .eq("id", attempt.id)
-    .eq("user_id", user.id);
-
-  if (finishErr) {
-    throw new Error(finishErr.message);
-  }
+  // Final section finished: run official JLPT grading engine and mark completed
+  await gradeAndCompleteAttempt(attempt.id);
 
   return {
     completed: true,
