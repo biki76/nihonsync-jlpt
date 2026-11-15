@@ -15,6 +15,10 @@ import {
   QuestionPalette,
   type PaletteItem,
 } from "@/components/exam/QuestionPalette";
+import { JapaneseHtmlText } from "@/components/exam/JapaneseHtmlText";
+import { ReadingSplitPane } from "@/components/exam/ReadingSplitPane";
+import { StarQuestionDisplay } from "@/components/exam/StarQuestionDisplay";
+import { ListeningAudioPlayer } from "@/components/exam/ListeningAudioPlayer";
 import {
   saveAnswer,
   submitCurrentSection,
@@ -70,7 +74,9 @@ export function ExamWorkspace({
     return initial;
   });
 
-  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveState, setSaveState] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
   const [showFurigana, setShowFurigana] = useState(true);
   const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false);
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(
@@ -90,7 +96,8 @@ export function ExamWorkspace({
         return {
           questionId: q.id,
           questionNumber: q.question_number,
-          isAnswered: entry?.selectedOption !== null && entry?.selectedOption !== undefined,
+          isAnswered:
+            entry?.selectedOption !== null && entry?.selectedOption !== undefined,
           isFlagged: Boolean(entry?.isFlagged),
         };
       }),
@@ -109,7 +116,6 @@ export function ExamWorkspace({
       isFlagged: prev.isFlagged,
     };
 
-    // Optimistic update
     setAnswersMap((curr) => ({ ...curr, [questionId]: nextEntry }));
     setSaveState("saving");
 
@@ -187,6 +193,115 @@ export function ExamWorkspace({
     if (window.confirm(msg)) {
       handleAdvanceSection();
     }
+  }
+
+  function renderQuestionCard(mg: MondaiWithQuestions, q: PublicQuestion) {
+    const currentAnswer = answersMap[q.id];
+    const selected = currentAnswer?.selectedOption ?? null;
+    const flagged = Boolean(currentAnswer?.isFlagged);
+    const isStarQuestion = mg.question_type === "sentence_grammar_2_star";
+    const isThreeOptionQuickResponse = q.options.length === 3;
+
+    return (
+      <div
+        key={q.id}
+        id={`question-${q.id}`}
+        className={`rounded-xl border bg-white p-5 shadow-sm transition ${
+          flagged
+            ? "border-amber-300 ring-1 ring-amber-200"
+            : "border-slate-200"
+        }`}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 text-xs font-bold text-[#1E293B] tabular-nums">
+              {q.question_number}
+            </span>
+            <span className="text-xs text-slate-400 tabular-nums">
+              {q.points} {q.points === 1 ? "pt" : "pts"}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleToggleFlag(q.id)}
+            className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium transition ${
+              flagged
+                ? "border-amber-300 bg-[#FFFBEB] text-[#D97706]"
+                : "border-slate-200 bg-white text-slate-500 hover:text-[#1E293B]"
+            }`}
+          >
+            <Flag
+              className={`h-3.5 w-3.5 ${flagged ? "fill-[#D97706]" : ""}`}
+            />
+            <span>{flagged ? "Flagged" : "Flag"}</span>
+          </button>
+        </div>
+
+        {/* Listening Audio Player + Optional Visual Sheet */}
+        {q.audio_url && (
+          <ListeningAudioPlayer
+            audioUrl={q.audio_url}
+            imageUrl={q.image_url}
+            mode="exam"
+            maxPlays={2}
+          />
+        )}
+
+        {/* Star Question (★) Visual Breakdown vs Standard Prompt */}
+        {isStarQuestion ? (
+          <StarQuestionDisplay
+            promptHtml={q.prompt_html}
+            options={q.options}
+            selectedOption={selected}
+          />
+        ) : (
+          <JapaneseHtmlText
+            html={q.prompt_html}
+            className="mt-3 text-base font-medium text-[#1E293B] sm:text-lg"
+          />
+        )}
+
+        {/* Dynamic 3-Option (Mondai 4 Quick Response) vs 4-Option Layout */}
+        <div
+          className={`mt-4 grid gap-2.5 ${
+            isThreeOptionQuickResponse ? "grid-cols-1" : "sm:grid-cols-2"
+          }`}
+        >
+          {q.options.map((opt) => {
+            const isSelected = selected === opt.index;
+
+            return (
+              <button
+                key={opt.index}
+                type="button"
+                onClick={() => handleSelectOption(q.id, opt.index)}
+                className={`flex items-center gap-3 rounded-xl border p-3.5 text-left transition ${
+                  isSelected
+                    ? "border-[#0F766E] bg-[#F0FDFA] text-[#0F766E] shadow-sm"
+                    : "border-slate-200 bg-white text-[#1E293B] hover:border-slate-300 hover:bg-slate-50"
+                }`}
+              >
+                <span
+                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-bold tabular-nums ${
+                    isSelected
+                      ? "border-[#0F766E] bg-[#0F766E] text-white"
+                      : "border-slate-300 text-slate-600"
+                  }`}
+                >
+                  {opt.index}
+                </span>
+                <JapaneseHtmlText
+                  as="span"
+                  html={opt.text}
+                  className="text-sm font-medium sm:text-base"
+                />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
   }
 
   const isLastSection = activeSection.section_number >= sections.length;
@@ -268,7 +383,8 @@ export function ExamWorkspace({
             >
               <LayoutGrid className="h-4 w-4 text-[#0F766E]" />
               <span className="tabular-nums">
-                {paletteItems.filter((i) => i.isAnswered).length}/{paletteItems.length}
+                {paletteItems.filter((i) => i.isAnswered).length}/
+                {paletteItems.length}
               </span>
             </button>
 
@@ -322,116 +438,38 @@ export function ExamWorkspace({
               No questions found for this section.
             </div>
           ) : (
-            mondaiGroups.map((mg) => (
-              <section key={mg.id} className="space-y-4">
-                {/* Mondai Header & Instruction */}
-                <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <span className="inline-block rounded bg-[#F0FDFA] px-2.5 py-0.5 text-xs font-bold text-[#0F766E]">
-                    問題 {mg.mondai_number}
-                  </span>
-                  <p
-                    className="jp-furigana mt-2 text-base font-medium text-[#1E293B]"
-                    dangerouslySetInnerHTML={{ __html: mg.instruction_ja }}
-                  />
+            mondaiGroups.map((mg) => {
+              const questionCards = mg.questions.map((q) =>
+                renderQuestionCard(mg, q)
+              );
 
-                  {mg.passage_html && (
-                    <div
-                      className="jp-furigana mt-4 rounded-xl border border-slate-200 bg-[#FAFAFA] p-4 text-base text-[#1E293B]"
-                      dangerouslySetInnerHTML={{ __html: mg.passage_html }}
+              return (
+                <section key={mg.id} className="space-y-4">
+                  {/* Mondai Header & Instruction */}
+                  <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <span className="inline-block rounded bg-[#F0FDFA] px-2.5 py-0.5 text-xs font-bold text-[#0F766E]">
+                      問題 {mg.mondai_number}
+                    </span>
+                    <JapaneseHtmlText
+                      html={mg.instruction_ja}
+                      className="mt-2 text-base font-medium text-[#1E293B]"
                     />
+                  </div>
+
+                  {/* Split-Screen Reader when passage_html is present, else standard stack */}
+                  {mg.passage_html ? (
+                    <ReadingSplitPane
+                      mondaiNumber={mg.mondai_number}
+                      passageHtml={mg.passage_html}
+                    >
+                      {questionCards}
+                    </ReadingSplitPane>
+                  ) : (
+                    <div className="space-y-4">{questionCards}</div>
                   )}
-                </div>
-
-                {/* Questions in Mondai Group */}
-                <div className="space-y-4">
-                  {mg.questions.map((q) => {
-                    const currentAnswer = answersMap[q.id];
-                    const selected = currentAnswer?.selectedOption ?? null;
-                    const flagged = Boolean(currentAnswer?.isFlagged);
-
-                    return (
-                      <div
-                        key={q.id}
-                        id={`question-${q.id}`}
-                        className={`rounded-xl border bg-white p-5 shadow-sm transition ${
-                          flagged
-                            ? "border-amber-300 ring-1 ring-amber-200"
-                            : "border-slate-200"
-                        }`}
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center gap-2">
-                            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 text-xs font-bold text-[#1E293B] tabular-nums">
-                              {q.question_number}
-                            </span>
-                            <span className="text-xs text-slate-400 tabular-nums">
-                              {q.points} {q.points === 1 ? "pt" : "pts"}
-                            </span>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => handleToggleFlag(q.id)}
-                            className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium transition ${
-                              flagged
-                                ? "border-amber-300 bg-[#FFFBEB] text-[#D97706]"
-                                : "border-slate-200 bg-white text-slate-500 hover:text-[#1E293B]"
-                            }`}
-                          >
-                            <Flag
-                              className={`h-3.5 w-3.5 ${
-                                flagged ? "fill-[#D97706]" : ""
-                              }`}
-                            />
-                            <span>{flagged ? "Flagged" : "Flag"}</span>
-                          </button>
-                        </div>
-
-                        {/* Question Prompt */}
-                        <div
-                          className="jp-furigana mt-3 text-base font-medium text-[#1E293B] sm:text-lg"
-                          dangerouslySetInnerHTML={{ __html: q.prompt_html }}
-                        />
-
-                        {/* Options (3 or 4 choices) */}
-                        <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
-                          {q.options.map((opt) => {
-                            const isSelected = selected === opt.index;
-
-                            return (
-                              <button
-                                key={opt.index}
-                                type="button"
-                                onClick={() => handleSelectOption(q.id, opt.index)}
-                                className={`flex items-center gap-3 rounded-xl border p-3.5 text-left transition ${
-                                  isSelected
-                                    ? "border-[#0F766E] bg-[#F0FDFA] text-[#0F766E] shadow-sm"
-                                    : "border-slate-200 bg-white text-[#1E293B] hover:border-slate-300 hover:bg-slate-50"
-                                }`}
-                              >
-                                <span
-                                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-bold tabular-nums ${
-                                    isSelected
-                                      ? "border-[#0F766E] bg-[#0F766E] text-white"
-                                      : "border-slate-300 text-slate-600"
-                                  }`}
-                                >
-                                  {opt.index}
-                                </span>
-                                <span
-                                  className="jp-furigana text-sm font-medium sm:text-base"
-                                  dangerouslySetInnerHTML={{ __html: opt.text }}
-                                />
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            ))
+                </section>
+              );
+            })
           )}
         </div>
 
