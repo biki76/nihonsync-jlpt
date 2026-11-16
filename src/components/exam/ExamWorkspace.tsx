@@ -357,18 +357,6 @@ export function ExamWorkspace({
               )}
             </div>
 
-            <button
-              type="button"
-              onClick={() => setShowFurigana((v) => !v)}
-              className={`min-h-[38px] rounded-xl border px-3 py-1.5 text-xs font-bold transition ${
-                showFurigana
-                  ? "border-[#E04F33] bg-[#FDF2EF] text-[#E04F33] dark:bg-[#E04F33]/15"
-                  : "border-[#E6E2DA] bg-white text-[#52525B] dark:border-[#2E2E32] dark:bg-[#18181B] dark:text-[#A1A1AA]"
-              }`}
-            >
-              ふりがな: {showFurigana ? "ON" : "OFF"}
-            </button>
-
             <SectionTimer
               key={`${attempt.id}-${activeSection.section_number}-${attempt.section_started_at}`}
               sectionStartedAt={attempt.section_started_at}
@@ -388,6 +376,18 @@ export function ExamWorkspace({
                 {paletteItems.filter((i) => i.isAnswered).length}/
                 {paletteItems.length}
               </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowFurigana((v) => !v)}
+              className={`min-h-[38px] rounded-xl border px-3 py-1.5 text-xs font-bold transition ${
+                showFurigana
+                  ? "border-[#E04F33] bg-[#FDF2EF] text-[#E04F33] dark:bg-[#E04F33]/15"
+                  : "border-[#E6E2DA] bg-white text-[#52525B] dark:border-[#2E2E32] dark:bg-[#18181B] dark:text-[#A1A1AA]"
+              }`}
+            >
+              ふりがな: {showFurigana ? "ON" : "OFF"}
             </button>
 
             <button
