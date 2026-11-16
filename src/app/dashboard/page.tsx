@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { DashboardControls } from "@/components/dashboard/DashboardControls";
+import { GlobalHeader } from "@/components/layout/GlobalHeader";
 import { MockTestCatalog } from "@/components/catalog/MockTestCatalog";
 import { SEED_EXAMS } from "@/data/seedExams";
 import type { Exam, SupportedLang, UserAttempt } from "@/types/jlpt";
@@ -50,25 +50,8 @@ export default async function DashboardPage() {
   const initialLang = (profile?.preferred_lang as SupportedLang) || "en";
 
   return (
-    <div className="min-h-screen bg-[#FAF9F7] text-[#18181B] dark:bg-[#111113] dark:text-[#F4F4F5]">
-      <header className="sticky top-0 z-30 border-b border-[#E6E2DA] bg-white/95 backdrop-blur dark:border-[#2E2E32] dark:bg-[#18181B]/95">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E04F33] font-jp text-lg font-bold text-white shadow-xs">
-              日
-            </div>
-            <div>
-              <span className="text-base font-bold tracking-tight">
-                NihonSync
-              </span>
-              <p className="text-xs text-[#52525B] dark:text-[#A1A1AA]">
-                {user.email}
-              </p>
-            </div>
-          </div>
-          <DashboardControls userId={user.id} initialLang={initialLang} />
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#FAF9F7] text-[#0F172A] dark:bg-[#111113] dark:text-[#F4F4F5]">
+      <GlobalHeader userEmail={user.email} userId={user.id} />
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
         <MockTestCatalog

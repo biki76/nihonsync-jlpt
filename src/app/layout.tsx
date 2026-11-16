@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PreferencesProvider } from "@/context/PreferencesContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,12 +23,12 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;600;700&family=Noto+Sans+SC:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-[#FAF9F7] text-[#18181B] antialiased selection:bg-[#FDF2EF] selection:text-[#E04F33] dark:bg-[#111113] dark:text-[#F4F4F5]">
-        {children}
+      <body className="min-h-screen bg-[#FAF9F7] text-[#0F172A] antialiased selection:bg-[#FDF2EF] selection:text-[#E04F33] dark:bg-[#111113] dark:text-[#F4F4F5]">
+        <PreferencesProvider>{children}</PreferencesProvider>
       </body>
     </html>
   );

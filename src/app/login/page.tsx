@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { GlobalHeader } from "@/components/layout/GlobalHeader";
 
 function LoginForm() {
   const router = useRouter();
@@ -46,7 +47,9 @@ function LoginForm() {
         router.push(nextPath);
         router.refresh();
       } else {
-        setInfoMsg("Account created! Check your email for the confirmation link, then sign in.");
+        setInfoMsg(
+          "Account created! Check your email for the confirmation link, then sign in."
+        );
         setLoading(false);
       }
       return;
@@ -68,25 +71,25 @@ function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md rounded-[16px] border border-[#E6E2DA] bg-white p-6 shadow-xs dark:border-[#2E2E32] dark:bg-[#18181B] sm:p-8">
+    <div className="w-full max-w-md rounded-[16px] border border-[#E5E2DC] bg-white p-6 shadow-xs dark:border-[#27272A] dark:bg-[#18181B] sm:p-8">
       <div className="flex items-center gap-3">
         <Link
           href="/"
-          className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E04F33] font-jp text-lg font-bold text-white shadow-xs"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E04F33] font-jp text-lg font-bold text-white shadow-xs"
         >
           日
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-[#18181B] dark:text-[#F4F4F5]">
+          <h1 className="text-xl font-bold text-[#0F172A] dark:text-[#F4F4F5]">
             {isSignUp ? "Create NihonSync Account" : "Sign in to NihonSync"}
           </h1>
-          <p className="text-xs text-[#52525B] dark:text-[#A1A1AA]">
+          <p className="text-xs text-[#475569] dark:text-[#A1A1AA]">
             JLPT N5–N1 Mock Exam Simulator
           </p>
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 rounded-xl bg-[#F3F1ED] p-1 text-sm font-bold dark:bg-[#27272A]">
+      <div className="mt-6 grid grid-cols-2 rounded-xl bg-[#F3F2EE] p-1 text-sm font-bold dark:bg-[#222226]">
         <button
           type="button"
           onClick={() => {
@@ -94,10 +97,10 @@ function LoginForm() {
             setErrorMsg(null);
             setInfoMsg(null);
           }}
-          className={`min-h-[40px] rounded-lg py-1.5 transition ${
+          className={`min-h-[42px] rounded-lg py-1.5 transition ${
             !isSignUp
-              ? "bg-white text-[#18181B] shadow-xs dark:bg-[#18181B] dark:text-[#F4F4F5]"
-              : "text-[#52525B] hover:text-[#18181B] dark:text-[#A1A1AA]"
+              ? "bg-white text-[#0F172A] shadow-xs dark:bg-[#18181B] dark:text-[#F4F4F5]"
+              : "text-[#475569] hover:text-[#0F172A] dark:text-[#A1A1AA]"
           }`}
         >
           Log In
@@ -109,10 +112,10 @@ function LoginForm() {
             setErrorMsg(null);
             setInfoMsg(null);
           }}
-          className={`min-h-[40px] rounded-lg py-1.5 transition ${
+          className={`min-h-[42px] rounded-lg py-1.5 transition ${
             isSignUp
-              ? "bg-white text-[#18181B] shadow-xs dark:bg-[#18181B] dark:text-[#F4F4F5]"
-              : "text-[#52525B] hover:text-[#18181B] dark:text-[#A1A1AA]"
+              ? "bg-white text-[#0F172A] shadow-xs dark:bg-[#18181B] dark:text-[#F4F4F5]"
+              : "text-[#475569] hover:text-[#0F172A] dark:text-[#A1A1AA]"
           }`}
         >
           Sign Up
@@ -137,7 +140,7 @@ function LoginForm() {
         <div>
           <label
             htmlFor="email"
-            className="block text-xs font-bold uppercase tracking-wide text-[#52525B] dark:text-[#A1A1AA]"
+            className="block text-xs font-bold uppercase tracking-wide text-[#475569] dark:text-[#A1A1AA]"
           >
             Email Address
           </label>
@@ -149,14 +152,14 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="learner@example.com"
-            className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#E6E2DA] bg-white px-3.5 py-2.5 text-sm text-[#18181B] outline-none transition focus:border-[#E04F33] focus:ring-2 focus:ring-[#E04F33]/20 dark:border-[#2E2E32] dark:bg-[#111113] dark:text-[#F4F4F5]"
+            className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#E5E2DC] bg-white px-3.5 py-2.5 text-sm text-[#0F172A] outline-none transition focus:border-[#E04F33] focus:ring-2 focus:ring-[#E04F33]/20 dark:border-[#27272A] dark:bg-[#111113] dark:text-[#F4F4F5]"
           />
         </div>
 
         <div>
           <label
             htmlFor="password"
-            className="block text-xs font-bold uppercase tracking-wide text-[#52525B] dark:text-[#A1A1AA]"
+            className="block text-xs font-bold uppercase tracking-wide text-[#475569] dark:text-[#A1A1AA]"
           >
             Password
           </label>
@@ -169,14 +172,14 @@ function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#E6E2DA] bg-white px-3.5 py-2.5 text-sm text-[#18181B] outline-none transition focus:border-[#E04F33] focus:ring-2 focus:ring-[#E04F33]/20 dark:border-[#2E2E32] dark:bg-[#111113] dark:text-[#F4F4F5]"
+            className="mt-1.5 min-h-[44px] w-full rounded-xl border border-[#E5E2DC] bg-white px-3.5 py-2.5 text-sm text-[#0F172A] outline-none transition focus:border-[#E04F33] focus:ring-2 focus:ring-[#E04F33]/20 dark:border-[#27272A] dark:bg-[#111113] dark:text-[#F4F4F5]"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="flex min-h-[46px] w-full items-center justify-center gap-2 rounded-xl bg-[#E04F33] px-4 py-2.5 text-sm font-bold text-white shadow-xs transition hover:bg-[#C83E24] disabled:opacity-60"
+          className="flex min-h-[46px] w-full items-center justify-center gap-2 rounded-xl bg-[#E04F33] px-4 py-2.5 text-sm font-bold text-white shadow-xs transition hover:bg-[#C83E23] disabled:opacity-60"
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}
           {isSignUp ? "Create Free Account" : "Sign In"}
@@ -188,10 +191,15 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#FAF9F7] px-4 py-12 dark:bg-[#111113]">
-      <Suspense fallback={<div className="text-sm text-[#52525B]">Loading...</div>}>
-        <LoginForm />
-      </Suspense>
+    <div className="flex min-h-screen flex-col bg-[#FAF9F7] text-[#0F172A] dark:bg-[#111113] dark:text-[#F4F4F5]">
+      <GlobalHeader showAuthActions={false} backHref="/" backLabel="Home" />
+      <div className="flex flex-1 flex-col items-center justify-center px-4 py-10">
+        <Suspense
+          fallback={<div className="text-sm text-[#475569]">Loading...</div>}
+        >
+          <LoginForm />
+        </Suspense>
+      </div>
     </div>
   );
 }
