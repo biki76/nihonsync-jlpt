@@ -4,6 +4,9 @@
 
 :root {
   --font-ui: 'Plus Jakarta Sans', 'Noto Sans Bengali', 'Noto Sans Devanagari', 'Noto Sans Thai', 'Noto Sans SC', 'Noto Sans KR', system-ui, sans-serif;
+  --font-noto-sans-jp: 'Noto Sans JP', sans-serif;
+  --ui-line-height: 1.55;
+  --heading-line-height: 1.35;
   --bg-canvas: #FAF9F7;
   --bg-card: #FFFFFF;
   --bg-subtle: #F3F1ED;
@@ -13,6 +16,11 @@
   --accent-vermilion: #E04F33;
   --accent-vermilion-hover: #C83E24;
   --accent-vermilion-soft: #FDF2EF;
+}
+
+:root[lang="bn"], :root[lang="hi"], :root[lang="th"] {
+  --ui-line-height: 1.72;
+  --heading-line-height: 1.48;
 }
 
 .dark {
@@ -31,12 +39,17 @@
   html,
   body {
     font-family: var(--font-ui);
+    line-height: var(--ui-line-height);
     background-color: var(--bg-canvas);
     color: var(--text-ink);
   }
 }
 
 @layer utilities {
+  .font-jp {
+    font-family: var(--font-noto-sans-jp), 'Noto Sans JP', sans-serif;
+  }
+
   .jp-furigana {
     font-family: var(--font-noto-sans-jp), 'Noto Sans JP', sans-serif;
     line-height: 2.2;
