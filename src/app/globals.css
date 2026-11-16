@@ -2,13 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #FAFAFA;
-  color: #1E293B;
+:root {
+  --font-ui: 'Plus Jakarta Sans', 'Noto Sans Bengali', 'Noto Sans Devanagari', 'Noto Sans Thai', 'Noto Sans SC', 'Noto Sans KR', system-ui, sans-serif;
+  --bg-canvas: #FAF9F7;
+  --bg-card: #FFFFFF;
+  --bg-subtle: #F3F1ED;
+  --border-hairline: #E6E2DA;
+  --text-ink: #18181B;
+  --text-muted: #52525B;
+  --accent-vermilion: #E04F33;
+  --accent-vermilion-hover: #C83E24;
+  --accent-vermilion-soft: #FDF2EF;
 }
 
-.japanese-text {
-  font-family: 'Noto Sans JP', sans-serif;
-  line-height: 2.1;
+.dark {
+  --bg-canvas: #111113;
+  --bg-card: #18181B;
+  --bg-subtle: #27272A;
+  --border-hairline: #2E2E32;
+  --text-ink: #F4F4F5;
+  --text-muted: #A1A1AA;
+  --accent-vermilion: #E04F33;
+  --accent-vermilion-hover: #F05E42;
+  --accent-vermilion-soft: rgba(224, 79, 51, 0.14);
+}
+
+@layer base {
+  html,
+  body {
+    font-family: var(--font-ui);
+    background-color: var(--bg-canvas);
+    color: var(--text-ink);
+  }
+}
+
+@layer utilities {
+  .jp-furigana {
+    font-family: var(--font-noto-sans-jp), 'Noto Sans JP', sans-serif;
+    line-height: 2.2;
+  }
+
+  .jp-furigana ruby {
+    ruby-align: center;
+  }
+
+  .jp-furigana rt {
+    font-size: 0.62em;
+    color: #64748B;
+    font-weight: 500;
+  }
+
+  .dark .jp-furigana rt {
+    color: #E04F33;
+  }
+
+  .hide-furigana rt {
+    visibility: hidden;
+  }
 }

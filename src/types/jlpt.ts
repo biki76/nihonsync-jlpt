@@ -1,6 +1,14 @@
 export type JlptLevel = "N5" | "N4" | "N3" | "N2" | "N1";
 
-export type SupportedLang = "en" | "vi" | "zh" | "ko" | "bn" | "hi";
+export type SupportedLang =
+  | "en"
+  | "bn"
+  | "hi"
+  | "id"
+  | "th"
+  | "vi"
+  | "zh"
+  | "ko";
 
 export const SUPPORTED_LANGUAGES: {
   code: SupportedLang;
@@ -8,11 +16,13 @@ export const SUPPORTED_LANGUAGES: {
   native: string;
 }[] = [
   { code: "en", label: "English", native: "English" },
+  { code: "bn", label: "Bangla", native: "বাংলা" },
+  { code: "hi", label: "Hindi", native: "हिन्दी" },
+  { code: "id", label: "Indonesian", native: "Indonesia" },
+  { code: "th", label: "Thai", native: "ไทย" },
   { code: "vi", label: "Vietnamese", native: "Tiếng Việt" },
   { code: "zh", label: "Chinese", native: "中文" },
   { code: "ko", label: "Korean", native: "한국어" },
-  { code: "bn", label: "Bangla", native: "বাংলা" },
-  { code: "hi", label: "Hindi", native: "हिन्दी" },
 ];
 
 export interface Profile {
@@ -70,6 +80,24 @@ export interface PublicQuestion {
   points: number;
   audio_url: string | null;
   image_url: string | null;
+}
+
+export interface SeedQuestion {
+  id: string;
+  level: JlptLevel;
+  section_code: "VOCAB" | "GRAMMAR_READING" | "LISTENING";
+  mondai_number: number;
+  question_type: string;
+  instruction_ja: string;
+  passage_html: string | null;
+  question_number: number;
+  prompt_html: string;
+  options: QuestionOption[];
+  correct_option: number;
+  correct_sequence?: number[];
+  points: number;
+  transcript_ja?: string;
+  explanation: Record<SupportedLang, string>;
 }
 
 export interface UserAttempt {
