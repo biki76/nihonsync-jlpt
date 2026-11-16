@@ -79,71 +79,70 @@ export default async function ExamBriefingPage({ params }: ExamBriefingPageProps
   const startAction = startExamAttempt.bind(null, exam.id);
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#1E293B]">
-      <header className="border-b border-slate-200 bg-white">
+    <div className="min-h-screen bg-[#FAF9F7] text-[#18181B] dark:bg-[#111113] dark:text-[#F4F4F5]">
+      <header className="border-b border-[#E6E2DA] bg-white dark:border-[#2E2E32] dark:bg-[#18181B]">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 transition hover:text-[#1E293B]"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#52525B] transition hover:text-[#E04F33] dark:text-[#A1A1AA]"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Dashboard
+            Back to Catalog
           </Link>
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#52525B] dark:text-[#A1A1AA]">
             {exam.exam_code}
           </span>
         </div>
       </header>
 
       <main className="mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-6">
-        {/* Exam Header Card */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-[16px] border border-[#E6E2DA] bg-white p-6 shadow-xs dark:border-[#2E2E32] dark:bg-[#18181B]">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-md bg-[#0F766E] px-2.5 py-0.5 text-xs font-bold text-white">
+            <span className="rounded-lg bg-[#18181B] px-2.5 py-1 text-xs font-bold text-white dark:bg-[#F4F4F5] dark:text-[#18181B]">
               JLPT {exam.level}
             </span>
             {exam.is_premium ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#FFFBEB] px-2.5 py-0.5 text-xs font-semibold text-[#D97706]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#FDF2EF] px-2.5 py-1 text-xs font-bold text-[#E04F33] dark:bg-[#E04F33]/15">
                 <Crown className="h-3 w-3" /> NihonSync Pro
               </span>
             ) : (
-              <span className="rounded-full bg-[#F0FDFA] px-2.5 py-0.5 text-xs font-semibold text-[#0F766E]">
+              <span className="rounded-full border border-[#E6E2DA] bg-[#F3F1ED] px-2.5 py-1 text-xs font-bold text-[#18181B] dark:border-[#2E2E32] dark:bg-[#27272A] dark:text-[#F4F4F5]">
                 Free Mock Test
               </span>
             )}
           </div>
 
-          <h1 className="mt-3 text-2xl font-bold text-[#1E293B] sm:text-3xl">
+          <h1 className="mt-3 text-2xl font-bold text-[#18181B] dark:text-[#F4F4F5] sm:text-3xl">
             {exam.title}
           </h1>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-3 tabular-nums">
-            <div className="rounded-lg border border-slate-200 bg-[#FAFAFA] p-3.5">
-              <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                <Clock className="h-3.5 w-3.5 text-[#0F766E]" />
+            <div className="rounded-xl border border-[#E6E2DA] bg-[#FAF9F7] p-3.5 dark:border-[#2E2E32] dark:bg-[#111113]">
+              <div className="flex items-center gap-1.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
+                <Clock className="h-3.5 w-3.5 text-[#E04F33]" />
                 <span>Total Duration</span>
               </div>
-              <p className="mt-1 text-lg font-bold text-[#1E293B]">
+              <p className="mt-1 text-lg font-bold">
                 {exam.total_time_minutes} mins
               </p>
             </div>
 
-            <div className="rounded-lg border border-slate-200 bg-[#FAFAFA] p-3.5">
-              <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                <Award className="h-3.5 w-3.5 text-[#0F766E]" />
+            <div className="rounded-xl border border-[#E6E2DA] bg-[#FAF9F7] p-3.5 dark:border-[#2E2E32] dark:bg-[#111113]">
+              <div className="flex items-center gap-1.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
+                <Award className="h-3.5 w-3.5 text-[#E04F33]" />
                 <span>Overall Pass Mark</span>
               </div>
-              <p className="mt-1 text-lg font-bold text-[#1E293B]">
+              <p className="mt-1 text-lg font-bold">
                 {exam.total_score_required} / {exam.max_total_score} pts
               </p>
             </div>
 
-            <div className="rounded-lg border border-slate-200 bg-[#FAFAFA] p-3.5">
-              <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                <ShieldAlert className="h-3.5 w-3.5 text-[#0F766E]" />
+            <div className="rounded-xl border border-[#E6E2DA] bg-[#FAF9F7] p-3.5 dark:border-[#2E2E32] dark:bg-[#111113]">
+              <div className="flex items-center gap-1.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
+                <ShieldAlert className="h-3.5 w-3.5 text-[#E04F33]" />
                 <span>Sectional Minimums</span>
               </div>
-              <div className="mt-1 space-y-0.5 text-xs font-semibold text-[#1E293B]">
+              <div className="mt-1 space-y-0.5 text-xs font-semibold">
                 {Object.entries(exam.sectional_minimums || {}).map(([k, v]) => (
                   <div key={k}>
                     {formatMinLabel(k)}: &ge;{v} pts
@@ -154,17 +153,16 @@ export default async function ExamBriefingPage({ params }: ExamBriefingPageProps
           </div>
         </div>
 
-        {/* Section Breakdown */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-base font-bold text-[#1E293B]">
+        <div className="rounded-[16px] border border-[#E6E2DA] bg-white p-6 shadow-xs dark:border-[#2E2E32] dark:bg-[#18181B]">
+          <h2 className="text-base font-bold">
             Exam Structure &amp; Timed Sections
           </h2>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-[#52525B] dark:text-[#A1A1AA]">
             Sections are taken sequentially. Once you submit a section or its timer reaches 00:00,
             you cannot return to earlier sections.
           </p>
 
-          <div className="mt-4 divide-y divide-slate-200 rounded-xl border border-slate-200">
+          <div className="mt-4 divide-y divide-[#E6E2DA] rounded-xl border border-[#E6E2DA] dark:divide-[#2E2E32] dark:border-[#2E2E32]">
             {sections.map((sec) => (
               <div
                 key={sec.id}
@@ -172,19 +170,19 @@ export default async function ExamBriefingPage({ params }: ExamBriefingPageProps
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-700">
+                    <span className="rounded-md bg-[#F3F1ED] px-2 py-0.5 text-xs font-bold text-[#18181B] dark:bg-[#27272A] dark:text-[#F4F4F5]">
                       Section {sec.section_number}
                     </span>
-                    <span className="font-jp text-sm font-bold text-[#1E293B]">
+                    <span className="font-jp text-sm font-bold">
                       {sec.section_title_ja}
                     </span>
                   </div>
-                  <p className="mt-0.5 text-xs text-slate-500">
+                  <p className="mt-0.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
                     {sec.section_title_en} ({sec.section_code})
                   </p>
                 </div>
 
-                <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0F766E] tabular-nums">
+                <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#E04F33] tabular-nums">
                   <Clock className="h-3.5 w-3.5" />
                   <span>{sec.time_limit_minutes} minutes</span>
                 </div>
@@ -197,36 +195,35 @@ export default async function ExamBriefingPage({ params }: ExamBriefingPageProps
           </div>
         </div>
 
-        {/* Freemium Lock Card vs. Start Exam Action */}
         {isLocked ? (
-          <div className="rounded-xl border border-amber-300 bg-[#FFFBEB] p-6 shadow-sm">
+          <div className="rounded-[16px] border border-[#E04F33]/40 bg-[#FDF2EF] p-6 shadow-xs dark:bg-[#E04F33]/12">
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#D97706] text-white">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E04F33] text-white">
                 <Lock className="h-5 w-5" />
               </div>
               <div className="flex-1">
-                <h3 className="text-base font-bold text-amber-950">
+                <h3 className="text-base font-bold text-[#18181B] dark:text-[#F4F4F5]">
                   NihonSync Pro Upgrade Required
                 </h3>
-                <p className="mt-1 text-xs leading-relaxed text-amber-900">
+                <p className="mt-1 text-xs leading-relaxed text-[#52525B] dark:text-[#A1A1AA]">
                   Mock Tests 1 and 2 are free for all learners. Mock Test {exam.test_number} (
                   {exam.exam_code}) is part of the NihonSync Pro library (Tests 3–20 across N5–N1).
                 </p>
                 <div className="mt-4 flex flex-wrap items-center gap-3">
                   <Link
                     href="/dashboard"
-                    className="rounded-lg bg-[#D97706] px-4 py-2 text-xs font-semibold text-white transition hover:bg-amber-700"
+                    className="inline-flex min-h-[44px] items-center rounded-xl bg-[#E04F33] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#C83E24]"
                   >
-                    Return to Free Exams
+                    Return to Mock Test Catalog
                   </Link>
                 </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex items-start gap-2.5 text-xs text-slate-600">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#D97706]" />
+          <div className="rounded-[16px] border border-[#E6E2DA] bg-white p-6 shadow-xs dark:border-[#2E2E32] dark:bg-[#18181B]">
+            <div className="flex items-start gap-2.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#E04F33]" />
               <p>
                 Your countdown timer starts immediately on the server when you enter Section 1 and
                 continues running even if you refresh or close your browser.
@@ -236,7 +233,7 @@ export default async function ExamBriefingPage({ params }: ExamBriefingPageProps
             <form action={startAction} className="mt-5">
               <button
                 type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F766E] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#115E59] sm:w-auto"
+                className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#E04F33] px-6 py-3 text-sm font-bold text-white shadow-xs transition hover:bg-[#C83E24] sm:w-auto"
               >
                 <PlayCircle className="h-4 w-4" />
                 <span>

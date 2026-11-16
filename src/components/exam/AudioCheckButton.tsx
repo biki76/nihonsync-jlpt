@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Volume2, CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Volume2 } from "lucide-react";
 
 export function AudioCheckButton() {
   const [playing, setPlaying] = useState(false);
@@ -22,7 +22,7 @@ export function AudioCheckButton() {
       const osc1 = ctx.createOscillator();
       const gain1 = ctx.createGain();
       osc1.type = "sine";
-      osc1.frequency.setValueAtTime(523.25, now); // C5
+      osc1.frequency.setValueAtTime(523.25, now);
       gain1.gain.setValueAtTime(0.18, now);
       gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
       osc1.connect(gain1);
@@ -33,7 +33,7 @@ export function AudioCheckButton() {
       const osc2 = ctx.createOscillator();
       const gain2 = ctx.createGain();
       osc2.type = "sine";
-      osc2.frequency.setValueAtTime(659.25, now + 0.25); // E5
+      osc2.frequency.setValueAtTime(659.25, now + 0.25);
       gain2.gain.setValueAtTime(0.18, now + 0.25);
       gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
       osc2.connect(gain2);
@@ -53,12 +53,12 @@ export function AudioCheckButton() {
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-[#FAFAFA] p-4">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#E6E2DA] bg-[#FAF9F7] p-4 dark:border-[#2E2E32] dark:bg-[#111113]">
       <div>
-        <p className="text-sm font-semibold text-[#1E293B]">
+        <p className="text-sm font-bold text-[#18181B] dark:text-[#F4F4F5]">
           Listening Section Audio Check
         </p>
-        <p className="text-xs text-slate-600">
+        <p className="text-xs text-[#52525B] dark:text-[#A1A1AA]">
           Verify your speaker or headphone volume before entering the exam room.
         </p>
       </div>
@@ -67,11 +67,11 @@ export function AudioCheckButton() {
         type="button"
         onClick={playTestChime}
         disabled={playing}
-        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-[#1E293B] shadow-sm transition hover:border-[#0F766E] hover:text-[#0F766E] disabled:opacity-60"
+        className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-[#E6E2DA] bg-white px-4 py-2 text-xs font-bold text-[#18181B] shadow-xs transition hover:border-[#E04F33] hover:text-[#E04F33] disabled:opacity-60 dark:border-[#2E2E32] dark:bg-[#18181B] dark:text-[#F4F4F5]"
       >
-        <Volume2 className={`h-4 w-4 text-[#0F766E] ${playing ? "animate-pulse" : ""}`} />
+        <Volume2 className={`h-4 w-4 text-[#E04F33] ${playing ? "animate-pulse" : ""}`} />
         <span>{playing ? "Playing Chime..." : "Test Audio Chime"}</span>
-        {tested && !playing && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />}
+        {tested && !playing && <CheckCircle2 className="h-3.5 w-3.5 text-[#E04F33]" />}
       </button>
     </div>
   );

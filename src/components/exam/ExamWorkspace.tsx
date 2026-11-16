@@ -46,6 +46,8 @@ interface ExamWorkspaceProps {
   serverNowIso: string;
 }
 
+const OPTION_LETTERS = ["A", "B", "C", "D"];
+
 export function ExamWorkspace({
   exam,
   attempt,
@@ -206,18 +208,18 @@ export function ExamWorkspace({
       <div
         key={q.id}
         id={`question-${q.id}`}
-        className={`rounded-xl border bg-white p-5 shadow-sm transition ${
+        className={`rounded-[16px] border bg-white p-5 shadow-xs transition dark:bg-[#18181B] ${
           flagged
-            ? "border-amber-300 ring-1 ring-amber-200"
-            : "border-slate-200"
+            ? "border-[#E04F33] ring-1 ring-[#E04F33]/30"
+            : "border-[#E6E2DA] dark:border-[#2E2E32]"
         }`}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 text-xs font-bold text-[#1E293B] tabular-nums">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#F3F1ED] text-xs font-bold text-[#18181B] tabular-nums dark:bg-[#27272A] dark:text-[#F4F4F5]">
               {q.question_number}
             </span>
-            <span className="text-xs text-slate-400 tabular-nums">
+            <span className="text-xs text-[#52525B] tabular-nums dark:text-[#A1A1AA]">
               {q.points} {q.points === 1 ? "pt" : "pts"}
             </span>
           </div>
@@ -225,20 +227,19 @@ export function ExamWorkspace({
           <button
             type="button"
             onClick={() => handleToggleFlag(q.id)}
-            className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium transition ${
+            className={`inline-flex min-h-[36px] items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-bold transition ${
               flagged
-                ? "border-amber-300 bg-[#FFFBEB] text-[#D97706]"
-                : "border-slate-200 bg-white text-slate-500 hover:text-[#1E293B]"
+                ? "border-[#E04F33] bg-[#FDF2EF] text-[#E04F33] dark:bg-[#E04F33]/15"
+                : "border-[#E6E2DA] bg-white text-[#52525B] hover:border-[#E04F33] hover:text-[#18181B] dark:border-[#2E2E32] dark:bg-[#18181B] dark:text-[#A1A1AA]"
             }`}
           >
             <Flag
-              className={`h-3.5 w-3.5 ${flagged ? "fill-[#D97706]" : ""}`}
+              className={`h-3.5 w-3.5 ${flagged ? "fill-[#E04F33]" : ""}`}
             />
             <span>{flagged ? "Flagged" : "Flag"}</span>
           </button>
         </div>
 
-        {/* Listening Audio Player + Optional Visual Sheet */}
         {q.audio_url && (
           <ListeningAudioPlayer
             audioUrl={q.audio_url}
@@ -248,7 +249,6 @@ export function ExamWorkspace({
           />
         )}
 
-        {/* Star Question (★) Visual Breakdown vs Standard Prompt */}
         {isStarQuestion ? (
           <StarQuestionDisplay
             promptHtml={q.prompt_html}
@@ -258,44 +258,51 @@ export function ExamWorkspace({
         ) : (
           <JapaneseHtmlText
             html={q.prompt_html}
-            className="mt-3 text-base font-medium text-[#1E293B] sm:text-lg"
+            className="mt-3 text-base font-medium text-[#18181B] dark:text-[#F4F4F5] sm:text-lg"
           />
         )}
 
-        {/* Dynamic 3-Option (Mondai 4 Quick Response) vs 4-Option Layout */}
         <div
           className={`mt-4 grid gap-2.5 ${
             isThreeOptionQuickResponse ? "grid-cols-1" : "sm:grid-cols-2"
           }`}
         >
-          {q.options.map((opt) => {
+          {q.options.map((opt, idx) => {
             const isSelected = selected === opt.index;
+            const letter = OPTION_LETTERS[idx] ?? String(opt.index);
 
             return (
               <button
                 key={opt.index}
                 type="button"
                 onClick={() => handleSelectOption(q.id, opt.index)}
-                className={`flex items-center gap-3 rounded-xl border p-3.5 text-left transition ${
+                className={`flex min-h-[48px] items-center justify-between gap-3 rounded-xl px-3.5 py-3 text-left transition ${
                   isSelected
-                    ? "border-[#0F766E] bg-[#F0FDFA] text-[#0F766E] shadow-sm"
-                    : "border-slate-200 bg-white text-[#1E293B] hover:border-slate-300 hover:bg-slate-50"
+                    ? "border-[1.5px] border-[#E04F33] bg-[#FDF2EF] text-[#18181B] dark:bg-[#E04F33]/15 dark:text-[#F4F4F5]"
+                    : "border border-[#E6E2DA] bg-white text-[#18181B] hover:border-[#E04F33]/50 dark:border-[#2E2E32] dark:bg-[#18181B] dark:text-[#F4F4F5]"
                 }`}
               >
-                <span
-                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-bold tabular-nums ${
-                    isSelected
-                      ? "border-[#0F766E] bg-[#0F766E] text-white"
-                      : "border-slate-300 text-slate-600"
-                  }`}
-                >
-                  {opt.index}
-                </span>
-                <JapaneseHtmlText
-                  as="span"
-                  html={opt.text}
-                  className="text-sm font-medium sm:text-base"
-                />
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-[8px] text-xs font-bold tabular-nums ${
+                      isSelected
+                        ? "bg-[#E04F33] text-white"
+                        : "bg-[#F3F1ED] text-[#18181B] dark:bg-[#27272A] dark:text-[#F4F4F5]"
+                    }`}
+                  >
+                    {letter}
+                  </span>
+                  <JapaneseHtmlText
+                    as="span"
+                    html={opt.text}
+                    className="text-sm font-medium sm:text-base"
+                  />
+                </div>
+                {isSelected && (
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#E04F33] text-white">
+                    <Check className="h-3 w-3 stroke-[3]" />
+                  </span>
+                )}
               </button>
             );
           })}
@@ -308,24 +315,23 @@ export function ExamWorkspace({
 
   return (
     <div
-      className={`min-h-screen bg-[#FAFAFA] text-[#1E293B] ${
+      className={`min-h-screen bg-[#FAF9F7] text-[#18181B] dark:bg-[#111113] dark:text-[#F4F4F5] ${
         showFurigana ? "" : "hide-furigana"
       }`}
     >
-      {/* Sticky Top Exam Header */}
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-[#E6E2DA] bg-white/95 backdrop-blur dark:border-[#2E2E32] dark:bg-[#18181B]/95">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2.5">
-            <span className="rounded-md bg-[#0F766E] px-2 py-0.5 text-xs font-bold text-white">
+            <span className="rounded-lg bg-[#18181B] px-2.5 py-1 text-xs font-bold text-white dark:bg-[#F4F4F5] dark:text-[#18181B]">
               {exam.level}
             </span>
             <div>
-              <p className="text-xs font-bold text-[#1E293B] sm:text-sm">
+              <p className="text-xs font-bold sm:text-sm">
                 {exam.title}
               </p>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-[#52525B] dark:text-[#A1A1AA]">
                 Section {activeSection.section_number}/{sections.length}:{" "}
-                <span className="font-jp font-medium text-slate-700">
+                <span className="font-jp font-semibold text-[#18181B] dark:text-[#F4F4F5]">
                   {activeSection.section_title_ja}
                 </span>
               </p>
@@ -333,39 +339,36 @@ export function ExamWorkspace({
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Save Status Indicator */}
             <div className="hidden items-center gap-1 text-xs sm:flex">
               {saveState === "saving" && (
-                <span className="inline-flex items-center gap-1 text-slate-500">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin text-[#0F766E]" />
+                <span className="inline-flex items-center gap-1 text-[#52525B] dark:text-[#A1A1AA]">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-[#E04F33]" />
                   Saving...
                 </span>
               )}
               {saveState === "saved" && (
-                <span className="inline-flex items-center gap-1 text-emerald-700">
+                <span className="inline-flex items-center gap-1 font-semibold text-[#E04F33]">
                   <Check className="h-3.5 w-3.5" />
                   Saved
                 </span>
               )}
               {saveState === "error" && (
-                <span className="text-red-600">Save failed</span>
+                <span className="font-semibold text-[#E04F33]">Save failed</span>
               )}
             </div>
 
-            {/* Furigana Toggle */}
             <button
               type="button"
               onClick={() => setShowFurigana((v) => !v)}
-              className={`rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition ${
+              className={`min-h-[38px] rounded-xl border px-3 py-1.5 text-xs font-bold transition ${
                 showFurigana
-                  ? "border-[#0F766E] bg-[#F0FDFA] text-[#0F766E]"
-                  : "border-slate-200 bg-white text-slate-600"
+                  ? "border-[#E04F33] bg-[#FDF2EF] text-[#E04F33] dark:bg-[#E04F33]/15"
+                  : "border-[#E6E2DA] bg-white text-[#52525B] dark:border-[#2E2E32] dark:bg-[#18181B] dark:text-[#A1A1AA]"
               }`}
             >
               ふりがな: {showFurigana ? "ON" : "OFF"}
             </button>
 
-            {/* Server-Backed Section Timer */}
             <SectionTimer
               key={`${attempt.id}-${activeSection.section_number}-${attempt.section_started_at}`}
               sectionStartedAt={attempt.section_started_at}
@@ -374,26 +377,24 @@ export function ExamWorkspace({
               onExpire={handleAdvanceSection}
             />
 
-            {/* Mobile Palette Trigger */}
             <button
               type="button"
               onClick={() => setMobilePaletteOpen((v) => !v)}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 lg:hidden"
+              className="inline-flex min-h-[38px] items-center gap-1 rounded-xl border border-[#E6E2DA] bg-white px-2.5 py-1.5 text-xs font-bold text-[#18181B] dark:border-[#2E2E32] dark:bg-[#18181B] dark:text-[#F4F4F5] lg:hidden"
               aria-label="Toggle question palette"
             >
-              <LayoutGrid className="h-4 w-4 text-[#0F766E]" />
+              <LayoutGrid className="h-4 w-4 text-[#E04F33]" />
               <span className="tabular-nums">
                 {paletteItems.filter((i) => i.isAnswered).length}/
                 {paletteItems.length}
               </span>
             </button>
 
-            {/* Submit Section Button */}
             <button
               type="button"
               disabled={isSubmittingSection}
               onClick={handleManualSubmitClick}
-              className="inline-flex items-center gap-1 rounded-lg bg-[#0F766E] px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[#115E59] disabled:opacity-60"
+              className="inline-flex min-h-[38px] items-center gap-1 rounded-xl bg-[#E04F33] px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#C83E24] disabled:opacity-60"
             >
               {isSubmittingSection ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -408,15 +409,14 @@ export function ExamWorkspace({
         </div>
       </header>
 
-      {/* Mobile Collapsible Question Palette Drawer */}
       {mobilePaletteOpen && (
-        <div className="fixed inset-0 z-40 bg-slate-900/40 lg:hidden">
+        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden">
           <div className="mx-auto mt-16 max-w-md px-4">
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setMobilePaletteOpen(false)}
-                className="absolute right-3 top-3 rounded-md p-1 text-slate-500 hover:bg-slate-100"
+                className="absolute right-3 top-3 rounded-lg p-1 text-[#52525B] hover:bg-[#F3F1ED] dark:text-[#A1A1AA] dark:hover:bg-[#27272A]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -430,11 +430,10 @@ export function ExamWorkspace({
         </div>
       )}
 
-      {/* Main Workspace Grid */}
       <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[1fr_270px]">
         <div className="space-y-8">
           {mondaiGroups.length === 0 ? (
-            <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+            <div className="rounded-[16px] border border-[#E6E2DA] bg-white p-8 text-center text-sm text-[#52525B] dark:border-[#2E2E32] dark:bg-[#18181B] dark:text-[#A1A1AA]">
               No questions found for this section.
             </div>
           ) : (
@@ -445,18 +444,16 @@ export function ExamWorkspace({
 
               return (
                 <section key={mg.id} className="space-y-4">
-                  {/* Mondai Header & Instruction */}
-                  <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <span className="inline-block rounded bg-[#F0FDFA] px-2.5 py-0.5 text-xs font-bold text-[#0F766E]">
+                  <div className="rounded-[16px] border border-[#E6E2DA] bg-white p-5 shadow-xs dark:border-[#2E2E32] dark:bg-[#18181B]">
+                    <span className="inline-block rounded-lg bg-[#FDF2EF] px-2.5 py-1 text-xs font-bold text-[#E04F33] dark:bg-[#E04F33]/15">
                       問題 {mg.mondai_number}
                     </span>
                     <JapaneseHtmlText
                       html={mg.instruction_ja}
-                      className="mt-2 text-base font-medium text-[#1E293B]"
+                      className="mt-2 text-base font-medium text-[#18181B] dark:text-[#F4F4F5]"
                     />
                   </div>
 
-                  {/* Split-Screen Reader when passage_html is present, else standard stack */}
                   {mg.passage_html ? (
                     <ReadingSplitPane
                       mondaiNumber={mg.mondai_number}
@@ -473,7 +470,6 @@ export function ExamWorkspace({
           )}
         </div>
 
-        {/* Desktop Sticky Question Palette Sidebar */}
         <aside className="hidden lg:block">
           <div className="sticky top-20">
             <QuestionPalette

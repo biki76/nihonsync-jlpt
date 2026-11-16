@@ -19,10 +19,9 @@ export function ReadingSplitPane({
 
   return (
     <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
-      {/* Left Pane (Desktop Sticky) / Top Collapsible Reader (Mobile) */}
-      <div className="sticky top-16 z-10 rounded-xl border border-teal-200 bg-white shadow-sm lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
-        <div className="flex items-center justify-between border-b border-slate-100 bg-[#F0FDFA] px-4 py-2.5">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#0F766E]">
+      <div className="sticky top-16 z-10 rounded-[16px] border border-[#E04F33]/35 bg-white shadow-xs dark:bg-[#18181B] lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
+        <div className="flex items-center justify-between border-b border-[#E6E2DA] bg-[#FDF2EF] px-4 py-2.5 dark:border-[#2E2E32] dark:bg-[#E04F33]/15">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#E04F33]">
             <BookOpen className="h-4 w-4 shrink-0" />
             <span>Reading Passage • 問題 {mondaiNumber}</span>
           </div>
@@ -30,7 +29,7 @@ export function ReadingSplitPane({
           <button
             type="button"
             onClick={() => setMobileExpanded((prev) => !prev)}
-            className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-1 text-[11px] font-semibold text-[#0F766E] shadow-sm lg:hidden"
+            className="inline-flex items-center gap-1 rounded-lg bg-white px-2.5 py-1 text-[11px] font-bold text-[#E04F33] shadow-xs dark:bg-[#18181B] lg:hidden"
           >
             <span>{mobileExpanded ? "Collapse" : "Show Passage"}</span>
             {mobileExpanded ? (
@@ -48,12 +47,11 @@ export function ReadingSplitPane({
         >
           <JapaneseHtmlText
             html={passageHtml}
-            className="space-y-3 text-base text-[#1E293B]"
+            className="space-y-3 text-base text-[#18181B] dark:text-[#F4F4F5]"
           />
         </div>
       </div>
 
-      {/* Right Pane: Scrollable Associated Questions */}
       <div className="space-y-4">{children}</div>
     </div>
   );
