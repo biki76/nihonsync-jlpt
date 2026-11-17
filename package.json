@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "generate:bank": "node scripts/generate_jlpt_bank.mjs",
+    "seed:bank": "node scripts/seed_all_exams.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
