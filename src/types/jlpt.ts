@@ -28,6 +28,7 @@ export const SUPPORTED_LANGUAGES: {
 export interface Profile {
   id: string;
   is_pro: boolean;
+  pro_expires_at?: string | null;
   preferred_lang: SupportedLang;
   updated_at: string;
 }
@@ -55,6 +56,8 @@ export interface ExamSection {
   section_title_ja: string;
   section_title_en: string;
   time_limit_minutes: number;
+  max_score?: number | null;
+  scoring_category?: string | null;
 }
 
 export interface MondaiGroup {

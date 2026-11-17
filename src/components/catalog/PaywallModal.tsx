@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Check, Crown, Sparkles, X } from "lucide-react";
 import type { Exam } from "@/types/jlpt";
 
@@ -24,6 +25,17 @@ export function PaywallModal({
   onClose,
   onUnlockDemo,
 }: PaywallModalProps) {
+  useEffect(() => {
+    if (!exam) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [exam, onClose]);
+
   if (!exam) return null;
 
   const benefits = [
@@ -39,13 +51,17 @@ export function PaywallModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="paywall-modal-title"
+      onClick={onClose}
     >
-      <div className="relative w-full max-w-md rounded-[16px] border border-[#E5E2DC] bg-white p-6 shadow-2xl dark:border-[#27272A] dark:bg-[#18181B]">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-[16px] border border-[#E5E2DC] bg-white p-6 shadow-2xl dark:border-[#27272A] dark:bg-[#18181B]"
+      >
         <button
           type="button"
           onClick={onClose}
           aria-label="Close modal"
-          className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full text-[#64748B] transition hover:bg-[#F3F2EE] hover:text-[#0F172A] dark:text-[#A1A1AA] dark:hover:bg-[#222226] dark:hover:text-[#F4F4F5]"
+          className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full text-[#52525B] transition hover:bg-[#F3F2EE] hover:text-[#0F172A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E04F33] dark:text-[#A1A1AA] dark:hover:bg-[#222226] dark:hover:text-[#F4F4F5]"
         >
           <X className="h-4 w-4" />
         </button>
@@ -88,7 +104,7 @@ export function PaywallModal({
               if (onUnlockDemo) onUnlockDemo();
               onClose();
             }}
-            className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#E04F33] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#C83E23]"
+            className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#E04F33] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#C83E24] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E04F33] focus-visible:ring-offset-2"
           >
             <Sparkles className="h-4 w-4" />
             <span>{ctaLabel}</span>
@@ -97,7 +113,7 @@ export function PaywallModal({
           <button
             type="button"
             onClick={onClose}
-            className="min-h-[44px] w-full rounded-xl border border-[#E5E2DC] bg-transparent px-4 py-2 text-sm font-semibold text-[#475569] transition hover:bg-[#F3F2EE] hover:text-[#0F172A] dark:border-[#27272A] dark:text-[#A1A1AA] dark:hover:bg-[#222226]"
+            className="min-h-[44px] w-full rounded-xl border border-[#E5E2DC] bg-transparent px-4 py-2 text-sm font-semibold text-[#475569] transition hover:bg-[#F3F2EE] hover:text-[#0F172A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E04F33] dark:border-[#27272A] dark:text-[#A1A1AA] dark:hover:bg-[#222226]"
           >
             {laterLabel}
           </button>

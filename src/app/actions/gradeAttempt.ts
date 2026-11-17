@@ -3,10 +3,15 @@
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { evaluateAttempt, type GradingResult } from "@/lib/grading/jlptGrader";
+import { isValidUuid } from "@/lib/validation";
 
 export async function gradeAndCompleteAttempt(
   attemptId: string
 ): Promise<GradingResult> {
+  if (!isValidUuid(attemptId)) {
+    throw new Error("Invalid attempt identifier.");
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -32,7 +37,6 @@ export async function gradeAndCompleteAttempt(
     throw new Error("Forbidden: Attempt does not belong to current user.");
   }
 
-  // Prevent duplicate grading if already completed with valid scores
   if (
     attempt.status === "completed" &&
     attempt.total_score !== null &&
@@ -48,7 +52,8 @@ export async function gradeAndCompleteAttempt(
 
   const result = await evaluateAttempt(attempt.id, attempt.exam_id);
 
-  const { error: updateErr } = await admin
+  // Atomic conditional completion prevents concurrent double-write races
+  const { data: updatedRows, error: updateErr } = await admin
     .from("user_attempts")
     .update({
       status: "completed",
@@ -58,10 +63,32 @@ export async function gradeAndCompleteAttempt(
       passed: result.passed,
     })
     .eq("id", attempt.id)
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .eq("status", "in_progress")
+    .select("section_scores, total_score, passed");
 
   if (updateErr) {
     throw new Error(`Failed to finalize attempt scores: ${updateErr.message}`);
+  }
+
+  if (!updatedRows || updatedRows.length === 0) {
+    const { data: alreadyCompleted } = await admin
+      .from("user_attempts")
+      .select("section_scores, total_score, passed")
+      .eq("id", attempt.id)
+      .single();
+
+    if (
+      alreadyCompleted &&
+      alreadyCompleted.total_score !== null &&
+      alreadyCompleted.section_scores !== null
+    ) {
+      return {
+        section_scores: alreadyCompleted.section_scores as Record<string, number>,
+        total_score: alreadyCompleted.total_score,
+        passed: Boolean(alreadyCompleted.passed),
+      };
+    }
   }
 
   return result;
