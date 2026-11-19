@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
   Headphones,
@@ -8,12 +8,16 @@ import {
   Lock,
   Pause,
   Play,
+  RefreshCw,
   RotateCcw,
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
+const AUDIO_PLAY_EVENT = "nihonsync:audio-play";
+
 interface ListeningAudioPlayerProps {
-  audioUrl: string;
+  audioUrl?: string;
+  src?: string;
   imageUrl?: string | null;
   mode?: "exam" | "review";
   maxPlays?: number;
@@ -28,10 +32,12 @@ function formatAudioTime(seconds: number): string {
 
 export function ListeningAudioPlayer({
   audioUrl,
+  src,
   imageUrl = null,
   mode = "exam",
   maxPlays = 2,
 }: ListeningAudioPlayerProps) {
+  const playerId = useId();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const maxReachedTimeRef = useRef<number>(0);
 
@@ -41,20 +47,19 @@ export function ListeningAudioPlayer({
   const [duration, setDuration] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [loadError, setLoadError] = useState(false);
-  const [retrySeed, setRetrySeed] = useState(0);
+  const [retryKey, setRetryKey] = useState(0);
 
-  const isExamMode = mode === "exam";
-  const storageKey = `nihonsync_plays_${audioUrl}`;
+  const rawAudioPath = audioUrl ?? src ?? "";
 
   const { resolvedAudioSrc, resolvedImageSrc } = useMemo(() => {
     const supabase = createClient();
 
-    const resolveBucketPath = (path: string | null): string | null => {
+    const resolveBucketPath = (path: string | null | undefined): string | null => {
       if (!path) return null;
       if (path.startsWith("http://") || path.startsWith("https://")) {
         return path;
       }
-      const cleanPath = path.replace(/^jlpt-media\//, "");
+      const cleanPath = path.replace(/^jlpt-media\//, "").replace(/^\/+/, "");
       const { data } = supabase.storage
         .from("jlpt-media")
         .getPublicUrl(cleanPath);
@@ -62,74 +67,90 @@ export function ListeningAudioPlayer({
     };
 
     return {
-      resolvedAudioSrc: resolveBucketPath(audioUrl) ?? "",
+      resolvedAudioSrc: resolveBucketPath(rawAudioPath) ?? "",
       resolvedImageSrc: resolveBucketPath(imageUrl),
     };
-  }, [audioUrl, imageUrl]);
+  }, [rawAudioPath, imageUrl]);
 
   useEffect(() => {
     setIsPlaying(false);
+    setPlayCount(0);
     setCurrentTime(0);
     setDuration(0);
     setLoadError(false);
     maxReachedTimeRef.current = 0;
+  }, [resolvedAudioSrc]);
 
-    if (!isExamMode) {
-      setPlayCount(0);
-      return;
-    }
-
-    try {
-      const stored = window.sessionStorage.getItem(storageKey);
-      setPlayCount(stored ? Number(stored) || 0 : 0);
-    } catch {
-      setPlayCount(0);
-    }
-  }, [resolvedAudioSrc, isExamMode, storageKey]);
-
-  const playsExhausted = isExamMode && playCount >= maxPlays && !isPlaying;
-
-  function handleTogglePlay() {
-    const audio = audioRef.current;
-    if (!audio || !resolvedAudioSrc) return;
-
-    if (isPlaying) {
-      if (!isExamMode) {
-        audio.pause();
+  // Pause this player automatically whenever another ListeningAudioPlayer starts
+  useEffect(() => {
+    function handleOtherPlayerStarted(event: Event) {
+      const custom = event as CustomEvent<{ playerId: string }>;
+      if (custom.detail?.playerId !== playerId && audioRef.current) {
+        if (!audioRef.current.paused) {
+          audioRef.current.pause();
+        }
         setIsPlaying(false);
       }
+    }
+
+    window.addEventListener(AUDIO_PLAY_EVENT, handleOtherPlayerStarted);
+    return () => {
+      window.removeEventListener(AUDIO_PLAY_EVENT, handleOtherPlayerStarted);
+      if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause();
+      }
+    };
+  }, [playerId]);
+
+  const isExamMode = mode === "exam";
+  const isPausedMidTrack =
+    !isPlaying && currentTime > 0.25 && (duration <= 0 || currentTime < duration - 0.25);
+  const playsExhausted =
+    isExamMode && playCount >= maxPlays && !isPlaying && !isPausedMidTrack;
+
+  async function handleTogglePlay() {
+    const audio = audioRef.current;
+    if (!audio || loadError) return;
+
+    if (isPlaying) {
+      audio.pause();
+      setIsPlaying(false);
       return;
     }
 
     if (playsExhausted) return;
 
-    const isFreshStart = audio.currentTime === 0 || audio.ended;
+    const isFreshStart = audio.currentTime < 0.25 || audio.ended;
+    if (isFreshStart) {
+      maxReachedTimeRef.current = 0;
+    }
+
+    // Broadcast so any currently active audio player pauses immediately
+    window.dispatchEvent(
+      new CustomEvent(AUDIO_PLAY_EVENT, { detail: { playerId } })
+    );
+
     audio.playbackRate = isExamMode ? 1 : playbackRate;
 
-    audio
-      .play()
-      .then(() => {
-        setIsPlaying(true);
-        setLoadError(false);
-        if (isFreshStart) {
-          maxReachedTimeRef.current = 0;
-          setPlayCount((prev) => {
-            const next = prev + 1;
-            if (isExamMode) {
-              try {
-                window.sessionStorage.setItem(storageKey, String(next));
-              } catch {
-                // Ignore storage quota errors
-              }
-            }
-            return next;
-          });
-        }
-      })
-      .catch(() => {
-        setLoadError(true);
-        setIsPlaying(false);
-      });
+    try {
+      await audio.play();
+      setIsPlaying(true);
+      setLoadError(false);
+      if (isFreshStart) {
+        setPlayCount((prev) => prev + 1);
+      }
+    } catch {
+      setIsPlaying(false);
+      setLoadError(true);
+    }
+  }
+
+  function handleRetryAudio() {
+    setLoadError(false);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    maxReachedTimeRef.current = 0;
+    setRetryKey((prev) => prev + 1);
   }
 
   function handleTimeUpdate() {
@@ -171,20 +192,24 @@ export function ListeningAudioPlayer({
     }
   }
 
-  function handleRetryAudio() {
-    setLoadError(false);
-    setCurrentTime(0);
-    setRetrySeed((s) => s + 1);
-  }
-
   const progressPct =
     duration > 0 ? Math.min(100, Math.round((currentTime / duration) * 100)) : 0;
+
+  const buttonLabel = isPlaying
+    ? "Pause Audio"
+    : playsExhausted
+    ? "Playback Limit Reached"
+    : isPausedMidTrack
+    ? "Resume Audio"
+    : playCount > 0
+    ? "Play Again"
+    : "Play Audio";
 
   return (
     <div className="mt-3 space-y-3">
       {resolvedImageSrc && (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-[#FAFAFA] p-3">
-          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
+        <div className="overflow-hidden rounded-xl border border-[#E5E2DC] bg-[#FAF9F7] p-3 dark:border-[#27272A] dark:bg-[#111113]">
+          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-[#475569] dark:text-[#A1A1AA]">
             <ImageIcon className="h-3.5 w-3.5 text-[#E04F33]" />
             <span>Listening Visual Sheet (問題用紙)</span>
           </div>
@@ -192,18 +217,21 @@ export function ListeningAudioPlayer({
           <img
             src={resolvedImageSrc}
             alt="JLPT Listening Question Visual Sheet"
-            className="mx-auto max-h-72 w-auto rounded-lg border border-slate-200 bg-white object-contain"
+            className="mx-auto max-h-80 w-auto rounded-lg border border-[#E5E2DC] bg-white object-contain dark:border-[#27272A]"
           />
         </div>
       )}
 
-      <div className="rounded-xl border border-slate-200 bg-[#FAFAFA] p-3.5">
+      <div className="rounded-xl border border-[#E5E2DC] bg-[#FAF9F7] p-3.5 dark:border-[#27272A] dark:bg-[#111113]">
         <audio
-          key={`${resolvedAudioSrc}-${retrySeed}`}
+          key={`${resolvedAudioSrc}-${retryKey}`}
           ref={audioRef}
-          src={resolvedAudioSrc || undefined}
-          preload="auto"
-          onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+          src={resolvedAudioSrc}
+          preload="metadata"
+          onLoadedMetadata={(e) => {
+            setDuration(e.currentTarget.duration || 0);
+            setLoadError(false);
+          }}
           onTimeUpdate={handleTimeUpdate}
           onSeeking={handleSeeking}
           onEnded={handleEnded}
@@ -213,61 +241,52 @@ export function ListeningAudioPlayer({
           }}
         />
 
-        {loadError || !resolvedAudioSrc ? (
-          <div
-            role="alert"
-            className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-300/70 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-950"
-          >
-            <div className="flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 shrink-0 text-[#E04F33]" />
-              <span>
-                {isExamMode
-                  ? "Audio track unavailable for this question — please check your internet connection or select an answer below to continue your exam."
-                  : "Audio recording could not be loaded — you can still read the full Japanese transcript (スクリプト) and explanation below."}
-              </span>
+        {loadError ? (
+          <div className="flex flex-col gap-3 rounded-xl border border-[#E04F33]/35 bg-[#FDF2EF] p-3.5 text-xs dark:bg-[#E04F33]/15 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-2.5 text-[#0F172A] dark:text-[#F4F4F5]">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#E04F33]" />
+              <div>
+                <p className="font-bold text-[#E04F33]">
+                  Audio track is currently unavailable
+                </p>
+                <p className="mt-0.5 leading-relaxed text-[#475569] dark:text-[#A1A1AA]">
+                  {isExamMode
+                    ? "We could not load the listening recording right now. Check your connection and retry, or select your answer below to continue the exam."
+                    : "We could not load this audio recording. You can still review the full Japanese transcript and explanation below."}
+                </p>
+              </div>
             </div>
-            {resolvedAudioSrc && (
-              <button
-                type="button"
-                onClick={handleRetryAudio}
-                className="inline-flex items-center gap-1 rounded-lg border border-amber-400/70 bg-white px-2.5 py-1 font-semibold text-amber-950 transition hover:bg-amber-100"
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                <span>Retry Audio</span>
-              </button>
-            )}
+
+            <button
+              type="button"
+              onClick={handleRetryAudio}
+              className="inline-flex min-h-[38px] shrink-0 items-center justify-center gap-1.5 rounded-xl border border-[#E04F33]/40 bg-white px-3 py-1.5 text-xs font-bold text-[#E04F33] transition hover:bg-[#FDF2EF] dark:bg-[#18181B]"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              <span>Retry Audio</span>
+            </button>
           </div>
         ) : (
           <>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleTogglePlay}
-                  disabled={playsExhausted || (isExamMode && isPlaying)}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#E04F33] px-3.5 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#C83E24] disabled:cursor-not-allowed disabled:bg-slate-400"
+                  disabled={playsExhausted}
+                  aria-pressed={isPlaying}
+                  className={`inline-flex min-h-[40px] items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-xs transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                    isPlaying
+                      ? "bg-[#18181B] hover:bg-[#27272A] dark:bg-[#F4F4F5] dark:text-[#18181B]"
+                      : "bg-[#E04F33] hover:bg-[#C83E23]"
+                  }`}
                 >
                   {isPlaying ? (
-                    <>
-                      {isExamMode ? (
-                        <Headphones className="h-3.5 w-3.5 animate-pulse" />
-                      ) : (
-                        <Pause className="h-3.5 w-3.5" />
-                      )}
-                      <span>{isExamMode ? "Playing Audio..." : "Pause"}</span>
-                    </>
+                    <Pause className="h-3.5 w-3.5" />
                   ) : (
-                    <>
-                      <Play className="h-3.5 w-3.5" />
-                      <span>
-                        {playsExhausted
-                          ? "Playback Limit Reached"
-                          : playCount > 0
-                          ? "Play Again"
-                          : "Play Audio"}
-                      </span>
-                    </>
+                    <Play className="h-3.5 w-3.5" />
                   )}
+                  <span>{buttonLabel}</span>
                 </button>
 
                 {!isExamMode && (
@@ -278,7 +297,7 @@ export function ListeningAudioPlayer({
                       audioRef.current.currentTime = 0;
                       setCurrentTime(0);
                     }}
-                    className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs font-medium text-slate-600 hover:text-[#1E293B]"
+                    className="inline-flex min-h-[40px] items-center gap-1 rounded-xl border border-[#E5E2DC] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:border-[#E04F33] hover:text-[#0F172A] dark:border-[#27272A] dark:bg-[#18181B] dark:text-[#A1A1AA]"
                     title="Restart track"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
@@ -288,23 +307,24 @@ export function ListeningAudioPlayer({
 
               <div className="flex items-center gap-2 text-xs">
                 {isExamMode ? (
-                  <span className="inline-flex items-center gap-1 rounded-md border border-amber-200 bg-[#FFFBEB] px-2.5 py-1 font-semibold text-[#B45309] tabular-nums">
+                  <span className="inline-flex items-center gap-1.5 rounded-lg border border-[#E04F33]/30 bg-[#FDF2EF] px-2.5 py-1.5 text-[11px] font-bold text-[#E04F33] tabular-nums dark:bg-[#E04F33]/15">
                     <Lock className="h-3 w-3" />
                     <span>
                       Scrubbing Locked • Plays: {playCount}/{maxPlays}
                     </span>
                   </span>
                 ) : (
-                  <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-0.5">
+                  <div className="flex items-center gap-1 rounded-xl border border-[#E5E2DC] bg-white p-1 dark:border-[#27272A] dark:bg-[#18181B]">
+                    <Headphones className="ml-1.5 h-3.5 w-3.5 text-[#E04F33]" />
                     {[0.75, 1, 1.25].map((rate) => (
                       <button
                         key={rate}
                         type="button"
                         onClick={() => handleSpeedChange(rate)}
-                        className={`rounded-md px-2 py-0.5 text-[11px] font-semibold tabular-nums ${
+                        className={`rounded-lg px-2 py-1 text-[11px] font-bold tabular-nums transition ${
                           playbackRate === rate
                             ? "bg-[#E04F33] text-white"
-                            : "text-slate-600 hover:text-[#1E293B]"
+                            : "text-[#475569] hover:text-[#0F172A] dark:text-[#A1A1AA]"
                         }`}
                       >
                         {rate}x
@@ -316,13 +336,18 @@ export function ListeningAudioPlayer({
             </div>
 
             <div className="mt-3 flex items-center gap-3">
-              <span className="text-[11px] font-semibold text-slate-600 tabular-nums">
+              <span className="text-[11px] font-bold text-[#475569] tabular-nums dark:text-[#A1A1AA]">
                 {formatAudioTime(currentTime)}
               </span>
 
               <div
                 onClick={handleReviewSeek}
-                className={`relative h-2 flex-1 overflow-hidden rounded-full bg-slate-200 ${
+                role={isExamMode ? undefined : "slider"}
+                aria-label="Audio playback progress"
+                aria-valuemin={0}
+                aria-valuemax={Math.round(duration)}
+                aria-valuenow={Math.round(currentTime)}
+                className={`relative h-2 flex-1 overflow-hidden rounded-full bg-[#E5E2DC] dark:bg-[#27272A] ${
                   isExamMode ? "cursor-not-allowed" : "cursor-pointer"
                 }`}
               >
@@ -332,7 +357,7 @@ export function ListeningAudioPlayer({
                 />
               </div>
 
-              <span className="text-[11px] font-semibold text-slate-500 tabular-nums">
+              <span className="text-[11px] font-bold text-[#475569] tabular-nums dark:text-[#A1A1AA]">
                 {formatAudioTime(duration)}
               </span>
             </div>
