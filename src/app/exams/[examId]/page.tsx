@@ -1,35 +1,36 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import {
   AlertTriangle,
-  ArrowLeft,
   Award,
+  CheckCircle2,
   Clock,
   Crown,
-  Lock,
+  Database,
   PlayCircle,
-  ShieldAlert,
+  ShieldCheck,
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
-import { startExamAttempt } from "@/app/actions/examActions";
+import { GlobalHeader } from "@/components/layout/GlobalHeader";
 import { AudioCheckButton } from "@/components/exam/AudioCheckButton";
+import { startExamAttempt } from "@/app/actions/examActions";
+import { SEED_EXAMS } from "@/data/seedExams";
+import { isValidUuid } from "@/lib/validation";
 import type { Exam, ExamSection } from "@/types/jlpt";
 
 interface ExamBriefingPageProps {
   params: Promise<{ examId: string }>;
+  searchParams: Promise<{ upgrade?: string }>;
 }
 
-function formatMinLabel(key: string): string {
-  return key
-    .split("_")
-    .map((w) => (w === "and" ? "&" : w.charAt(0).toUpperCase() + w.slice(1)))
-    .join(" ");
-}
-
-export default async function ExamBriefingPage({ params }: ExamBriefingPageProps) {
+export default async function ExamBriefingPage({
+  params,
+  searchParams,
+}: ExamBriefingPageProps) {
   const { examId } = await params;
-  const supabase = await createClient();
+  const resolvedSearch = await searchParams;
 
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -38,213 +39,230 @@ export default async function ExamBriefingPage({ params }: ExamBriefingPageProps
     redirect(`/login?next=/exams/${examId}`);
   }
 
-  const [{ data: examData }, { data: sectionsData }, { data: profile }, { data: activeAttempt }] =
-    await Promise.all([
-      supabase
-        .from("exams")
-        .select("*")
-        .eq("id", examId)
-        .eq("is_published", true)
-        .single(),
-      supabase
-        .from("exam_sections")
-        .select("*")
-        .eq("exam_id", examId)
-        .order("section_number", { ascending: true }),
-      supabase
-        .from("profiles")
-        .select("is_pro")
-        .eq("id", user.id)
-        .single(),
-      supabase
-        .from("user_attempts")
-        .select("id, current_section")
-        .eq("user_id", user.id)
-        .eq("exam_id", examId)
-        .eq("status", "in_progress")
-        .order("started_at", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
-    ]);
+  const validId = isValidUuid(examId);
 
-  if (!examData) {
-    notFound();
+  const [{ data: examData }, { data: sectionsData }, { data: profileData }] =
+    validId
+      ? await Promise.all([
+          supabase
+            .from("exams")
+            .select("*")
+            .eq("id", examId)
+            .eq("is_published", true)
+            .single(),
+          supabase
+            .from("exam_sections")
+            .select("*")
+            .eq("exam_id", examId)
+            .order("section_number", { ascending: true }),
+          supabase
+            .from("profiles")
+            .select("is_pro, pro_expires_at")
+            .eq("id", user.id)
+            .single(),
+        ])
+      : [{ data: null }, { data: null }, { data: null }];
+
+  const exam = examData as Exam | null;
+
+  // Graceful handling when dashboard displayed static fallback cards before DB seeding
+  if (!exam) {
+    const seedMatch = SEED_EXAMS.find((item) => item.id === examId);
+
+    return (
+      <div className="min-h-screen bg-[#FAF9F7] text-[#18181B] dark:bg-[#111113] dark:text-[#F4F4F5]">
+        <GlobalHeader
+          userEmail={user.email}
+          userId={user.id}
+          backHref="/dashboard"
+          backLabel="Back to Dashboard"
+        />
+
+        <main className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+          <div className="rounded-2xl border border-[#E6E2DA] bg-white p-6 shadow-xs dark:border-[#2E2E32] dark:bg-[#18181B] sm:p-8">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#E04F33]/30 bg-[#FDF2EF] px-3 py-1 text-xs font-bold text-[#E04F33] dark:bg-[#E04F33]/15">
+              <Database className="h-3.5 w-3.5" />
+              <span>Database Seed Required</span>
+            </div>
+
+            <h1 className="mt-4 text-xl font-extrabold tracking-tight sm:text-2xl">
+              {seedMatch
+                ? `${seedMatch.exam_code}: ${seedMatch.title}`
+                : "Exam Not Seeded in Database Yet"}
+            </h1>
+
+            <p className="mt-2 text-sm leading-relaxed text-[#52525B] dark:text-[#A1A1AA]">
+              Your dashboard is currently showing preview catalog cards because{" "}
+              <code className="rounded bg-[#F3F1ED] px-1.5 py-0.5 text-xs dark:bg-[#27272A]">
+                public.exams
+              </code>{" "}
+              in Supabase has no published rows yet. Run{" "}
+              <code className="rounded bg-[#F3F1ED] px-1.5 py-0.5 text-xs dark:bg-[#27272A]">
+                supabase/seed_n5_mock1.sql
+              </code>{" "}
+              in your Supabase SQL Editor to activate live exam attempts and
+              server-synced timers.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/dashboard"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#E04F33] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#C83E24]"
+              >
+                Return to Dashboard
+              </Link>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
   }
 
-  const exam = examData as Exam;
   const sections = (sectionsData as ExamSection[]) ?? [];
-  const isPro = Boolean(profile?.is_pro);
-  const isLocked = exam.is_premium && !isPro;
-
-  const startAction = startExamAttempt.bind(null, exam.id);
+  const isProActive =
+    Boolean(profileData?.is_pro) &&
+    (!profileData?.pro_expires_at ||
+      Date.parse(profileData.pro_expires_at) > Date.now());
+  const isLocked = exam.is_premium && !isProActive;
 
   return (
     <div className="min-h-screen bg-[#FAF9F7] text-[#18181B] dark:bg-[#111113] dark:text-[#F4F4F5]">
-      <header className="border-b border-[#E6E2DA] bg-white dark:border-[#2E2E32] dark:bg-[#18181B]">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#52525B] transition hover:text-[#E04F33] dark:text-[#A1A1AA]"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Catalog
-          </Link>
-          <span className="text-xs font-bold uppercase tracking-wider text-[#52525B] dark:text-[#A1A1AA]">
-            {exam.exam_code}
-          </span>
-        </div>
-      </header>
+      <GlobalHeader
+        userEmail={user.email}
+        userId={user.id}
+        backHref="/dashboard"
+        backLabel="Back to Dashboard"
+      />
 
-      <main className="mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-6">
-        <div className="rounded-[16px] border border-[#E6E2DA] bg-white p-6 shadow-xs dark:border-[#2E2E32] dark:bg-[#18181B]">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-lg bg-[#18181B] px-2.5 py-1 text-xs font-bold text-white dark:bg-[#F4F4F5] dark:text-[#18181B]">
+      <main className="mx-auto max-w-3xl space-y-6 px-4 py-8 sm:px-6">
+        {(isLocked || resolvedSearch.upgrade === "required") && (
+          <div className="flex items-start gap-3 rounded-2xl border border-[#E04F33]/35 bg-[#FDF2EF] p-4 text-sm text-[#18181B] dark:bg-[#E04F33]/15 dark:text-[#F4F4F5]">
+            <Crown className="mt-0.5 h-5 w-5 shrink-0 text-[#E04F33]" />
+            <div>
+              <p className="font-bold text-[#E04F33]">
+                NihonSync Pro Required
+              </p>
+              <p className="mt-0.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
+                Mock Tests 3–20 require an active NihonSync Pro subscription.
+                Tests 1 and 2 are unlocked free across all levels.
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="rounded-2xl border border-[#E6E2DA] bg-white p-6 shadow-xs dark:border-[#2E2E32] dark:bg-[#18181B] sm:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="rounded-lg bg-[#E04F33] px-2.5 py-1 text-xs font-extrabold text-white">
               JLPT {exam.level}
             </span>
-            {exam.is_premium ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#FDF2EF] px-2.5 py-1 text-xs font-bold text-[#E04F33] dark:bg-[#E04F33]/15">
-                <Crown className="h-3 w-3" /> NihonSync Pro
-              </span>
-            ) : (
-              <span className="rounded-full border border-[#E6E2DA] bg-[#F3F1ED] px-2.5 py-1 text-xs font-bold text-[#18181B] dark:border-[#2E2E32] dark:bg-[#27272A] dark:text-[#F4F4F5]">
-                Free Mock Test
-              </span>
-            )}
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#52525B] dark:text-[#A1A1AA]">
+              {exam.exam_code}
+            </span>
           </div>
 
-          <h1 className="mt-3 text-2xl font-bold text-[#18181B] dark:text-[#F4F4F5] sm:text-3xl">
+          <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
             {exam.title}
           </h1>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-3 tabular-nums">
-            <div className="rounded-xl border border-[#E6E2DA] bg-[#FAF9F7] p-3.5 dark:border-[#2E2E32] dark:bg-[#111113]">
-              <div className="flex items-center gap-1.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
-                <Clock className="h-3.5 w-3.5 text-[#E04F33]" />
-                <span>Total Duration</span>
+          <div className="mt-5 grid grid-cols-2 gap-3 rounded-xl border border-[#E6E2DA] bg-[#FAF9F7] p-4 text-xs dark:border-[#2E2E32] dark:bg-[#111113] sm:grid-cols-3">
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-[#E04F33]" />
+              <div>
+                <p className="text-[#52525B] dark:text-[#A1A1AA]">Duration</p>
+                <p className="font-bold">{exam.total_time_minutes} mins</p>
               </div>
-              <p className="mt-1 text-lg font-bold">
-                {exam.total_time_minutes} mins
-              </p>
             </div>
 
-            <div className="rounded-xl border border-[#E6E2DA] bg-[#FAF9F7] p-3.5 dark:border-[#2E2E32] dark:bg-[#111113]">
-              <div className="flex items-center gap-1.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
-                <Award className="h-3.5 w-3.5 text-[#E04F33]" />
-                <span>Overall Pass Mark</span>
+            <div className="flex items-center gap-2">
+              <Award className="h-4 w-4 text-[#E04F33]" />
+              <div>
+                <p className="text-[#52525B] dark:text-[#A1A1AA]">Pass Score</p>
+                <p className="font-bold">
+                  {exam.total_score_required} / {exam.max_total_score}
+                </p>
               </div>
-              <p className="mt-1 text-lg font-bold">
-                {exam.total_score_required} / {exam.max_total_score} pts
-              </p>
             </div>
 
-            <div className="rounded-xl border border-[#E6E2DA] bg-[#FAF9F7] p-3.5 dark:border-[#2E2E32] dark:bg-[#111113]">
-              <div className="flex items-center gap-1.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
-                <ShieldAlert className="h-3.5 w-3.5 text-[#E04F33]" />
-                <span>Sectional Minimums</span>
-              </div>
-              <div className="mt-1 space-y-0.5 text-xs font-semibold">
-                {Object.entries(exam.sectional_minimums || {}).map(([k, v]) => (
-                  <div key={k}>
-                    {formatMinLabel(k)}: &ge;{v} pts
-                  </div>
-                ))}
+            <div className="col-span-2 flex items-center gap-2 sm:col-span-1">
+              <ShieldCheck className="h-4 w-4 text-[#E04F33]" />
+              <div>
+                <p className="text-[#52525B] dark:text-[#A1A1AA]">Grading</p>
+                <p className="font-bold">Sectional Minimums</p>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="rounded-[16px] border border-[#E6E2DA] bg-white p-6 shadow-xs dark:border-[#2E2E32] dark:bg-[#18181B]">
-          <h2 className="text-base font-bold">
-            Exam Structure &amp; Timed Sections
-          </h2>
-          <p className="mt-1 text-xs text-[#52525B] dark:text-[#A1A1AA]">
-            Sections are taken sequentially. Once you submit a section or its timer reaches 00:00,
-            you cannot return to earlier sections.
-          </p>
-
-          <div className="mt-4 divide-y divide-[#E6E2DA] rounded-xl border border-[#E6E2DA] dark:divide-[#2E2E32] dark:border-[#2E2E32]">
-            {sections.map((sec) => (
-              <div
-                key={sec.id}
-                className="flex flex-col justify-between gap-2 p-4 sm:flex-row sm:items-center"
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-md bg-[#F3F1ED] px-2 py-0.5 text-xs font-bold text-[#18181B] dark:bg-[#27272A] dark:text-[#F4F4F5]">
-                      Section {sec.section_number}
+          {/* Section Breakdown */}
+          <div className="mt-6">
+            <h2 className="text-xs font-extrabold uppercase tracking-wider text-[#52525B] dark:text-[#A1A1AA]">
+              Timed Examination Sections
+            </h2>
+            <div className="mt-3 space-y-2.5">
+              {sections.map((sec) => (
+                <div
+                  key={sec.id}
+                  className="flex items-center justify-between rounded-xl border border-[#E6E2DA] bg-[#FAF9F7] px-4 py-3 text-sm dark:border-[#2E2E32] dark:bg-[#111113]"
+                >
+                  <div>
+                    <span className="font-bold">
+                      Section {sec.section_number}: {sec.section_title_en}
                     </span>
-                    <span className="font-jp text-sm font-bold">
-                      {sec.section_title_ja}
+                    <span className="ml-2 font-jp text-xs text-[#52525B] dark:text-[#A1A1AA]">
+                      ({sec.section_title_ja})
                     </span>
                   </div>
-                  <p className="mt-0.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
-                    {sec.section_title_en} ({sec.section_code})
-                  </p>
+                  <span className="shrink-0 font-bold tabular-nums text-[#E04F33]">
+                    {sec.time_limit_minutes} min
+                  </span>
                 </div>
-
-                <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#E04F33] tabular-nums">
-                  <Clock className="h-3.5 w-3.5" />
-                  <span>{sec.time_limit_minutes} minutes</span>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          <div className="mt-5">
+          {/* Pre-Exam Audio Check */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#E6E2DA] bg-[#FAF9F7] p-4 dark:border-[#2E2E32] dark:bg-[#111113]">
+            <div>
+              <p className="text-xs font-bold">
+                Pre-Exam Audio Check (Listening Section)
+              </p>
+              <p className="text-[11px] text-[#52525B] dark:text-[#A1A1AA]">
+                Verify headphone or speaker output before starting the timer.
+              </p>
+            </div>
             <AudioCheckButton />
           </div>
-        </div>
 
-        {isLocked ? (
-          <div className="rounded-[16px] border border-[#E04F33]/40 bg-[#FDF2EF] p-6 shadow-xs dark:bg-[#E04F33]/12">
-            <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E04F33] text-white">
-                <Lock className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-base font-bold text-[#18181B] dark:text-[#F4F4F5]">
-                  NihonSync Pro Upgrade Required
-                </h3>
-                <p className="mt-1 text-xs leading-relaxed text-[#52525B] dark:text-[#A1A1AA]">
-                  Mock Tests 1 and 2 are free for all learners. Mock Test {exam.test_number} (
-                  {exam.exam_code}) is part of the NihonSync Pro library (Tests 3–20 across N5–N1).
-                </p>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <Link
-                    href="/dashboard"
-                    className="inline-flex min-h-[44px] items-center rounded-xl bg-[#E04F33] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#C83E24]"
-                  >
-                    Return to Mock Test Catalog
-                  </Link>
-                </div>
-              </div>
-            </div>
+          {/* Rules Notice */}
+          <div className="mt-5 flex items-start gap-2.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#E04F33]" />
+            <p>
+              Once started, each section countdown is anchored to the server
+              clock. Refreshing the browser will not reset remaining time.
+            </p>
           </div>
-        ) : (
-          <div className="rounded-[16px] border border-[#E6E2DA] bg-white p-6 shadow-xs dark:border-[#2E2E32] dark:bg-[#18181B]">
-            <div className="flex items-start gap-2.5 text-xs text-[#52525B] dark:text-[#A1A1AA]">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#E04F33]" />
-              <p>
-                Your countdown timer starts immediately on the server when you enter Section 1 and
-                continues running even if you refresh or close your browser.
-              </p>
-            </div>
 
-            <form action={startAction} className="mt-5">
-              <button
-                type="submit"
-                className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#E04F33] px-6 py-3 text-sm font-bold text-white shadow-xs transition hover:bg-[#C83E24] sm:w-auto"
+          <div className="mt-6">
+            {isLocked ? (
+              <Link
+                href="/dashboard"
+                className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border border-[#E04F33]/40 bg-[#FDF2EF] px-5 py-3 text-sm font-bold text-[#E04F33]"
               >
-                <PlayCircle className="h-4 w-4" />
-                <span>
-                  {activeAttempt
-                    ? `Resume Exam (Section ${activeAttempt.current_section})`
-                    : "Start Timed Exam Now"}
-                </span>
-              </button>
-            </form>
+                <Crown className="h-4 w-4" />
+                <span>Upgrade on Dashboard to Unlock</span>
+              </Link>
+            ) : (
+              <form action={startExamAttempt.bind(null, exam.id)}>
+                <button
+                  type="submit"
+                  className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-[#E04F33] px-5 py-3 text-sm font-bold text-white shadow-xs transition hover:bg-[#C83E24]"
+                >
+                  <PlayCircle className="h-4 w-4" />
+                  <span>Start Official Simulation</span>
+                </button>
+              </form>
+            )}
           </div>
-        )}
+        </div>
       </main>
     </div>
   );

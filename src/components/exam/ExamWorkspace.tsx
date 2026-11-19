@@ -471,7 +471,7 @@ export function ExamWorkspace({
         </div>
 
         <aside className="hidden lg:block">
-          <div className="sticky top-20">
+          <div className="relative z-0 lg:sticky lg:top-24">
             <QuestionPalette
               items={paletteItems}
               activeQuestionId={activeQuestionId}
