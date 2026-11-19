@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """
-1. Renders authentic, question-relevant JLPT Listening Visual Worksheet PNGs
-   via Pillow (analog clocks, calendars, paired items, clothing/size badges,
-   transport, buildings, food, and Mondai 3 situation scenes) and uploads
-   them to Supabase Storage ('jlpt-media').
-2. Reuses cached MP3 audio tracks (or synthesizes via edge-tts if missing)
-   and ensures all 6 JLPT N5 sets (522 questions) are synced in Supabase.
+Renders authentic JLPT Listening Visual Sheets matching official booklet layouts:
+1. Task-based comprehension (課題理解) & Point comprehension (ポイント理解):
+   -> Four large numbered boxes (1, 2, 3, 4) in a 960x760 grid, each filled
+      with a large, distinct line-art illustration (action, object, clock,
+      calendar, map/direction, clothing, transport, or sequence).
+2. Verbal expressions (発話表現):
+   -> Single large scene illustration (960x620) depicting the situation and
+      characters, with a bold arrow pointing directly to the person who is
+      about to speak (no option boxes inside the sheet).
+3. Quick response (即時応答) & all other listening types:
+   -> Audio-only (image_url = None).
 """
 
 import asyncio
@@ -19,9 +24,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 from PIL import Image, ImageDraw, ImageFont
 from supabase import create_client
-
-sys.path.insert(0, str(Path(__file__).parent))
-from generate_listening_audio import synthesize_transcript_mp3
 
 load_dotenv(".env.local")
 load_dotenv()
@@ -38,6 +40,36 @@ KANJI_NUMS = {
     "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6,
     "七": 7, "八": 8, "九": 9, "十": 10, "十一": 11, "十二": 12,
 }
+
+
+def classify_visual_layout(category: str, question_type: str) -> str | None:
+    """
+    Returns:
+      - 'four_block' for Task-based comprehension (課題理解) & Point comprehension (ポイント理解)
+      - 'single_scene' for Verbal expressions (発話表現)
+      - None for Quick response (即時応答) and all other listening items
+    """
+    combined = f"{category} {question_type}".strip().lower()
+    if any(
+        k in combined
+        for k in (
+            "task-based comprehension",
+            "task_based_comprehension",
+            "課題理解",
+            "comprehension of key points",
+            "point comprehension",
+            "point_comprehension",
+            "comprehension_of_key_points",
+            "ポイント理解",
+        )
+    ):
+        return "four_block"
+    if any(
+        k in combined
+        for k in ("verbal expressions", "verbal_expressions", "発話表現")
+    ):
+        return "single_scene"
+    return None
 
 
 def load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -87,70 +119,121 @@ def draw_clock_icon(
     draw: ImageDraw.ImageDraw, cx: int, cy: int, r: int, hour: int, minute: int, label: str
 ) -> None:
     ink = "#18181B"
-    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill="#FFFFFF", outline=ink, width=3)
+    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill="#FFFFFF", outline=ink, width=4)
     for tick in range(12):
         ang = math.radians(tick * 30 - 90)
-        inner = r - (8 if tick % 3 == 0 else 4)
+        inner = r - (14 if tick % 3 == 0 else 7)
         x0 = cx + int(inner * math.cos(ang))
         y0 = cy + int(inner * math.sin(ang))
-        x1 = cx + int((r - 2) * math.cos(ang))
-        y1 = cy + int((r - 2) * math.sin(ang))
-        draw.line([x0, y0, x1, y1], fill=ink, width=2 if tick % 3 == 0 else 1)
+        x1 = cx + int((r - 3) * math.cos(ang))
+        y1 = cy + int((r - 3) * math.sin(ang))
+        draw.line([x0, y0, x1, y1], fill=ink, width=3 if tick % 3 == 0 else 2)
+
+    f_num = load_font(16)
+    draw.text((cx - 9, cy - r + 13), "12", fill=ink, font=f_num)
+    draw.text((cx + r - 23, cy - 9), "3", fill=ink, font=f_num)
+    draw.text((cx - 5, cy + r - 28), "6", fill=ink, font=f_num)
+    draw.text((cx - r + 14, cy - 9), "9", fill=ink, font=f_num)
 
     h_ang = math.radians(((hour % 12) + minute / 60.0) * 30 - 90)
     m_ang = math.radians(minute * 6 - 90)
     draw.line(
-        [cx, cy, cx + int(r * 0.52 * math.cos(h_ang)), cy + int(r * 0.52 * math.sin(h_ang))],
+        [cx, cy, cx + int(r * 0.50 * math.cos(h_ang)), cy + int(r * 0.50 * math.sin(h_ang))],
         fill=ink,
-        width=4,
+        width=7,
     )
     draw.line(
         [cx, cy, cx + int(r * 0.78 * math.cos(m_ang)), cy + int(r * 0.78 * math.sin(m_ang))],
         fill=ink,
+        width=4,
+    )
+    draw.ellipse([cx - 6, cy - 6, cx + 6, cy + 6], fill=ink)
+
+    draw.rounded_rectangle(
+        [cx - 42, cy + r + 8, cx + 42, cy + r + 36],
+        radius=8,
+        fill="#F4F4F5",
+        outline=ink,
         width=2,
     )
-    draw.ellipse([cx - 3, cy - 3, cx + 3, cy + 3], fill=ink)
-    draw.rounded_rectangle([cx - 24, cy + r + 4, cx + 24, cy + r + 22], radius=5, fill="#F4F4F5", outline=ink, width=1)
-    draw.text((cx - 16, cy + r + 6), label, fill=ink, font=load_font(13))
+    draw.text((cx - 25, cy + r + 11), label, fill=ink, font=load_font(20))
 
 
 def draw_calendar_icon(
     draw: ImageDraw.ImageDraw, cx: int, cy: int, day_kanji: str, sub_tag: str
 ) -> None:
     ink = "#18181B"
-    w, h = 74, 72
+    w, h = 148, 144
     x0, y0 = cx - w // 2, cy - h // 2
-    draw.rounded_rectangle([x0, y0 + 6, x0 + w, y0 + h], radius=8, fill="#FFFFFF", outline=ink, width=2)
-    draw.rectangle([x0, y0 + 6, x0 + w, y0 + 24], fill=ink)
-    draw.rectangle([x0 + 16, y0, x0 + 22, y0 + 12], fill="#FFFFFF", outline=ink, width=2)
-    draw.rectangle([x0 + w - 22, y0, x0 + w - 16, y0 + 12], fill="#FFFFFF", outline=ink, width=2)
-    draw.text((cx - 13, y0 + 27), day_kanji, fill=ink, font=load_font(24))
+    draw.rounded_rectangle([x0, y0 + 14, x0 + w, y0 + h], radius=12, fill="#FFFFFF", outline=ink, width=4)
+    draw.rectangle([x0, y0 + 14, x0 + w, y0 + 48], fill=ink)
+    draw.rectangle([x0 + 30, y0, x0 + 44, y0 + 24], fill="#FFFFFF", outline=ink, width=3)
+    draw.rectangle([x0 + w - 44, y0, x0 + w - 30, y0 + 24], fill="#FFFFFF", outline=ink, width=3)
+    draw.text((cx - 26, y0 + 52), day_kanji, fill=ink, font=load_font(52))
     if sub_tag:
-        draw.text((cx - 16, y0 + 54), sub_tag, fill="#52525B", font=load_font(12))
+        draw.text((cx - 32, y0 + 110), sub_tag, fill="#52525B", font=load_font(18))
 
 
 def draw_people_icon(draw: ImageDraw.ImageDraw, cx: int, cy: int, count: int) -> None:
     ink = "#18181B"
     n = max(1, min(6, count))
-    spacing = 24 if n <= 4 else 19
+    spacing = 42 if n <= 4 else 33
     start_x = cx - ((n - 1) * spacing) // 2
     for i in range(n):
         px = start_x + i * spacing
-        draw.ellipse([px - 7, cy - 24, px + 7, cy - 10], fill="#FFFFFF", outline=ink, width=2)
-        draw.pieslice([px - 11, cy - 8, px + 11, cy + 24], start=180, end=360, fill="#E4E4E7", outline=ink, width=2)
+        draw.ellipse([px - 13, cy - 48, px + 13, cy - 22], fill="#FFFFFF", outline=ink, width=3)
+        draw.pieslice(
+            [px - 20, cy - 16, px + 20, cy + 44],
+            start=180,
+            end=360,
+            fill="#E4E4E7",
+            outline=ink,
+            width=3,
+        )
+
+
+def draw_map_direction_icon(draw: ImageDraw.ImageDraw, text: str, cx: int, cy: int) -> bool:
+    if not any(k in text for k in ("まっすぐ", "まがり", "右", "左", "みぎ", "ひだり", "かど", "コーナー")):
+        return False
+    ink = "#18181B"
+    # Draw street grid
+    draw.rectangle([cx - 85, cy - 70, cx + 85, cy + 70], fill="#FAFAFA", outline=ink, width=2)
+    # Vertical road
+    draw.rectangle([cx - 18, cy - 70, cx + 18, cy + 70], fill="#E4E4E7", outline=ink, width=2)
+    # Cross streets (1st and 2nd corner)
+    draw.rectangle([cx - 85, cy + 12, cx + 85, cy + 36], fill="#E4E4E7", outline=ink, width=2)
+    draw.rectangle([cx - 85, cy - 44, cx + 85, cy - 20], fill="#E4E4E7", outline=ink, width=2)
+
+    is_second = "ふたつ" in text or "2つ" in text or "二" in text
+    turn_y = cy - 32 if is_second else cy + 24
+    go_right = "右" in text or "みぎ" in text
+
+    # Route arrow
+    draw.line([cx, cy + 64, cx, turn_y], fill=ink, width=6)
+    if go_right:
+        draw.line([cx, turn_y, cx + 62, turn_y], fill=ink, width=6)
+        draw.polygon([(cx + 74, turn_y), (cx + 54, turn_y - 12), (cx + 54, turn_y + 12)], fill=ink)
+    else:
+        draw.line([cx, turn_y, cx - 62, turn_y], fill=ink, width=6)
+        draw.polygon([(cx - 74, turn_y), (cx - 54, turn_y - 12), (cx - 54, turn_y + 12)], fill=ink)
+    return True
 
 
 def draw_single_motif(draw: ImageDraw.ImageDraw, text: str, cx: int, cy: int) -> None:
     ink = "#18181B"
-    f_sm = load_font(12)
+    f_lg = load_font(20)
 
-    # 1. Clock time check
+    # 1. Clock time
     clk = parse_clock_time(text)
     if clk:
-        draw_clock_icon(draw, cx, cy - 8, 32, clk[0], clk[1], clk[2])
+        draw_clock_icon(draw, cx, cy - 14, 72, clk[0], clk[1], clk[2])
         return
 
-    # 2. Day of week / AM-PM / Date check
+    # 2. Map & directions
+    if draw_map_direction_icon(draw, text, cx, cy):
+        return
+
+    # 3. Day of week / Date / AM-PM
     for d_word, d_kanji in [
         ("月よう", "月"), ("月曜", "月"), ("火よう", "火"), ("火曜", "火"),
         ("水よう", "水"), ("水曜", "水"), ("木よう", "木"), ("木曜", "木"),
@@ -162,16 +245,16 @@ def draw_single_motif(draw: ImageDraw.ImageDraw, text: str, cx: int, cy: int) ->
             draw_calendar_icon(draw, cx, cy, d_kanji, sub)
             return
 
-    # 3. People count (三人 / 四人 / 五人)
+    # 4. People count
     m_ppl = re.search(r"(一|二|三|四|五|六|\d)\s*人", text)
     if m_ppl:
         raw_n = m_ppl.group(1)
         cnt = int(raw_n) if raw_n.isdigit() else KANJI_NUMS.get(raw_n, 2)
-        draw_people_icon(draw, cx, cy, cnt)
-        draw.text((cx - 14, cy + 16), f"{cnt}人", fill=ink, font=f_sm)
+        draw_people_icon(draw, cx, cy - 10, cnt)
+        draw.text((cx - 22, cy + 40), f"{cnt}人", fill=ink, font=f_lg)
         return
 
-    # 4. Shirt / Clothing with Color & Size (白い Lサイズ / 青い Mサイズ)
+    # 5. Shirt / Clothing with Color & Size
     if any(k in text for k in ("シャツ", "コート", "セーター", "ふく", "服", "サイズ")):
         fill_col = "#FFFFFF"
         if "黒" in text or "くろ" in text:
@@ -181,260 +264,351 @@ def draw_single_motif(draw: ImageDraw.ImageDraw, text: str, cx: int, cy: int) ->
         elif "赤" in text or "あか" in text:
             fill_col = "#E4E4E7"
         pts = [
-            (cx - 20, cy - 26), (cx - 8, cy - 26), (cx, cy - 18), (cx + 8, cy - 26),
-            (cx + 20, cy - 26), (cx + 36, cy - 10), (cx + 26, cy), (cx + 18, cy - 6),
-            (cx + 18, cy + 28), (cx - 18, cy + 28), (cx - 18, cy - 6), (cx - 26, cy),
-            (cx - 36, cy - 10),
+            (cx - 42, cy - 58), (cx - 16, cy - 58), (cx, cy - 42), (cx + 16, cy - 58),
+            (cx + 42, cy - 58), (cx + 78, cy - 22), (cx + 58, cy + 4), (cx + 38, cy - 14),
+            (cx + 38, cy + 64), (cx - 38, cy + 64), (cx - 38, cy - 14), (cx - 58, cy + 4),
+            (cx - 78, cy - 22),
         ]
         draw.polygon(pts, fill=fill_col, outline=ink)
         size_m = re.search(r"\b(S|M|L|LL)\b", text)
         if size_m:
             txt_col = "#FFFFFF" if fill_col == "#27272A" else ink
-            draw.text((cx - 6, cy - 4), size_m.group(1), fill=txt_col, font=load_font(18))
+            draw.text((cx - 14, cy - 12), size_m.group(1), fill=txt_col, font=load_font(38))
         return
 
-    # 5. Stationery & Paper Goods
+    # 6. Stationery & Paper Goods
     if "ボールペン" in text or "ペン" in text:
-        draw.polygon([(cx - 28, cy + 20), (cx + 18, cy - 26), (cx + 26, cy - 18), (cx - 20, cy + 28)], fill="#FFFFFF", outline=ink)
-        draw.polygon([(cx - 28, cy + 20), (cx - 34, cy + 30), (cx - 20, cy + 28)], fill=ink)
-        draw.line([cx + 10, cy - 24, cx - 2, cy - 12], fill=ink, width=2)
+        draw.polygon([(cx - 56, cy + 44), (cx + 38, cy - 50), (cx + 54, cy - 34), (cx - 40, cy + 60)], fill="#FFFFFF", outline=ink)
+        draw.polygon([(cx - 56, cy + 44), (cx - 70, cy + 66), (cx - 40, cy + 60)], fill=ink)
+        draw.line([cx + 22, cy - 48, cx - 6, cy - 20], fill=ink, width=4)
         return
     if "えんぴつ" in text or "鉛筆" in text:
-        draw.polygon([(cx - 26, cy + 18), (cx + 18, cy - 26), (cx + 25, cy - 19), (cx - 19, cy + 25)], fill="#E4E4E7", outline=ink)
-        draw.polygon([(cx - 26, cy + 18), (cx - 33, cy + 29), (cx - 19, cy + 25)], fill="#FFFFFF", outline=ink)
-        draw.polygon([(cx - 30, cy + 24), (cx - 33, cy + 29), (cx - 27, cy + 27)], fill=ink)
+        draw.polygon([(cx - 54, cy + 38), (cx + 38, cy - 54), (cx + 52, cy - 40), (cx - 40, cy + 52)], fill="#E4E4E7", outline=ink)
+        draw.polygon([(cx - 54, cy + 38), (cx - 68, cy + 62), (cx - 40, cy + 52)], fill="#FFFFFF", outline=ink)
+        draw.polygon([(cx - 62, cy + 52), (cx - 68, cy + 62), (cx - 54, cy + 57)], fill=ink)
         return
     if "けしゴム" in text:
-        draw.rounded_rectangle([cx - 28, cy - 16, cx + 28, cy + 16], radius=4, fill="#FFFFFF", outline=ink, width=2)
-        draw.rectangle([cx - 12, cy - 16, cx + 24, cy + 16], fill="#E4E4E7", outline=ink, width=2)
+        draw.rounded_rectangle([cx - 60, cy - 34, cx + 60, cy + 34], radius=8, fill="#FFFFFF", outline=ink, width=4)
+        draw.rectangle([cx - 24, cy - 34, cx + 52, cy + 34], fill="#E4E4E7", outline=ink, width=4)
         return
     if any(k in text for k in ("じしょ", "辞書", "本", "ほん", "ノート")):
-        draw.rectangle([cx - 24, cy - 28, cx + 24, cy + 28], fill="#FFFFFF", outline=ink, width=2)
-        draw.line([cx - 16, cy - 28, cx - 16, cy + 28], fill=ink, width=2)
-        draw.rectangle([cx - 8, cy - 16, cx + 16, cy - 6], fill="#F4F4F5", outline=ink, width=1)
+        draw.rectangle([cx - 52, cy - 60, cx + 52, cy + 60], fill="#FFFFFF", outline=ink, width=4)
+        draw.line([cx - 32, cy - 60, cx - 32, cy + 60], fill=ink, width=4)
+        draw.rectangle([cx - 16, cy - 34, cx + 36, cy - 12], fill="#F4F4F5", outline=ink, width=2)
         return
     if "しんぶん" in text or "新聞" in text:
-        draw.rectangle([cx - 28, cy - 24, cx + 28, cy + 24], fill="#FFFFFF", outline=ink, width=2)
-        draw.line([cx, cy - 20, cx, cy + 20], fill=ink, width=2)
-        for ry in (-14, -4, 6, 14):
-            draw.line([cx - 22, cy + ry, cx - 6, cy + ry], fill=ink, width=2)
-            draw.line([cx + 6, cy + ry, cx + 22, cy + ry], fill=ink, width=2)
+        draw.rectangle([cx - 60, cy - 52, cx + 60, cy + 52], fill="#FFFFFF", outline=ink, width=4)
+        draw.line([cx, cy - 44, cx, cy + 44], fill=ink, width=4)
+        for ry in (-30, -10, 10, 30):
+            draw.line([cx - 46, cy + ry, cx - 14, cy + ry], fill=ink, width=4)
+            draw.line([cx + 14, cy + ry, cx + 46, cy + ry], fill=ink, width=4)
         return
     if any(k in text for k in ("かみ", "紙", "はがき", "手紙", "切手")):
-        draw.rectangle([cx - 26, cy - 20, cx + 20, cy + 16], fill="#FFFFFF", outline=ink, width=2)
-        draw.rectangle([cx - 18, cy - 12, cx + 28, cy + 24], fill="#FAFAFA", outline=ink, width=2)
-        draw.rectangle([cx + 12, cy - 6, cx + 22, cy + 4], fill="#E4E4E7", outline=ink, width=1)
+        draw.rectangle([cx - 58, cy - 44, cx + 44, cy + 36], fill="#FFFFFF", outline=ink, width=4)
+        draw.rectangle([cx - 38, cy - 24, cx + 60, cy + 52], fill="#FAFAFA", outline=ink, width=4)
+        draw.rectangle([cx + 24, cy - 10, cx + 46, cy + 12], fill="#E4E4E7", outline=ink, width=2)
         return
 
-    # 6. Recycling / Trash / Household
+    # 7. Recycling / Household Actions
     if "びん" in text:
-        draw.rectangle([cx - 7, cy - 30, cx + 7, cy - 16], fill="#FFFFFF", outline=ink, width=2)
-        draw.rounded_rectangle([cx - 15, cy - 16, cx + 15, cy + 28], radius=6, fill="#FFFFFF", outline=ink, width=2)
-        draw.line([cx - 15, cy + 4, cx + 15, cy + 4], fill=ink, width=1)
+        draw.rectangle([cx - 15, cy - 66, cx + 15, cy - 36], fill="#FFFFFF", outline=ink, width=4)
+        draw.rounded_rectangle([cx - 34, cy - 36, cx + 34, cy + 64], radius=14, fill="#FFFFFF", outline=ink, width=4)
+        draw.line([cx - 34, cy + 12, cx + 34, cy + 12], fill=ink, width=3)
         return
     if "ごみ" in text:
-        draw.polygon([(cx - 20, cy - 16), (cx + 20, cy - 16), (cx + 15, cy + 26), (cx - 15, cy + 26)], fill="#F4F4F5", outline=ink)
-        draw.line([cx - 24, cy - 20, cx + 24, cy - 20], fill=ink, width=3)
+        draw.polygon([(cx - 44, cy - 34), (cx + 44, cy - 34), (cx + 34, cy + 58), (cx - 34, cy + 58)], fill="#F4F4F5", outline=ink)
+        draw.line([cx - 52, cy - 42, cx + 52, cy - 42], fill=ink, width=5)
         return
     if "いす" in text:
-        draw.rectangle([cx - 16, cy - 28, cx + 16, cy - 4], fill="#FFFFFF", outline=ink, width=2)
-        draw.rectangle([cx - 18, cy - 4, cx + 18, cy + 4], fill="#E4E4E7", outline=ink, width=2)
-        draw.line([cx - 15, cy + 4, cx - 15, cy + 28], fill=ink, width=3)
-        draw.line([cx + 15, cy + 4, cx + 15, cy + 28], fill=ink, width=3)
+        draw.rectangle([cx - 36, cy - 62, cx + 36, cy - 8], fill="#FFFFFF", outline=ink, width=4)
+        draw.rectangle([cx - 42, cy - 8, cx + 42, cy + 8], fill="#E4E4E7", outline=ink, width=4)
+        draw.line([cx - 34, cy + 8, cx - 34, cy + 64], fill=ink, width=5)
+        draw.line([cx + 34, cy + 8, cx + 34, cy + 64], fill=ink, width=5)
         return
     if "そうじ" in text:
-        draw.line([cx + 12, cy - 28, cx - 8, cy + 12], fill=ink, width=3)
-        draw.polygon([(cx - 20, cy + 12), (cx + 4, cy + 12), (cx + 10, cy + 28), (cx - 26, cy + 28)], fill="#E4E4E7", outline=ink)
+        draw.line([cx + 28, cy - 62, cx - 16, cy + 28], fill=ink, width=5)
+        draw.polygon([(cx - 44, cy + 28), (cx + 8, cy + 28), (cx + 22, cy + 62), (cx - 56, cy + 62)], fill="#E4E4E7", outline=ink)
         return
     if "おさら" in text:
-        for oy in (-10, 0, 10):
-            draw.ellipse([cx - 26, cy + oy - 5, cx + 26, cy + oy + 5], fill="#FFFFFF", outline=ink, width=2)
+        for oy in (-22, 0, 22):
+            draw.ellipse([cx - 58, cy + oy - 11, cx + 58, cy + oy + 11], fill="#FFFFFF", outline=ink, width=4)
+        return
+    if "窓" in text or "まど" in text:
+        draw.rectangle([cx - 54, cy - 54, cx + 54, cy + 54], fill="#FFFFFF", outline=ink, width=4)
+        draw.line([cx, cy - 54, cx, cy + 54], fill=ink, width=4)
+        draw.line([cx - 54, cy, cx + 54, cy], fill=ink, width=4)
+        return
+    if "ホワイトボード" in text or "黒板" in text or "つくえ" in text or "机" in text:
+        draw.rectangle([cx - 64, cy - 46, cx + 64, cy + 28], fill="#FFFFFF", outline=ink, width=4)
+        draw.line([cx - 44, cy + 28, cx - 52, cy + 62], fill=ink, width=4)
+        draw.line([cx + 44, cy + 28, cx + 52, cy + 62], fill=ink, width=4)
         return
 
-    # 7. Food & Drinks
+    # 8. Food & Drinks
     if "ぎゅうにゅう" in text or "牛乳" in text:
-        draw.polygon([(cx - 16, cy - 16), (cx, cy - 28), (cx + 16, cy - 16)], fill="#E4E4E7", outline=ink)
-        draw.rectangle([cx - 16, cy - 16, cx + 16, cy + 26], fill="#FFFFFF", outline=ink, width=2)
-        draw.text((cx - 12, cy - 4), "牛乳", fill=ink, font=f_sm)
+        draw.polygon([(cx - 36, cy - 34), (cx, cy - 62), (cx + 36, cy - 34)], fill="#E4E4E7", outline=ink)
+        draw.rectangle([cx - 36, cy - 34, cx + 36, cy + 58], fill="#FFFFFF", outline=ink, width=4)
+        draw.text((cx - 20, cy - 4), "牛乳", fill=ink, font=f_lg)
         return
     if "たまご" in text or "卵" in text:
-        for ex in (-16, 16):
-            draw.ellipse([cx + ex - 12, cy - 16, cx + ex + 12, cy + 18], fill="#FFFFFF", outline=ink, width=2)
+        for ex in (-32, 32):
+            draw.ellipse([cx + ex - 24, cy - 36, cx + ex + 24, cy + 38], fill="#FFFFFF", outline=ink, width=4)
         return
     if "パン" in text:
-        draw.rounded_rectangle([cx - 26, cy - 14, cx + 26, cy + 20], radius=12, fill="#FFFFFF", outline=ink, width=2)
-        draw.line([cx - 10, cy - 12, cx - 6, cy - 2], fill=ink, width=2)
-        draw.line([cx + 4, cy - 12, cx + 8, cy - 2], fill=ink, width=2)
+        draw.rounded_rectangle([cx - 58, cy - 30, cx + 58, cy + 44], radius=24, fill="#FFFFFF", outline=ink, width=4)
+        draw.line([cx - 22, cy - 24, cx - 14, cy - 6], fill=ink, width=4)
+        draw.line([cx + 10, cy - 24, cx + 18, cy - 6], fill=ink, width=4)
         return
     if "さとう" in text:
-        draw.rounded_rectangle([cx - 18, cy - 14, cx + 18, cy + 24], radius=6, fill="#FFFFFF", outline=ink, width=2)
-        draw.rectangle([cx - 14, cy - 22, cx + 14, cy - 14], fill="#E4E4E7", outline=ink, width=2)
-        draw.text((cx - 12, cy), "砂糖", fill=ink, font=f_sm)
+        draw.rounded_rectangle([cx - 38, cy - 30, cx + 38, cy + 52], radius=14, fill="#FFFFFF", outline=ink, width=4)
+        draw.rectangle([cx - 30, cy - 46, cx + 30, cy - 30], fill="#E4E4E7", outline=ink, width=4)
+        draw.text((cx - 20, cy + 4), "砂糖", fill=ink, font=f_lg)
         return
     if any(k in text for k in ("コーヒー", "お茶", "紅茶", "のみもの", "ジュース")):
-        draw.rectangle([cx - 16, cy - 12, cx + 14, cy + 18], fill="#FFFFFF", outline=ink, width=2)
-        draw.arc([cx + 8, cy - 6, cx + 24, cy + 10], start=270, end=90, fill=ink, width=2)
-        draw.line([cx - 22, cy + 20, cx + 20, cy + 20], fill=ink, width=2)
+        draw.rectangle([cx - 36, cy - 26, cx + 30, cy + 42], fill="#FFFFFF", outline=ink, width=4)
+        draw.arc([cx + 16, cy - 14, cx + 52, cy + 24], start=270, end=90, fill=ink, width=4)
+        draw.line([cx - 48, cy + 48, cx + 44, cy + 48], fill=ink, width=4)
         return
     if "にく" in text or "肉" in text:
-        draw.rounded_rectangle([cx - 26, cy - 14, cx + 26, cy + 16], radius=10, fill="#E4E4E7", outline=ink, width=2)
-        draw.ellipse([cx + 6, cy - 6, cx + 16, cy + 4], fill="#FFFFFF", outline=ink, width=2)
+        draw.rounded_rectangle([cx - 58, cy - 30, cx + 58, cy + 36], radius=18, fill="#E4E4E7", outline=ink, width=4)
+        draw.ellipse([cx + 14, cy - 14, cx + 36, cy + 8], fill="#FFFFFF", outline=ink, width=4)
         return
     if "さかな" in text or "魚" in text:
-        draw.ellipse([cx - 26, cy - 14, cx + 14, cy + 14], fill="#FFFFFF", outline=ink, width=2)
-        draw.polygon([(cx + 12, cy), (cx + 28, cy - 14), (cx + 28, cy + 14)], fill="#E4E4E7", outline=ink)
-        draw.ellipse([cx - 18, cy - 5, cx - 13, cy], fill=ink)
+        draw.ellipse([cx - 58, cy - 30, cx + 30, cy + 30], fill="#FFFFFF", outline=ink, width=4)
+        draw.polygon([(cx + 26, cy), (cx + 62, cy - 30), (cx + 62, cy + 30)], fill="#E4E4E7", outline=ink)
+        draw.ellipse([cx - 38, cy - 11, cx - 28, cy - 1], fill=ink)
         return
     if "やさい" in text or "野菜" in text:
-        draw.polygon([(cx - 20, cy + 18), (cx + 12, cy - 14), (cx + 20, cy - 6)], fill="#E4E4E7", outline=ink)
-        draw.line([cx + 16, cy - 10, cx + 26, cy - 22], fill=ink, width=2)
+        draw.polygon([(cx - 44, cy + 38), (cx + 28, cy - 30), (cx + 44, cy - 14)], fill="#E4E4E7", outline=ink)
+        draw.line([cx + 36, cy - 22, cx + 58, cy - 46], fill=ink, width=4)
         return
 
-    # 8. Transport & Vehicles
+    # 9. Transport & Vehicles
     if "電車" in text or "でんしゃ" in text:
-        draw.rounded_rectangle([cx - 20, cy - 26, cx + 20, cy + 22], radius=6, fill="#FFFFFF", outline=ink, width=2)
-        draw.rectangle([cx - 14, cy - 18, cx + 14, cy - 2], fill="#E4E4E7", outline=ink, width=2)
-        draw.ellipse([cx - 14, cy + 8, cx - 8, cy + 14], fill=ink)
-        draw.ellipse([cx + 8, cy + 8, cx + 14, cy + 14], fill=ink)
-        draw.line([cx - 24, cy + 26, cx + 24, cy + 26], fill=ink, width=2)
+        draw.rounded_rectangle([cx - 44, cy - 58, cx + 44, cy + 48], radius=14, fill="#FFFFFF", outline=ink, width=4)
+        draw.rectangle([cx - 30, cy - 38, cx + 30, cy - 6], fill="#E4E4E7", outline=ink, width=3)
+        draw.ellipse([cx - 30, cy + 16, cx - 16, cy + 30], fill=ink)
+        draw.ellipse([cx + 16, cy + 16, cx + 30, cy + 30], fill=ink)
+        draw.line([cx - 52, cy + 58, cx + 52, cy + 58], fill=ink, width=4)
         return
     if "バス" in text:
-        draw.rounded_rectangle([cx - 28, cy - 18, cx + 28, cy + 16], radius=5, fill="#FFFFFF", outline=ink, width=2)
-        draw.rectangle([cx - 22, cy - 12, cx + 22, cy + 2], fill="#E4E4E7", outline=ink, width=1)
-        draw.ellipse([cx - 20, cy + 10, cx - 8, cy + 22], fill=ink)
-        draw.ellipse([cx + 8, cy + 10, cx + 20, cy + 22], fill=ink)
+        draw.rounded_rectangle([cx - 64, cy - 38, cx + 64, cy + 36], radius=12, fill="#FFFFFF", outline=ink, width=4)
+        draw.rectangle([cx - 50, cy - 24, cx + 50, cy + 6], fill="#E4E4E7", outline=ink, width=3)
+        draw.ellipse([cx - 44, cy + 22, cx - 20, cy + 46], fill=ink)
+        draw.ellipse([cx + 20, cy + 22, cx + 44, cy + 46], fill=ink)
         return
     if "自転車" in text or "じてんしゃ" in text:
-        draw.ellipse([cx - 28, cy - 2, cx - 8, cy + 18], fill="#FFFFFF", outline=ink, width=2)
-        draw.ellipse([cx + 8, cy - 2, cx + 28, cy + 18], fill="#FFFFFF", outline=ink, width=2)
-        draw.line([cx - 18, cy + 8, cx - 2, cy - 10, cx + 14, cy - 10, cx + 18, cy + 8], fill=ink, width=2)
-        draw.line([cx - 2, cy - 10, cx + 2, cy + 8, cx - 18, cy + 8], fill=ink, width=2)
+        draw.ellipse([cx - 64, cy - 6, cx - 16, cy + 42], fill="#FFFFFF", outline=ink, width=4)
+        draw.ellipse([cx + 16, cy - 6, cx + 64, cy + 42], fill="#FFFFFF", outline=ink, width=4)
+        draw.line([cx - 38, cy + 16, cx - 6, cy - 22, cx + 30, cy - 22, cx + 38, cy + 16], fill=ink, width=4)
+        draw.line([cx - 6, cy - 22, cx + 6, cy + 16, cx - 38, cy + 16], fill=ink, width=4)
         return
     if "あるいて" in text or "歩" in text:
-        draw.ellipse([cx - 6, cy - 28, cx + 6, cy - 16], fill="#FFFFFF", outline=ink, width=2)
-        draw.line([cx, cy - 16, cx, cy + 4], fill=ink, width=3)
-        draw.line([cx, cy - 10, cx - 12, cy + 2], fill=ink, width=2)
-        draw.line([cx, cy - 10, cx + 12, cy + 2], fill=ink, width=2)
-        draw.line([cx, cy + 4, cx - 12, cy + 24], fill=ink, width=3)
-        draw.line([cx, cy + 4, cx + 12, cy + 24], fill=ink, width=3)
+        draw.ellipse([cx - 14, cy - 60, cx + 14, cy - 32], fill="#FFFFFF", outline=ink, width=4)
+        draw.line([cx, cy - 32, cx, cy + 12], fill=ink, width=5)
+        draw.line([cx, cy - 22, cx - 28, cy + 6], fill=ink, width=4)
+        draw.line([cx, cy - 22, cx + 28, cy + 6], fill=ink, width=4)
+        draw.line([cx, cy + 12, cx - 28, cy + 56], fill=ink, width=5)
+        draw.line([cx, cy + 12, cx + 28, cy + 56], fill=ink, width=5)
         return
 
-    # 9. Places, Buildings & Scenes
+    # 10. Places & Buildings
     if "こうえん" in text or "公園" in text:
-        draw.ellipse([cx - 26, cy - 28, cx + 2, cy], fill="#E4E4E7", outline=ink, width=2)
-        draw.rectangle([cx - 15, cy, cx - 9, cy + 24], fill=ink)
-        draw.rectangle([cx + 4, cy + 6, cx + 30, cy + 14], fill="#FFFFFF", outline=ink, width=2)
-        draw.line([cx + 7, cy + 14, cx + 7, cy + 24], fill=ink, width=2)
-        draw.line([cx + 27, cy + 14, cx + 27, cy + 24], fill=ink, width=2)
+        draw.ellipse([cx - 58, cy - 60, cx + 6, cy + 2], fill="#E4E4E7", outline=ink, width=4)
+        draw.rectangle([cx - 32, cy + 2, cx - 18, cy + 52], fill=ink)
+        draw.rectangle([cx + 8, cy + 14, cx + 66, cy + 30], fill="#FFFFFF", outline=ink, width=4)
+        draw.line([cx + 16, cy + 30, cx + 16, cy + 52], fill=ink, width=4)
+        draw.line([cx + 58, cy + 30, cx + 58, cy + 52], fill=ink, width=4)
         return
     if any(k in text for k in ("カフェ", "レストラン", "しょくどう", "スーパー", "店", "えき", "駅", "図書館", "学校", "いえ", "うち")):
-        draw.polygon([(cx - 28, cy - 8), (cx, cy - 28), (cx + 28, cy - 8)], fill="#E4E4E7", outline=ink)
-        draw.rectangle([cx - 24, cy - 8, cx + 24, cy + 24], fill="#FFFFFF", outline=ink, width=2)
-        draw.rectangle([cx - 7, cy + 4, cx + 7, cy + 24], fill="#F4F4F5", outline=ink, width=2)
+        draw.polygon([(cx - 64, cy - 16), (cx, cy - 60), (cx + 64, cy - 16)], fill="#E4E4E7", outline=ink)
+        draw.rectangle([cx - 52, cy - 16, cx + 52, cy + 52], fill="#FFFFFF", outline=ink, width=4)
+        draw.rectangle([cx - 16, cy + 8, cx + 16, cy + 52], fill="#F4F4F5", outline=ink, width=4)
         return
 
-    # 10. Default clean numbered card pictogram
-    draw.rounded_rectangle([cx - 24, cy - 20, cx + 24, cy + 20], radius=8, fill="#F4F4F5", outline=ink, width=2)
-    draw.line([cx - 14, cy - 6, cx + 14, cy - 6], fill=ink, width=2)
-    draw.line([cx - 14, cy + 6, cx + 8, cy + 6], fill=ink, width=2)
+    # 11. Default visual action card
+    draw.rounded_rectangle([cx - 56, cy - 42, cx + 56, cy + 42], radius=16, fill="#F4F4F5", outline=ink, width=4)
+    draw.line([cx - 32, cy - 14, cx + 32, cy - 14], fill=ink, width=4)
+    draw.line([cx - 32, cy + 14, cx + 20, cy + 14], fill=ink, width=4)
 
 
-def draw_option_illustration(draw: ImageDraw.ImageDraw, option_text: str, box: tuple[int, int, int, int]) -> None:
+def draw_four_block_cell(
+    draw: ImageDraw.ImageDraw, option_text: str, box: tuple[int, int, int, int]
+) -> None:
     x0, y0, x1, y1 = box
     cx = (x0 + x1) // 2
     cy = (y0 + y1) // 2
 
-    # Split paired items like "ボールペンと じしょ" or "五時半に 五人"
     parts = re.split(r"(?:と[\s\u3000]+|に[\s\u3000]+)", option_text.strip())
     parts = [p.strip() for p in parts if p.strip()]
     if len(parts) >= 2:
         q_w = (x1 - x0) // 4
         draw_single_motif(draw, parts[0], x0 + q_w, cy)
-        draw.text((cx - 5, cy - 8), "+", fill="#71717A", font=load_font(18))
+        draw.text((cx - 10, cy - 18), "+", fill="#52525B", font=load_font(32))
         draw_single_motif(draw, parts[1], x1 - q_w, cy)
     else:
         draw_single_motif(draw, option_text, cx, cy)
 
 
-def render_listening_worksheet_png(
-    question_number: int,
-    mondai_number: int,
+def draw_speaker_arrow(draw: ImageDraw.ImageDraw, tip_x: int, tip_y: int) -> None:
+    """
+    Draws a high-contrast JLPT test-booklet arrow pointing directly at the
+    person who is about to speak in Verbal Expressions (発話表現).
+    """
+    ink = "#18181B"
+    # Diagonal bold arrow from upper-left pointing down-right to the speaker
+    shaft_start = (tip_x - 78, tip_y - 68)
+    shaft_end = (tip_x - 22, tip_y - 18)
+    draw.line([shaft_start, shaft_end], fill="#FFFFFF", width=14)
+    draw.line([shaft_start, shaft_end], fill=ink, width=8)
+    head_pts = [
+        (tip_x, tip_y),
+        (tip_x - 34, tip_y - 8),
+        (tip_x - 14, tip_y - 32),
+    ]
+    draw.polygon(head_pts, fill=ink, outline="#FFFFFF")
+
+
+def draw_verbal_expression_scene(
+    draw: ImageDraw.ImageDraw,
     prompt_text: str,
+    transcript_ja: str,
+    box: tuple[int, int, int, int],
+) -> None:
+    """
+    Renders a single large JLPT Verbal Expression (発話表現) scene illustration
+    with background context and an arrow pointing to the person who is about
+    to speak.
+    """
+    x0, y0, x1, y1 = box
+    ink = "#18181B"
+    ctx = f"{strip_html(prompt_text)} {transcript_ja}"
+
+    # Ground / Floor line
+    floor_y = y1 - 36
+    draw.line([x0 + 24, floor_y, x1 - 24, floor_y], fill=ink, width=3)
+
+    # Context-aware background props on the right/center of the room
+    prop_cx = x0 + int((x1 - x0) * 0.72)
+    prop_cy = floor_y - 95
+
+    if any(k in ctx for k in ("ごはん", "食べ", "レストラン", "しょくどう", "コーヒー", "お茶")):
+        # Dining table with bowls/cups
+        draw.rectangle([prop_cx - 85, floor_y - 66, prop_cx + 85, floor_y - 54], fill="#E4E4E7", outline=ink, width=3)
+        draw.line([prop_cx - 65, floor_y - 54, prop_cx - 65, floor_y], fill=ink, width=4)
+        draw.line([prop_cx + 65, floor_y - 54, prop_cx + 65, floor_y], fill=ink, width=4)
+        draw.pieslice([prop_cx - 50, floor_y - 86, prop_cx - 10, floor_y - 50], start=0, end=180, fill="#FFFFFF", outline=ink, width=3)
+        draw.pieslice([prop_cx + 10, floor_y - 86, prop_cx + 50, floor_y - 50], start=0, end=180, fill="#FFFFFF", outline=ink, width=3)
+    elif any(k in ctx for k in ("かいしゃ", "会社", "しごと", "仕事", "先に")):
+        # Office desk with monitor & wall clock
+        draw_clock_icon(draw, prop_cx + 45, y0 + 78, 34, 6, 0, "18:00")
+        draw.rectangle([prop_cx - 80, floor_y - 64, prop_cx + 80, floor_y - 52], fill="#E4E4E7", outline=ink, width=3)
+        draw.line([prop_cx - 60, floor_y - 52, prop_cx - 60, floor_y], fill=ink, width=4)
+        draw.line([prop_cx + 60, floor_y - 52, prop_cx + 60, floor_y], fill=ink, width=4)
+        draw.rectangle([prop_cx - 34, floor_y - 106, prop_cx + 26, floor_y - 68], fill="#FFFFFF", outline=ink, width=3)
+        draw.line([prop_cx - 4, floor_y - 68, prop_cx - 4, floor_y - 64], fill=ink, width=4)
+    elif any(k in ctx for k in ("先生", "きょうしつ", "教室", "学校", "黒板")):
+        # Classroom blackboard & podium
+        draw.rectangle([prop_cx - 95, y0 + 38, prop_cx + 95, y0 + 148], fill="#FFFFFF", outline=ink, width=4)
+        draw.line([prop_cx - 65, y0 + 72, prop_cx + 65, y0 + 72], fill=ink, width=3)
+        draw.line([prop_cx - 65, y0 + 106, prop_cx + 35, y0 + 106], fill=ink, width=3)
+    elif any(k in ctx for k in ("かぜ", "びょうき", "病院", "ねつ", "おだいじ")):
+        # Bed / Futon for sick friend
+        draw.rounded_rectangle([prop_cx - 90, floor_y - 44, prop_cx + 90, floor_y], radius=12, fill="#E4E4E7", outline=ink, width=3)
+        draw.ellipse([prop_cx - 72, floor_y - 62, prop_cx - 34, floor_y - 36], fill="#FFFFFF", outline=ink, width=3)
+    elif any(k in ctx for k in ("ペン", "えんぴつ", "じしょ", "本", "かさ", "かりたい")):
+        # Table with item to borrow in the center
+        draw.rectangle([prop_cx - 75, floor_y - 58, prop_cx + 75, floor_y - 46], fill="#E4E4E7", outline=ink, width=3)
+        draw.line([prop_cx - 55, floor_y - 46, prop_cx - 55, floor_y], fill=ink, width=4)
+        draw.line([prop_cx + 55, floor_y - 46, prop_cx + 55, floor_y], fill=ink, width=4)
+        draw.line([prop_cx - 24, floor_y - 66, prop_cx + 24, floor_y - 78], fill=ink, width=5)
+    else:
+        # Doorway / Entrance frame
+        draw.rectangle([prop_cx - 56, y0 + 46, prop_cx + 56, floor_y], fill="#FAFAFA", outline=ink, width=4)
+        draw.ellipse([prop_cx + 34, floor_y - 96, prop_cx + 44, floor_y - 86], fill=ink)
+
+    # Speaker (Left character — pointed to by the arrow)
+    sx = x0 + int((x1 - x0) * 0.27)
+    sy = floor_y - 140
+    # Head & hair
+    draw.ellipse([sx - 28, sy - 28, sx + 28, sy + 28], fill="#FFFFFF", outline=ink, width=4)
+    draw.arc([sx - 28, sy - 30, sx + 28, sy + 12], start=180, end=360, fill=ink, width=6)
+    # Eyes & open mouth cue
+    draw.ellipse([sx - 11, sy - 6, sx - 5, sy], fill=ink)
+    draw.ellipse([sx + 5, sy - 6, sx + 11, sy], fill=ink)
+    draw.ellipse([sx - 4, sy + 8, sx + 5, sy + 16], fill=ink)
+    # Torso & arms
+    draw.rounded_rectangle([sx - 36, sy + 32, sx + 36, floor_y], radius=16, fill="#FFFFFF", outline=ink, width=4)
+    draw.line([sx + 34, sy + 54, sx + 72, sy + 78], fill=ink, width=4)
+
+    # Listener (Right character)
+    lx = x0 + int((x1 - x0) * 0.48)
+    ly = floor_y - 144
+    draw.ellipse([lx - 28, ly - 28, lx + 28, ly + 28], fill="#FFFFFF", outline=ink, width=4)
+    draw.ellipse([lx - 11, ly - 6, lx - 5, ly], fill=ink)
+    draw.ellipse([lx + 5, ly - 6, lx + 11, ly], fill=ink)
+    draw.arc([lx - 9, ly + 4, lx + 9, ly + 16], start=0, end=180, fill=ink, width=3)
+    draw.rounded_rectangle([lx - 38, ly + 32, lx + 38, floor_y], radius=16, fill="#E4E4E7", outline=ink, width=4)
+
+    # Bold directional arrow pointing directly to the person who is about to speak
+    draw_speaker_arrow(draw, sx - 24, sy - 24)
+
+
+def render_listening_worksheet_png(
+    layout_style: str,
+    question_number: int,
+    prompt_text: str,
+    transcript_ja: str,
     options: list[dict],
     out_path: Path,
 ) -> Path:
     """
-    Renders an authentic black-and-white Japanese JLPT Listening Visual Sheet
-    (880x540 PNG) with question- & option-specific line-art illustrations.
+    Renders authentic Japanese JLPT Listening Visual Sheets:
+      - 'four_block' (960x760): 4 separate numbered boxes (1, 2, 3, 4) filled
+        with large, clear illustrations for Task-based & Point comprehension.
+      - 'single_scene' (960x620): Single large scene box with an arrow pointing
+        to the person who is about to speak for Verbal expressions (発話表現).
     """
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    width, height = 880, 540
+    is_single = layout_style == "single_scene"
+    width = 960
+    height = 620 if is_single else 760
     ink = "#18181B"
+
     img = Image.new("RGB", (width, height), "#FFFFFF")
     draw = ImageDraw.Draw(img)
 
-    font_title = load_font(18)
-    font_prompt = load_font(17)
-    font_num = load_font(22)
-    font_opt = load_font(18)
+    font_badge = load_font(22)
+    font_prompt = load_font(22)
+    font_num = load_font(30)
 
-    # Outer exam paper frame + authentic Japanese header strip (no debug codes)
-    draw.rectangle([14, 14, width - 14, height - 14], outline=ink, width=2)
-    draw.rectangle([14, 14, width - 14, 62], fill="#F4F4F5", outline=ink, width=2)
-    draw.rounded_rectangle([26, 22, 114, 54], radius=6, fill=ink)
-    draw.text((35, 27), "問題用紙", fill="#FFFFFF", font=font_title)
+    # Outer exam sheet border + authentic 問題用紙 header
+    draw.rectangle([16, 16, width - 16, height - 16], outline=ink, width=3)
+    draw.rectangle([16, 16, width - 16, 76], fill="#F4F4F5", outline=ink, width=3)
+    draw.rounded_rectangle([30, 26, 146, 66], radius=8, fill=ink)
+    draw.text((44, 33), "問題用紙", fill="#FFFFFF", font=font_badge)
 
     clean_prompt = strip_html(prompt_text)
     header_prompt = f"問 {question_number}　{clean_prompt}"
-    if len(header_prompt) > 42:
-        header_prompt = header_prompt[:41] + "…"
-    draw.text((128, 28), header_prompt, fill=ink, font=font_prompt)
+    if len(header_prompt) > 34:
+        header_prompt = header_prompt[:33] + "…"
+    draw.text((164, 34), header_prompt, fill=ink, font=font_prompt)
 
-    margin_x = 26
-    top_y = 78
-    gap = 16
+    margin_x = 30
+    top_y = 94
 
-    if len(options) == 3:
-        # Mondai 3 (Verbal Expressions): Situation scene on top + 3 speech cards below
-        scene_h = 185
+    if is_single:
+        # Single block: One large scene illustration with arrow pointing to speaker
+        scene_box = (margin_x, top_y, width - margin_x, height - 30)
         draw.rounded_rectangle(
-            [margin_x, top_y, width - margin_x, top_y + scene_h],
-            radius=10,
-            fill="#FAFAFA",
-            outline=ink,
-            width=2,
+            list(scene_box), radius=12, fill="#FFFFFF", outline=ink, width=3
         )
-        draw.text((margin_x + 16, top_y + 12), "【状況 / Situation】", fill="#52525B", font=load_font(14))
-        draw_option_illustration(
-            draw,
-            clean_prompt,
-            (margin_x + 20, top_y + 34, width - margin_x - 20, top_y + 132),
-        )
-        wrapped_p = [clean_prompt[i : i + 40] for i in range(0, len(clean_prompt), 40)][:2]
-        for l_i, line_s in enumerate(wrapped_p):
-            draw.text((margin_x + 20, top_y + 132 + l_i * 22), line_s, fill=ink, font=load_font(16))
-
-        cards_y = top_y + scene_h + gap
-        card_h = height - cards_y - 26
-        card_w = (width - margin_x * 2 - gap * 2) // 3
-
-        for idx, opt in enumerate(options):
-            x0 = margin_x + idx * (card_w + gap)
-            y0 = cards_y
-            x1 = x0 + card_w
-            y1 = y0 + card_h
-            draw.rounded_rectangle([x0, y0, x1, y1], radius=10, fill="#FFFFFF", outline=ink, width=2)
-            draw.ellipse([x0 + 14, y0 + 14, x0 + 48, y0 + 48], fill=ink)
-            draw.text((x0 + 25, y0 + 19), str(opt["index"]), fill="#FFFFFF", font=font_num)
-
-            label = strip_html(str(opt.get("text", "")))
-            lines = [label[i : i + 12] for i in range(0, len(label), 12)][:4]
-            for l_i, line_s in enumerate(lines):
-                draw.text((x0 + 16, y0 + 62 + l_i * 26), line_s, fill=ink, font=font_opt)
+        draw_verbal_expression_scene(draw, prompt_text, transcript_ja, scene_box)
     else:
-        # Mondai 1 & 2: Authentic 2x2 grid with illustrated panel + Japanese caption
+        # Four blocks (1, 2, 3, 4): Large 2x2 boxes filled with distinct illustrations
+        gap = 20
         card_w = (width - margin_x * 2 - gap) // 2
-        card_h = (height - top_y - 24 - gap) // 2
+        card_h = (height - top_y - 28 - gap) // 2
 
         for idx in range(min(4, len(options))):
             opt = options[idx]
@@ -445,19 +619,18 @@ def render_listening_worksheet_png(
             x1 = x0 + card_w
             y1 = y0 + card_h
 
-            draw.rounded_rectangle([x0, y0, x1, y1], radius=10, fill="#FFFFFF", outline=ink, width=2)
-            draw.ellipse([x0 + 14, y0 + 14, x0 + 48, y0 + 48], fill=ink)
-            draw.text((x0 + 25, y0 + 19), str(opt["index"]), fill="#FFFFFF", font=font_num)
+            draw.rounded_rectangle([x0, y0, x1, y1], radius=12, fill="#FFFFFF", outline=ink, width=3)
 
-            # Custom illustration area tailored to this option
-            draw_option_illustration(draw, strip_html(str(opt.get("text", ""))), (x0 + 58, y0 + 14, x1 - 18, y1 - 54))
+            # Option number badge (1, 2, 3, 4) in top-left corner
+            draw.ellipse([x0 + 16, y0 + 16, x0 + 62, y0 + 62], fill=ink)
+            draw.text((x0 + 30, y0 + 22), str(opt["index"]), fill="#FFFFFF", font=font_num)
 
-            # Option caption strip at bottom of panel
-            draw.line([x0 + 12, y1 - 48, x1 - 12, y1 - 48], fill="#E4E4E7", width=1)
-            label = strip_html(str(opt.get("text", "")))
-            if len(label) > 21:
-                label = label[:20] + "…"
-            draw.text((x0 + 18, y1 - 38), label, fill=ink, font=font_opt)
+            # Full-box visual illustration for this choice
+            draw_four_block_cell(
+                draw,
+                strip_html(str(opt.get("text", ""))),
+                (x0 + 68, y0 + 18, x1 - 22, y1 - 18),
+            )
 
     img.save(out_path, format="PNG", optimize=True)
     return out_path
@@ -472,20 +645,6 @@ def upload_storage_bytes(supabase, data: bytes, storage_path: str, content_type:
     )
 
 
-async def synthesize_with_retry(transcript_ja: str, out_path: Path, retries: int = 3) -> None:
-    if out_path.exists() and out_path.stat().st_size > 1000:
-        return
-    last_err: Exception | None = None
-    for attempt in range(1, retries + 1):
-        try:
-            await synthesize_transcript_mp3(transcript_ja, out_path)
-            return
-        except Exception as err:
-            last_err = err
-            await asyncio.sleep(attempt * 1.5)
-    raise RuntimeError(f"TTS failed after {retries} attempts for {out_path}: {last_err}")
-
-
 async def process_and_seed() -> None:
     url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
     key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
@@ -497,48 +656,106 @@ async def process_and_seed() -> None:
     compiled_path = Path("data/compiled_n5_6sets.json")
     exams = json.loads(compiled_path.read_text(encoding="utf-8"))
     supabase = create_client(url, key)
-    media_cache = Path("/tmp/nihonsync_media_build")
+    media_cache = Path("/tmp/nihonsync_media_build_v3")
 
     for exam in exams:
         meta = exam["exam_metadata"]
         code = meta["exam_code"]
-        print(f"\n=== Updating Visual Sheets & Media for {code} ===")
+        set_num = int(meta["test_number"])
+        padded = f"{set_num:02d}"
+        print(f"\n=== Updating Visual Sheets for {code} ===")
+
+        exam_row = (
+            supabase.table("exams")
+            .select("id")
+            .eq("exam_code", code)
+            .maybe_single()
+            .execute()
+        )
+        exam_id = exam_row.data["id"] if exam_row.data else None
+
+        listen_sec_id = None
+        if exam_id:
+            sec_row = (
+                supabase.table("exam_sections")
+                .select("id")
+                .eq("exam_id", exam_id)
+                .eq("section_code", "LISTENING")
+                .maybe_single()
+                .execute()
+            )
+            listen_sec_id = sec_row.data["id"] if sec_row.data else None
+
+        mg_id_by_num: dict[int, str] = {}
+        if listen_sec_id:
+            mg_rows = (
+                supabase.table("mondai_groups")
+                .select("id, mondai_number")
+                .eq("section_id", listen_sec_id)
+                .execute()
+            )
+            for r in mg_rows.data or []:
+                mg_id_by_num[int(r["mondai_number"])] = r["id"]
 
         listening_sec = next(
             s for s in exam["sections"] if s["section_code"] == "LISTENING"
         )
-        sheet_count = 0
+        four_blk_cnt = 0
+        single_cnt = 0
+        audio_only_cnt = 0
+
         for mg in listening_sec["mondai_groups"]:
-            m_num = int(mg.get("mondai_number", 1))
+            m_num = int(mg["mondai_number"])
+            q_type = mg.get("question_type", "")
+            mg_id = mg_id_by_num.get(m_num)
+
             for q in mg["questions"]:
-                q_no = q["question_number"]
-                if q.get("image_url"):
-                    local_png = media_cache / q["image_url"]
+                q_no = int(q["question_number"])
+                cat = q.get("category", "")
+                layout_style = classify_visual_layout(cat, q_type)
+
+                if layout_style in ("four_block", "single_scene"):
+                    new_img_path = f"jlpt/n5/mock{padded}/listening_q{q_no}_sheet_v3.png"
+                    local_png = media_cache / new_img_path
                     render_listening_worksheet_png(
+                        layout_style=layout_style,
                         question_number=q_no,
-                        mondai_number=m_num,
                         prompt_text=q.get("prompt_html", ""),
+                        transcript_ja=q.get("transcript_ja") or "",
                         options=q["options"],
                         out_path=local_png,
                     )
                     upload_storage_bytes(
-                        supabase, local_png.read_bytes(), q["image_url"], "image/png"
+                        supabase, local_png.read_bytes(), new_img_path, "image/png"
                     )
-                    sheet_count += 1
+                    q["image_url"] = new_img_path
+                    if layout_style == "four_block":
+                        four_blk_cnt += 1
+                    else:
+                        single_cnt += 1
+                else:
+                    q["image_url"] = None
+                    audio_only_cnt += 1
 
-                if q.get("audio_url") and q.get("transcript_ja"):
-                    local_mp3 = media_cache / q["audio_url"]
-                    if not local_mp3.exists():
-                        await synthesize_with_retry(q["transcript_ja"], local_mp3)
-                        upload_storage_bytes(
-                            supabase, local_mp3.read_bytes(), q["audio_url"], "audio/mpeg"
-                        )
+                if mg_id:
+                    supabase.table("questions").update(
+                        {"image_url": q["image_url"]}
+                    ).eq("mondai_group_id", mg_id).eq(
+                        "question_number", q_no
+                    ).execute()
 
-                sys.stdout.write(f"\r  Uploaded {sheet_count} illustrated visual sheets (up to Q{q_no}/24)")
+                sys.stdout.write(
+                    f"\r  Synced: {four_blk_cnt} 4-block | {single_cnt} single-scene (arrow) | {audio_only_cnt} audio-only (Q{q_no}/24)"
+                )
                 sys.stdout.flush()
         print()
 
-    print("\nDONE: All 102 question-relevant JLPT listening visual sheets are live in Supabase Storage!")
+    compiled_path.write_text(
+        json.dumps(exams, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    print(
+        "\nDONE: All 6 JLPT N5 sets updated with authentic 4-block and single-scene speaker-arrow visual sheets!"
+    )
 
 
 if __name__ == "__main__":

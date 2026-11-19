@@ -10,6 +10,8 @@ import {
   Play,
   RefreshCw,
   RotateCcw,
+  X,
+  ZoomIn,
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
@@ -48,6 +50,7 @@ export function ListeningAudioPlayer({
   const [playbackRate, setPlaybackRate] = useState(1);
   const [loadError, setLoadError] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const rawAudioPath = audioUrl ?? src ?? "";
 
@@ -78,10 +81,10 @@ export function ListeningAudioPlayer({
     setCurrentTime(0);
     setDuration(0);
     setLoadError(false);
+    setLightboxOpen(false);
     maxReachedTimeRef.current = 0;
   }, [resolvedAudioSrc]);
 
-  // Pause this player automatically whenever another ListeningAudioPlayer starts
   useEffect(() => {
     function handleOtherPlayerStarted(event: Event) {
       const custom = event as CustomEvent<{ playerId: string }>;
@@ -125,7 +128,6 @@ export function ListeningAudioPlayer({
       maxReachedTimeRef.current = 0;
     }
 
-    // Broadcast so any currently active audio player pauses immediately
     window.dispatchEvent(
       new CustomEvent(AUDIO_PLAY_EVENT, { detail: { playerId } })
     );
@@ -208,17 +210,70 @@ export function ListeningAudioPlayer({
   return (
     <div className="mt-3 space-y-3">
       {resolvedImageSrc && (
-        <div className="overflow-hidden rounded-xl border border-[#E5E2DC] bg-[#FAF9F7] p-3 dark:border-[#27272A] dark:bg-[#111113]">
-          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-[#475569] dark:text-[#A1A1AA]">
-            <ImageIcon className="h-3.5 w-3.5 text-[#E04F33]" />
-            <span>Listening Visual Sheet (問題用紙)</span>
+        <div className="overflow-hidden rounded-xl border border-[#E5E2DC] bg-[#FAF9F7] p-2.5 sm:p-3.5 dark:border-[#27272A] dark:bg-[#111113]">
+          <div className="mb-2 flex items-center justify-between gap-2 text-[11px] font-bold text-[#475569] dark:text-[#A1A1AA]">
+            <span className="inline-flex items-center gap-1.5">
+              <ImageIcon className="h-3.5 w-3.5 text-[#E04F33]" />
+              <span>Listening Visual Sheet (問題用紙)</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => setLightboxOpen(true)}
+              className="inline-flex items-center gap-1 rounded-lg border border-[#E5E2DC] bg-white px-2.5 py-1 text-[11px] font-bold text-[#18181B] transition hover:border-[#E04F33] hover:text-[#E04F33] dark:border-[#27272A] dark:bg-[#18181B] dark:text-[#F4F4F5]"
+            >
+              <ZoomIn className="h-3.5 w-3.5 text-[#E04F33]" />
+              <span>Enlarge</span>
+            </button>
           </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={resolvedImageSrc}
-            alt="JLPT Listening Question Visual Sheet"
-            className="mx-auto max-h-80 w-auto rounded-lg border border-[#E5E2DC] bg-white object-contain dark:border-[#27272A]"
-          />
+
+          <button
+            type="button"
+            onClick={() => setLightboxOpen(true)}
+            className="group relative block w-full overflow-hidden rounded-lg border border-[#E5E2DC] bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E04F33] dark:border-[#27272A]"
+            aria-label="Tap to enlarge listening visual sheet"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={resolvedImageSrc}
+              alt="JLPT Listening Question Visual Sheet"
+              className="mx-auto max-h-[560px] w-full max-w-2xl object-contain transition-transform duration-150 group-hover:scale-[1.01]"
+            />
+          </button>
+        </div>
+      )}
+
+      {lightboxOpen && resolvedImageSrc && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Enlarged Listening Visual Sheet"
+          onClick={() => setLightboxOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 sm:p-6"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-h-[92vh] w-full max-w-4xl overflow-auto rounded-2xl border border-[#E5E2DC] bg-white p-3 shadow-2xl dark:border-[#27272A] dark:bg-[#18181B]"
+          >
+            <div className="mb-2 flex items-center justify-between px-1">
+              <span className="text-xs font-bold text-[#18181B] dark:text-[#F4F4F5]">
+                問題用紙 — Full View
+              </span>
+              <button
+                type="button"
+                onClick={() => setLightboxOpen(false)}
+                className="inline-flex min-h-[36px] items-center gap-1 rounded-xl bg-[#E04F33] px-3 py-1.5 text-xs font-bold text-white transition hover:bg-[#C83E23]"
+              >
+                <X className="h-4 w-4" />
+                <span>Close</span>
+              </button>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={resolvedImageSrc}
+              alt="Enlarged JLPT Listening Question Visual Sheet"
+              className="mx-auto h-auto w-full rounded-lg bg-white object-contain"
+            />
+          </div>
         </div>
       )}
 
