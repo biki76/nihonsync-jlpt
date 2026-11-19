@@ -104,7 +104,7 @@ def plan_visual_prompts_with_llama(
             "between two Japanese people (e.g., classmates, coworkers, shop clerk and customer, "
             "family members) with clear body language and props so a test-taker immediately "
             "understands what the indicated speaker is about to say. "
-            "Respond ONLY with valid JSON: "
+            "Always depict fully clothed people in G-rated school, office, shop, or living-room settings (never use words like bath, shower, bed, bedroom, or undress). Respond ONLY with valid JSON: "
             '{"scene": "concrete English visual description of the scene and characters", '
             '"speaker_side": "left" or "right", '
             '"speaker_pose": "short description of the speaker character"}'
@@ -117,14 +117,15 @@ def plan_visual_prompts_with_llama(
             "concrete English visual descriptions (one per option 1..4) showing the exact action, "
             "object, direction, time, or place so each panel clearly represents its option. "
             "Include a Japanese person performing the action whenever natural. "
-            "Respond ONLY with valid JSON: "
+            "Always depict fully clothed people in G-rated school, office, shop, or living-room settings (never use words like bath, shower, bed, bedroom, or undress). Respond ONLY with valid JSON: "
             '{"panels": ["panel 1 scene", "panel 2 scene", "panel 3 scene", "panel 4 scene"]}'
         )
         opts_str = "\n".join(f"{o['index']}. {clean_text(o.get('text', ''))}" for o in options)
         user_msg = f"Question: {prompt_ja}\nScript: {transcript_ja}\nOptions:\n{opts_str}"
 
-    for attempt in range(3):
+    for attempt in range(4):
         try:
+            time.sleep(0.6)
             resp = client.post(
                 url,
                 headers=cf_headers(),
@@ -138,6 +139,11 @@ def plan_visual_prompts_with_llama(
                 },
                 timeout=45.0,
             )
+            if resp.status_code == 429:
+                wait_s = 5.0 * (attempt + 1)
+                print(f"\n  [RATE LIMIT] Llama 429 — waiting {wait_s:.0f}s...")
+                time.sleep(wait_s)
+                continue
             resp.raise_for_status()
             raw_out = resp.json().get("result", {}).get("response", "")
             parsed = None
@@ -175,7 +181,7 @@ def plan_visual_prompts_with_llama(
 def generate_manga_panel_image(client: httpx.Client, scene_desc: str) -> Image.Image:
     """
     Calls Cloudflare Workers AI FLUX.1 Schnell (with SDXL Lightning fallback)
-    within strict prompt length limits and normalizes to monochrome JLPT art.
+    with rate-limit backoff and strict prompt length limits.
     """
     clean_scene = re.sub(r"\s+", " ", str(scene_desc)).strip()[:420]
     short_style = (
@@ -184,6 +190,7 @@ def generate_manga_panel_image(client: httpx.Client, scene_desc: str) -> Image.I
         "minimal flat light-grey shading, no text, no numbers, no borders"
     )
     full_prompt = f"{clean_scene}, {short_style}"
+    last_err = "Unknown error"
 
     for model in IMAGE_MODELS:
         url = f"https://api.cloudflare.com/client/v4/accounts/{CF_ACCOUNT_ID}/ai/run/{model}"
@@ -194,12 +201,25 @@ def generate_manga_panel_image(client: httpx.Client, scene_desc: str) -> Image.I
         )
         for attempt in range(3):
             try:
+                time.sleep(1.2)
                 resp = client.post(url, headers=cf_headers(), json=payload, timeout=90.0)
                 if resp.status_code == 429:
-                    time.sleep(3.0 * (attempt + 1))
+                    last_err = f"HTTP 429: {resp.text[:180]}"
+                    wait_s = 6.0 * (attempt + 1)
+                    print(f"\n  [RATE LIMIT] {model} 429 — waiting {wait_s:.0f}s...")
+                    time.sleep(wait_s)
                     continue
                 if resp.status_code >= 400:
-                    raise RuntimeError(f"HTTP {resp.status_code}: {resp.text[:180]}")
+                    if "8007" in resp.text or "NSFW" in resp.text:
+                        payload["prompt"] = (
+                            "Two polite Japanese people in everyday casual clothes conversing "
+                            "in a bright room, black and white Japanese JLPT textbook manga "
+                            "line art on pure white background, crisp black ink outlines, "
+                            "minimal flat light-grey shading, no text, no numbers, no borders"
+                        )
+                        continue
+                    raise RuntimeError(f"HTTP {resp.status_code}: {resp.text[:220]}")
+
                 ctype = resp.headers.get("content-type", "")
                 if "application/json" in ctype:
                     b64_img = resp.json()["result"]["image"]
@@ -211,11 +231,15 @@ def generate_manga_panel_image(client: httpx.Client, scene_desc: str) -> Image.I
                 img = ImageOps.autocontrast(img, cutoff=2)
                 return img.convert("RGB")
             except Exception as exc:
+                last_err = str(exc)
                 if attempt == 2:
-                    print(f"\n  [WARN] Model {model} failed ({exc})")
-                time.sleep(1.5 * (attempt + 1))
+                    print(f"\n  [WARN] Model {model} failed ({last_err})")
+                time.sleep(2.0 * (attempt + 1))
 
-    raise RuntimeError("All Cloudflare Workers AI image models failed.")
+    raise RuntimeError(
+        f"Cloudflare Workers AI quota/rate limit reached ({last_err}). "
+        "Already-generated PNGs are cached locally—re-run this script after 00:00 UTC (6:00 AM) to resume."
+    )
 
 
 def draw_speaker_arrow(draw: ImageDraw.ImageDraw, tip_x: int, tip_y: int, from_left: bool) -> None:
@@ -415,8 +439,7 @@ def main() -> None:
                     sys.stdout.write(f"\r  Synced {code} Q{q_no} ({layout}) -> {storage_path}")
                     sys.stdout.flush()
             print()
-
-    compiled_path.write_text(json.dumps(exams, ensure_ascii=False, indent=2), encoding="utf-8")
+            compiled_path.write_text(json.dumps(exams, ensure_ascii=False, indent=2), encoding="utf-8")
     print("\nDONE: Context-matched JLPT manga illustrations generated, uploaded, and synced!")
 
 
