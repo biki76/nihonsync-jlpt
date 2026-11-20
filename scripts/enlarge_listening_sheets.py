@@ -333,8 +333,13 @@ def main() -> None:
 
     for exam in exams:
         code = exam["exam_code"]
-        m_num = re.search(r"MOCK-0?(\d+)", code, re.I)
-        set_num = int(m_num.group(1)) if m_num else 1
+        m_lvl = re.search(r"JLPT-(N[1-5])-MOCK-0?(\d+)", code, re.I)
+        if not m_lvl:
+            continue
+        level_slug = m_lvl.group(1).lower()
+        set_num = int(m_lvl.group(2))
+        if level_slug != "n5" or set_num > 6:
+            continue
         padded = f"{set_num:02d}"
 
         sec_rows = sb.table("exam_sections").select("id").eq("exam_id", exam["id"]).eq("section_code", "LISTENING").execute().data or []
@@ -357,7 +362,7 @@ def main() -> None:
         for idx, q in enumerate(q_rows, start=1):
             m_num_val = mg_num_by_id.get(q["mondai_group_id"], 1)
             if m_num_val in (1, 2, 3):
-                storage_path = f"jlpt/n5/mock{padded}/listening_q{idx}_sheet_v5.png"
+                storage_path = f"jlpt/{level_slug}/mock{padded}/listening_q{idx}_sheet_v5.png"
                 local_png = tmp_dir / f"mock{padded}_q{idx}_sheet_v5.png"
                 render_sheet_png(
                     is_single_scene=(m_num_val == 3),
