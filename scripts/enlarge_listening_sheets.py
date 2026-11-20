@@ -49,8 +49,10 @@ def load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     return ImageFont.load_default()
 
 
-def strip_html(raw: str) -> str:
-    return re.sub(r"<[^>]+>", "", html.unescape(raw or "")).strip()
+def strip_html(raw: str | dict | None) -> str:
+    if isinstance(raw, dict):
+        raw = str(raw.get("text") or raw.get("label") or "")
+    return re.sub(r"<[^>]+>", "", html.unescape(str(raw or ""))).strip()
 
 
 def parse_clock_time(text: str) -> tuple[int, int] | None:
