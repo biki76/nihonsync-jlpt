@@ -344,7 +344,7 @@ def main() -> None:
 
         q_rows = (
             sb.table("questions")
-            .select("id, mondai_group_id, question_number, stem_html, options")
+            .select("id, mondai_group_id, question_number, prompt_html, options")
             .in_("mondai_group_id", list(mg_num_by_id.keys()))
             .order("question_number")
             .execute()
@@ -359,7 +359,7 @@ def main() -> None:
                 local_png = tmp_dir / f"mock{padded}_q{idx}_sheet_v5.png"
                 render_sheet_png(
                     is_single_scene=(m_num_val == 3),
-                    prompt_text=q.get("stem_html") or "",
+                    prompt_text=q.get("prompt_html") or "",
                     options=q.get("options") or [],
                     out_path=local_png,
                 )
