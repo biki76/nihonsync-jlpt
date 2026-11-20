@@ -2334,7 +2334,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q4_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q4_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q4_sheet_v6.png",
                 "transcript_ja": "母：スーパーで たまごと ぎゅうにゅうを かって 来て。\n子：はい。パンは？\n母：パンは まだ あるから いいわ。あ、たまごも いえに 十こ あったわ。ぎゅうにゅうだけで いい。それと、さとうも おねがい。\n子：わかった。ぎゅうにゅうと さとうね。",
                 "explanation": {
                   "en": "Eggs are already at home (10), bread is still there; she asks only for milk and sugar.",
@@ -2367,7 +2367,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q5_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q5_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q5_sheet_v6.png",
                 "transcript_ja": "客：あした 六時に 四人で よやくを おねがいします。\n店：あしたの 六時は いっぱいです。七時なら あいて います。\n客：七時は おそいですね。五時半は どうですか。\n店：五時半は だいじょうぶです。四人ですね。\n客：あ、すみません。五人に なります。\n店：はい、五時半に 五人ですね。",
                 "explanation": {
                   "en": "6:00 is full, 7:00 is too late; they book 5:30. The party grows from four to five.",
@@ -2400,7 +2400,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q6_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q6_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q6_sheet_v6.png",
                 "transcript_ja": "男：あしたは なんの ごみの 日ですか。\n女：あしたは 水よう日ですね。水よう日は びんの 日です。かみは 月よう日ですよ。\n男：しんぶんは？\n女：しんぶんは かみですから、月よう日に 出して ください。\n男：わかりました。じゃ、あしたは びんを 出します。",
                 "explanation": {
                   "en": "Tomorrow is Wednesday = bottle day. Paper and newspapers go out on Monday.",
@@ -2441,7 +2441,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q7_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q7_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q7_sheet_v6.png",
                 "transcript_ja": "女：どうして おそく なりましたか。おきるのが おそかったですか。\n男：いいえ、いつもの じかんに おきました。バスが 十五ふん おそかったんです。\n女：そうですか。つぎは でんしゃで 来て ください。",
                 "explanation": {
                   "en": "He denies oversleeping; the bus was fifteen minutes late.",
@@ -2474,7 +2474,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q8_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q8_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q8_sheet_v6.png",
                 "transcript_ja": "女：田中さんは にくと さかな、どちらが すきですか。\n男：さかなも すきですが、にくの ほうが すきです。\n女：じゃ、きょうは にくですか。\n男：いいえ、きのう にくを 食べましたから、きょうは さかなに します。",
                 "explanation": {
                   "en": "He prefers meat but had meat yesterday, so he will have fish today.",
@@ -2507,7 +2507,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q9_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q9_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q9_sheet_v6.png",
                 "transcript_ja": "男：ごかぞくは なんにんですか。\n女：五人です。りょうしんと あにと わたし、それから おばあちゃんです。\n男：おばあちゃんも いっしょに すんで いますか。\n女：いいえ、おばあちゃんは 大阪に います。ですから、いま いっしょに すんで いるのは 四人です。",
                 "explanation": {
                   "en": "Five in the family, but grandmother lives in Osaka, so four live together.",
@@ -2540,7 +2540,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q10_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q10_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q10_sheet_v6.png",
                 "transcript_ja": "男：金よう日の よる、いっしょに ごはんを 食べませんか。\n女：金よう日は 友だちの たんじょう日なんです。木よう日は どうですか。\n男：木よう日は 七時まで しごとです。\n女：じゃ、木よう日の 八時に しませんか。\n男：いいですね。そうしましょう。",
                 "explanation": {
                   "en": "Friday is her friend's birthday; he works until 7 on Thursday, so they meet Thursday at 8.",
@@ -2573,7 +2573,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q11_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q11_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q11_sheet_v6.png",
                 "transcript_ja": "客：この シャツの 青は ありますか。\n店員：青の Mは ありませんが、Lなら あります。\n客：Lは 大きいですね。白の Mは ありますか。\n店員：はい、あります。\n客：じゃ、それを ください。",
                 "explanation": {
                   "en": "No blue M; L is too big; she buys the white M.",
@@ -2606,7 +2606,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q12_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q12_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q12_sheet_v6.png",
                 "transcript_ja": "男：きのうは どうして 休みましたか。\n女：子どもが ねつを 出したので、びょういんに つれて 行きました。\n男：そうですか。子どもさんは もう だいじょうぶですか。\n女：はい、もう 元気です。",
                 "explanation": {
                   "en": "Her child ran a fever and she took the child to the hospital.",
@@ -2643,7 +2643,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q13_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q13_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q13_sheet_v6.png",
                 "transcript_ja": "ナレーター：友だちの うちで ごはんを 食べました。帰る とき、なんと いいますか。",
                 "explanation": {
                   "en": "After being treated to a meal, say 'Gochisousama deshita.'",
@@ -2672,7 +2672,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q14_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q14_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q14_sheet_v6.png",
                 "transcript_ja": "ナレーター：かいしゃで、まだ しごとを して いる 人に、先に 帰る とき、なんと いいますか。",
                 "explanation": {
                   "en": "Leaving before colleagues: 'Osaki ni shitsurei shimasu.'",
@@ -2701,7 +2701,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q15_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q15_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q15_sheet_v6.png",
                 "transcript_ja": "ナレーター：先生の 話が よく きこえませんでした。なんと いいますか。",
                 "explanation": {
                   "en": "To ask for repetition: 'Sumimasen, mou ichido onegaishimasu.'",
@@ -2730,7 +2730,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q16_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q16_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q16_sheet_v6.png",
                 "transcript_ja": "ナレーター：友だちが かぜを ひいて います。帰る とき、なんと いいますか。",
                 "explanation": {
                   "en": "To someone who is sick: 'Odaiji ni.'",
@@ -2759,7 +2759,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q17_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q17_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q17_sheet_v6.png",
                 "transcript_ja": "ナレーター：友だちの ペンを かりたいです。なんと いいますか。",
                 "explanation": {
                   "en": "To ask to borrow: 'Kono pen, karite mo ii desu ka.'",
@@ -5156,7 +5156,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q1_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q1_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q1_sheet_v6.png",
                 "transcript_ja": "女：さとうさん、午後の かいぎの しりょうは もう できましたか。\n男：はい、できました。今から コピーを とります。\n女：ありがとう。あ、コピーの まえに、しゃちょうに 電話して ください。じかんが かわった ことを つたえて ください。\n男：わかりました。すぐ 電話します。",
                 "explanation": {
                   "en": "The woman asks him to call the company president before making copies."
@@ -5188,7 +5188,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q2_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q2_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q2_sheet_v6.png",
                 "transcript_ja": "女：すみません、この 黒い くつの 23センチは ありますか。\n店員：少々 おまち ください。…すみません、黒の 23センチは うりきれです。24センチなら あります。\n女：24センチは 大きいですね。茶色は ありますか。\n店員：茶色の 23センチなら ございます。\n女：じゃ、それを ください。",
                 "explanation": {
                   "en": "Black 23cm is sold out and 24cm is too large; she buys the brown 23cm pair."
@@ -5220,7 +5220,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q3_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q3_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q3_sheet_v6.png",
                 "transcript_ja": "男：すみません、みどりびょういんへ 行きたいんですが、バスが いいですか。\n女：そうですね、えきの まえから バスが 出て いますよ。でも、今は みちが こんで いますから、じかんが かかりますよ。\n男：そうですか。あるいて どの ぐらいですか。\n女：15ふん ぐらいです。まっすぐ 行くだけですから、かんたんですよ。\n男：じゃ、あるいて 行きます。",
                 "explanation": {
                   "en": "Roads are congested so the bus takes long; he decides to walk 15 minutes."
@@ -5252,7 +5252,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q4_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q4_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q4_sheet_v6.png",
                 "transcript_ja": "男：おなかが すきましたね。えきの まえの カフェに 入りませんか。\n女：あそこは いつも こんで いますよ。デパートの レストランは どうですか。\n男：きょうは 天気が いいから、べんとうを かって こうえんで 食べませんか。\n女：いいですね！そうしましょう。",
                 "explanation": {
                   "en": "The café is crowded; they agree to buy bento and eat in the park."
@@ -5284,7 +5284,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q5_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q5_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q5_sheet_v6.png",
                 "transcript_ja": "女：すみません、この ペンを 3ほん ください。\n店員：はい、3ほんで 300円です。あ、きょうは 5ほん かうと 400円に なりますよ。\n女：そうですか。じゃ、5ほん ください。あ、やっぱり もう 1ほん ください。ぜんぶで 6ほんです。\n店員：はい、ありがとうございます。",
                 "explanation": {
                   "en": "She starts with 3, increases to 5 for the discount, then adds 1 more for 6 total."
@@ -5316,7 +5316,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q6_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q6_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q6_sheet_v6.png",
                 "transcript_ja": "女：あしたの バスりょこう、しゅうごうは 八時半ですね。\n男：ええ、えきの まえに 八時半です。\n女：いえから えきまで どの ぐらい かかりますか。\n男：でんしゃで 30ぷんです。でも、あしたは ちょっと はやめに いえを 出ます。七時半に 出ます。",
                 "explanation": {
                   "en": "Meeting time is 8:30 and the train takes 30 minutes, so he leaves early at 7:30."
@@ -5356,7 +5356,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q7_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q7_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q7_sheet_v6.png",
                 "transcript_ja": "男：らいしゅうの 土よう日、クラスの パーティーに 来ますか。\n女：ごめんなさい。その 日は かぞくと りょこうに 行くんです。\n男：そうですか。ざんねんですね。",
                 "explanation": {
                   "en": "She is going on a trip with her family that Saturday."
@@ -5388,7 +5388,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q8_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q8_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q8_sheet_v6.png",
                 "transcript_ja": "女：たなかさんは やすみの 日、なにを して いますか。\n男：土よう日は よく ともだちと テニスを します。日よう日は どこにも 行かないで、へやを そうじします。",
                 "explanation": {
                   "en": "He plays tennis on Saturdays and cleans his room on Sundays."
@@ -5420,7 +5420,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q9_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q9_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q9_sheet_v6.png",
                 "transcript_ja": "男：マリアさんは いつ 日本へ 来ましたか。\n女：きょねんの 十月です。\n男：そうですか。今は 四月ですから、ちょうど 半年ですね。\n女：はい、そうですね。",
                 "explanation": {
                   "en": "She arrived last October and it is now April, which is half a year."
@@ -5452,7 +5452,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q10_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q10_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q10_sheet_v6.png",
                 "transcript_ja": "女：きのうの よる、電話しましたが、出ませんでしたね。\n男：あ、すみません。あたまが いたかったので、やくそくを キャンセルして、びょういんへ 行って いました。",
                 "explanation": {
                   "en": "He had a headache, canceled his plans, and went to the hospital."
@@ -5484,7 +5484,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q11_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q11_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q11_sheet_v6.png",
                 "transcript_ja": "男：どんな かばんを さがして いますか。\n女：りょこうに つかいますから、大きいのが いいです。でも、おもいのは いやです。かるいのが ほしいです。",
                 "explanation": {
                   "en": "For travel, she wants a large bag that is also lightweight."
@@ -5516,7 +5516,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q12_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q12_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q12_sheet_v6.png",
                 "transcript_ja": "男：金よう日に けんさんの いえに あそびに 行きませんか。\n女：金よう日は けんさんが アルバイトです。土よう日は どうですか。\n男：いいですね。土よう日の ごごに しましょう。",
                 "explanation": {
                   "en": "Ken has a part-time job on Friday, so they agree on Saturday afternoon."
@@ -5552,7 +5552,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q13_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q13_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q13_sheet_v6.png",
                 "transcript_ja": "ナレーター：ともだちの いえに はじめて 行きました。いえに はいる とき、なんと いいますか。",
                 "explanation": {
                   "en": "When entering someone's home, say 'Ojama shimasu.'"
@@ -5580,7 +5580,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q14_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q14_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q14_sheet_v6.png",
                 "transcript_ja": "ナレーター：バスで おばあさんが たって います。せきを ゆずりたい とき、なんと いいますか。",
                 "explanation": {
                   "en": "To offer a seat politely, say 'Douzo suwatte kudasai.'"
@@ -5608,7 +5608,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q15_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q15_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q15_sheet_v6.png",
                 "transcript_ja": "ナレーター：レストランで みずが ほしいです。てんいんに なんと いいますか。",
                 "explanation": {
                   "en": "To ask a server for water, say 'Sumimasen, omizu o kudasai.'"
@@ -5636,7 +5636,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q16_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q16_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q16_sheet_v6.png",
                 "transcript_ja": "ナレーター：ともだちが テストに ごうかくしました。なんと いいますか。",
                 "explanation": {
                   "en": "To congratulate someone on passing an exam, say 'Omedetou gozaimasu.'"
@@ -5664,7 +5664,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock02/listening_q17_v6.mp3",
-                "image_url": "jlpt/n5/mock02/listening_q17_sheet_v5.png",
+                "image_url": "jlpt/n5/mock02/listening_q17_sheet_v6.png",
                 "transcript_ja": "ナレーター：にもつが おもくて もてません。ともだちに てつだって ほしい とき、なんと いいますか。",
                 "explanation": {
                   "en": "To ask a friend for help, say 'Chotto tetsudatte moraemasen ka.'"
@@ -8053,7 +8053,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q1_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q1_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q1_sheet_v6.png",
                 "transcript_ja": "女：田中さん、会議の前に 窓を 開けて ください。\n男：はい、わかりました。窓を 開けますね。\n女：あ、そのまえに、ホワイトボードを きれいに してください。\n男：はい、わかりました。",
                 "explanation": {
                   "en": "The woman asks him to clean the whiteboard before opening the windows."
@@ -8085,7 +8085,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q2_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q2_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q2_sheet_v6.png",
                 "transcript_ja": "男：いらっしゃいませ。なにを 飲みますか。コーヒーと 紅茶が ありますよ。\n女：そうですね。あたたかい お茶は ありますか。\n男：はい、日本のお茶が ありますよ。\n女：じゃ、それを お願いします。",
                 "explanation": {
                   "en": "She asks for hot Japanese green tea and orders that."
@@ -8117,7 +8117,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q3_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q3_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q3_sheet_v6.png",
                 "transcript_ja": "女：おはようございます。きょうは でんしゃで 来ましたか。\n男：いいえ、きょうは あしたが テストですから、いそいで 自転車で 来ました。\n女：そうですか。おつかれさま。",
                 "explanation": {
                   "en": "He came by bicycle because of the test tomorrow."
@@ -8149,7 +8149,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q4_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q4_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q4_sheet_v6.png",
                 "transcript_ja": "男：今日の 午後、いっしょに 図書館へ 行きませんか。\n女：図書館は 今日は お休みですよ。\n男：あ、そうですか。じゃ、スーパーへ かいものに 行きましょう。\n女：いいですね、行きましょう。",
                 "explanation": {
                   "en": "Library is closed, so they agree to go to the supermarket."
@@ -8181,7 +8181,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q5_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q5_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q5_sheet_v6.png",
                 "transcript_ja": "男：すみません、この りんごを 四こ ください。\n店員：はい、四こで 四百円です。あ、今なら 五こ買うと 五百円ですが、どうですか。\n男：じゃ、五こに します。\n店員：ありがとうございます。",
                 "explanation": {
                   "en": "He starts with 4, but changes to 5 for the better deal."
@@ -8213,7 +8213,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q6_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q6_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q6_sheet_v6.png",
                 "transcript_ja": "男：佐藤さんは いつ 日本へ 来ましたか。\n女：去年の 九月に 来ました。\n男：そうですか。もう 一年ぐらい ですね。\n女：ええ、そうですね。",
                 "explanation": {
                   "en": "She came in September of last year."
@@ -8253,7 +8253,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q7_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q7_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q7_sheet_v6.png",
                 "transcript_ja": "女：きのう、学校を やすみましたね。どうしましたか。\n男：ええ、あたまが 痛くて、ねつが ありましたから、家に いました。\n女：そうですか。今は 大丈夫ですか。\n男：はい、もう 元気です。",
                 "explanation": {
                   "en": "He stayed home because he had a fever and headache."
@@ -8285,7 +8285,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q8_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q8_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q8_sheet_v6.png",
                 "transcript_ja": "男：山田さんは 毎晩 寝る前に なにを して いますか。\n女：そうですね。ラジオを 聞いたり、本を 読んだり します。\n男：そうですか。勉強は しませんか。\n女：勉強は 朝に します。",
                 "explanation": {
                   "en": "She listens to the radio or reads books before sleeping."
@@ -8317,7 +8317,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q9_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q9_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q9_sheet_v6.png",
                 "transcript_ja": "男：私の 家族は 父と 母と 姉と 私の 四人です。\n女：そうですか。お姉さんは 学生ですか。\n男：いいえ、会社員です。",
                 "explanation": {
                   "en": "His family has four members (father, mother, older sister, and himself)."
@@ -8349,7 +8349,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q10_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q10_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q10_sheet_v6.png",
                 "transcript_ja": "男：きのうの 午後、なにを しましたか。雨でしたね。\n女：ええ、外へ 出ないで、うちで たくさん 料理を 作りました。\n男：そうですか。おいしかったですか。\n女：はい、とても おいしかったです。",
                 "explanation": {
                   "en": "She stayed home and cooked a lot because it was raining."
@@ -8381,7 +8381,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q11_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q11_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q11_sheet_v6.png",
                 "transcript_ja": "男：新しい ペンが ほしいです。\n女：どんな ペンが いいですか。\n男：赤くて、使いやすい ペンが いいです。",
                 "explanation": {
                   "en": "He wants a red, easy-to-use pen."
@@ -8413,7 +8413,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q12_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q12_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q12_sheet_v6.png",
                 "transcript_ja": "男：来週の 火曜日に いっしょに 映画を 見ませんか。\n女：火曜日は バイトが ありますから、水曜日は どうですか。\n男：いいですね。水曜日に しましょう。",
                 "explanation": {
                   "en": "They change from Tuesday (part-time job) to Wednesday."
@@ -8449,7 +8449,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q13_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q13_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q13_sheet_v6.png",
                 "transcript_ja": "ナレーター：食堂で ごはんを 食べおわりました。なんと 言いますか。",
                 "explanation": {
                   "en": "After finishing a meal, say 'Gochisousama deshita.'"
@@ -8477,7 +8477,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q14_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q14_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q14_sheet_v6.png",
                 "transcript_ja": "ナレーター：朝、家を 出るとき、家族に なんと 言いますか。",
                 "explanation": {
                   "en": "When leaving home in the morning, say 'Ittekimasu.'"
@@ -8505,7 +8505,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q15_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q15_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q15_sheet_v6.png",
                 "transcript_ja": "ナレーター：友だちの 誕生日パーティーに 呼ばれました。行くとき、なんと 言いますか。",
                 "explanation": {
                   "en": "When attending a birthday, say 'Omedetou gozaimasu.'"
@@ -8533,7 +8533,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q16_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q16_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q16_sheet_v6.png",
                 "transcript_ja": "ナレーター：夜、寝るまえに 家族に なんと 言いますか。",
                 "explanation": {
                   "en": "Before going to bed, say 'Oyasuminasai.'"
@@ -8561,7 +8561,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock03/listening_q17_v6.mp3",
-                "image_url": "jlpt/n5/mock03/listening_q17_sheet_v5.png",
+                "image_url": "jlpt/n5/mock03/listening_q17_sheet_v6.png",
                 "transcript_ja": "ナレーター：電車の中で 足を ふまれてしまいました。なんと 言いますか。",
                 "explanation": {
                   "en": "When something happens or to get attention/apologize, say 'Sumimasen.'"
@@ -10950,7 +10950,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q1_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q1_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q1_sheet_v6.png",
                 "transcript_ja": "女：佐藤さん、会議の前に 窓を 開けて ください。\n男：はい、わかりました。窓を 開けますね。\n女：あ、そのまえに、ホワイトボードを きれいに してください。\n男：はい、わかりました。",
                 "explanation": {
                   "en": "The woman asks him to clean the whiteboard before opening the windows."
@@ -10982,7 +10982,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q2_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q2_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q2_sheet_v6.png",
                 "transcript_ja": "男：いらっしゃいませ。なにを 飲みますか。コーヒーと 紅茶が ありますよ。\n女：そうですね。あたたかい お茶は ありますか。\n男：はい、日本のお茶が ありますよ。\n女：じゃ、それを お願いします。",
                 "explanation": {
                   "en": "She asks for hot Japanese green tea and orders that."
@@ -11014,7 +11014,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q3_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q3_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q3_sheet_v6.png",
                 "transcript_ja": "女：おはようございます。きょうは でんしゃで 来ましたか。\n男：いいえ、きょうは あしたが テストですから、いそいで 自転車で 来ました。\n女：そうですか。おつかれさま。",
                 "explanation": {
                   "en": "He came by bicycle because of the test tomorrow."
@@ -11046,7 +11046,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q4_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q4_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q4_sheet_v6.png",
                 "transcript_ja": "男：今日の 午後、いっしょに 図書館へ 行きませんか。\n女：図書館は 今日は お休みですよ。\n男：あ、そうですか。じゃ、スーパーへ かいものに 行きましょう。\n女：いいですね、行きましょう。",
                 "explanation": {
                   "en": "Library is closed, so they agree to go to the supermarket."
@@ -11078,7 +11078,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q5_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q5_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q5_sheet_v6.png",
                 "transcript_ja": "男：すみません、この りんごを 四こ ください。\n店員：はい、四こで 四百円です。あ、今なら 五こ買うと 五百円ですが、どうですか。\n男：じゃ、五こに します。\n店員：ありがとうございます。",
                 "explanation": {
                   "en": "He starts with 4, but changes to 5 for the better deal."
@@ -11110,7 +11110,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q6_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q6_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q6_sheet_v6.png",
                 "transcript_ja": "男：佐藤さんは いつ 日本へ 来ましたか。\n女：去年の 九月に 来ました。\n男：そうですか。もう 一年ぐらい ですね。\n女：ええ、そうですね。",
                 "explanation": {
                   "en": "She came in September of last year. 問題2 [Comprehension of Key Points] Narrator: もんだい2では、まず しつもんを きいて ください。そのあと、もんだいようしを みて ください。よむ じかんが あります。それから はなしを きいて、1から 4の なかから、いちばん いい ものを ひとつ えらんで ください。"
@@ -11150,7 +11150,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q7_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q7_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q7_sheet_v6.png",
                 "transcript_ja": "女：きのう、学校を やすみましたね。どうしましたか。\n男：ええ、あたまが 痛くて、ねつが ありましたから、家に いました。\n女：そうですか。今は 大丈夫ですか。\n男：はい、もう 元気です。",
                 "explanation": {
                   "en": "He stayed home because he had a fever and headache."
@@ -11182,7 +11182,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q8_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q8_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q8_sheet_v6.png",
                 "transcript_ja": "男：山田さんは 毎晩 寝る前に なにを して いますか。\n女：そうですね。ラジオを 聞いたり、本を 読んだり します。\n男：そうですか。勉強は しませんか。\n女：勉強は 朝に します。",
                 "explanation": {
                   "en": "She listens to the radio or reads books before sleeping."
@@ -11214,7 +11214,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q9_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q9_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q9_sheet_v6.png",
                 "transcript_ja": "男：私の 家族は 父と 母と 姉と 私の 四人です。\n女：そうですか。お姉さんは 学生ですか。\n男：いいえ、会社員です。",
                 "explanation": {
                   "en": "His family has four members (father, mother, older sister, and himself)."
@@ -11246,7 +11246,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q10_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q10_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q10_sheet_v6.png",
                 "transcript_ja": "男：きのうの 午後、なにを しましたか。雨でしたね。\n女：ええ、外へ 出ないで、うちで たくさん 料理を 作りました。\n男：そうですか。おいしかったですか。\n女：はい、とても おいしかったです。",
                 "explanation": {
                   "en": "She stayed home and cooked a lot because it was raining."
@@ -11278,7 +11278,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q11_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q11_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q11_sheet_v6.png",
                 "transcript_ja": "男：新しい ペンが ほしいです。\n女：どんな ペンが いいですか。\n男：赤くて、使いやすい ペンが いいです。",
                 "explanation": {
                   "en": "He wants a red, easy-to-use pen."
@@ -11310,7 +11310,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q12_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q12_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q12_sheet_v6.png",
                 "transcript_ja": "男：来週の 火曜日に いっしょに 映画を 見ませんか。\n女：火曜日は バイトが ありますから、水曜日は どうですか。\n男：いいですね。水曜日に しましょう。",
                 "explanation": {
                   "en": "They change from Tuesday (part-time job) to Wednesday. 問題3 [Verbal Expressions] Narrator: もんだい3では、じょうきょうを よんで、しつもんを きいて ください。なんと いいますか。1から 3の なかか ら、いちばん いい ものを ひとつ えらんで ください。※この れんしゅうようの もんだいようしでは、えの かわりに じょ うきょうを もじで しめします。"
@@ -11346,7 +11346,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q13_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q13_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q13_sheet_v6.png",
                 "transcript_ja": "ナレーター：食堂で ごはんを 食べおわりました。なんと 言いますか。",
                 "explanation": {
                   "en": "After finishing a meal, say 'Gochisousama deshita.'"
@@ -11374,7 +11374,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q14_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q14_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q14_sheet_v6.png",
                 "transcript_ja": "ナレーター：朝、家を 出るとき、家族に なんと 言いますか。",
                 "explanation": {
                   "en": "When leaving home in the morning, say 'Ittekimasu.'"
@@ -11402,7 +11402,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q15_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q15_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q15_sheet_v6.png",
                 "transcript_ja": "ナレーター：友だちの 誕生日パーティーに 呼ばれました。行くとき、なんと 言いますか。",
                 "explanation": {
                   "en": "When attending a birthday, say 'Omedetou gozaimasu.'"
@@ -11430,7 +11430,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q16_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q16_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q16_sheet_v6.png",
                 "transcript_ja": "ナレーター：夜、寝るまえに 家族に なんと 言いますか。",
                 "explanation": {
                   "en": "Before going to bed, say 'Oyasuminasai.'"
@@ -11458,7 +11458,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock04/listening_q17_v6.mp3",
-                "image_url": "jlpt/n5/mock04/listening_q17_sheet_v5.png",
+                "image_url": "jlpt/n5/mock04/listening_q17_sheet_v6.png",
                 "transcript_ja": "ナレーター：電車の中で 足を ふまれてしまいました。なんと 言いますか。",
                 "explanation": {
                   "en": "When something happens or to get attention/apologize, say 'Sumimasen.' 問題4 [Quick Response] Narrator: もんだい4は、えなどが ありません。ぶんを きいて、1から 3の なかから、いちばん いい へんじを ひとつ えら んで ください。"
@@ -13847,7 +13847,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q1_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q1_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q1_sheet_v6.png",
                 "transcript_ja": "女：田中さん、会議の前に 窓を 開けて ください。\n男：はい、わかりました。窓を 開けますね。\n女：あ、そのまえに、ホワイトボードを きれいに してください。\n男：はい、わかりました。",
                 "explanation": {
                   "en": "The woman asks him to clean the whiteboard before opening the windows."
@@ -13879,7 +13879,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q2_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q2_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q2_sheet_v6.png",
                 "transcript_ja": "男：いらっしゃいませ。なにを 飲みますか。コーヒーと 紅茶が ありますよ。\n女：そうですね。あたたかい お茶は ありますか。\n男：はい、日本のお茶が ありますよ。\n女：じゃ、それを お願いします。",
                 "explanation": {
                   "en": "She asks for hot Japanese green tea and orders that."
@@ -13911,7 +13911,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q3_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q3_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q3_sheet_v6.png",
                 "transcript_ja": "女：おはようございます。きょうは でんしゃで 来ましたか。\n男：いいえ、きょうは あしたが テストですから、いそいで 自転車で 来ました。\n女：そうですか。おつかれさま。",
                 "explanation": {
                   "en": "He came by bicycle because of the test tomorrow."
@@ -13943,7 +13943,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q4_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q4_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q4_sheet_v6.png",
                 "transcript_ja": "男：今日の 午後、いっしょに 図書館へ 行きませんか。\n女：図書館は 今日は お休みですよ。\n男：あ、そうですか。じゃ、スーパーへ かいものに 行きましょう。\n女：いいですね、行きましょう。",
                 "explanation": {
                   "en": "Library is closed, so they agree to go to the supermarket."
@@ -13975,7 +13975,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q5_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q5_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q5_sheet_v6.png",
                 "transcript_ja": "男：すみません、この りんごを 四こ ください。\n店員：はい、四こで 四百円です。あ、今なら 五こ買うと 五百円ですが、どうですか。\n男：じゃ、五こに します。\n店員：ありがとうございます。",
                 "explanation": {
                   "en": "He starts with 4, but changes to 5 for the better deal."
@@ -14007,7 +14007,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q6_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q6_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q6_sheet_v6.png",
                 "transcript_ja": "男：佐藤さんは いつ 日本へ 来ましたか。\n女：去年の 九月に 来ました。\n男：そうですか。もう 一年ぐらい ですね。\n女：ええ、そうですね。",
                 "explanation": {
                   "en": "She came in September of last year. 問題2 [Comprehension of Key Points] Narrator: もんだい2では、まず しつもんを きいて ください。そのあと、もんだいようしを みて ください。よむ じかんが あります。それから はなしを きいて、1から 4の なかから、いちばん いい ものを ひとつ えらんで ください。"
@@ -14047,7 +14047,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q7_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q7_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q7_sheet_v6.png",
                 "transcript_ja": "女：きのう、学校を やすみましたね。どうしましたか。\n男：ええ、あたまが 痛くて、ねつが ありましたから、家に いました。\n女：そうですか。今は 大丈夫ですか。\n男：はい、もう 元気です。",
                 "explanation": {
                   "en": "He stayed home because he had a fever and headache."
@@ -14079,7 +14079,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q8_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q8_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q8_sheet_v6.png",
                 "transcript_ja": "男：山田さんは 毎晩 寝る前に なにを して いますか。\n女：そうですね。ラジオを 聞いたり、本を 読んだり します。\n男：そうですか。勉強は しませんか。\n女：勉強は 朝に します。",
                 "explanation": {
                   "en": "She listens to the radio or reads books before sleeping."
@@ -14111,7 +14111,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q9_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q9_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q9_sheet_v6.png",
                 "transcript_ja": "男：私の 家族は 父と 母と 姉と 私の 四人です。\n女：そうですか。お姉さんは 学生ですか。\n男：いいえ、会社員です。",
                 "explanation": {
                   "en": "His family has four members (father, mother, older sister, and himself)."
@@ -14143,7 +14143,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q10_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q10_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q10_sheet_v6.png",
                 "transcript_ja": "男：きのうの 午後、なにを しましたか。雨でしたね。\n女：ええ、外へ 出ないで、うちで たくさん 料理を 作りました。\n男：そうですか。おいしかったですか。\n女：はい、とても おいしかったです。",
                 "explanation": {
                   "en": "She stayed home and cooked a lot because it was raining."
@@ -14175,7 +14175,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q11_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q11_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q11_sheet_v6.png",
                 "transcript_ja": "男：新しい ペンが ほしいです。\n女：どんな ペンが いいですか。\n男：赤くて、使いやすい ペンが いいです。",
                 "explanation": {
                   "en": "He wants a red, easy-to-use pen."
@@ -14207,7 +14207,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q12_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q12_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q12_sheet_v6.png",
                 "transcript_ja": "男：来週の 火曜日に いっしょに 映画を 見ませんか。\n女：火曜日は バイトが ありますから、水曜日は どうですか。\n男：いいですね。水曜日に しましょう。",
                 "explanation": {
                   "en": "They change from Tuesday (part-time job) to Wednesday. 問題3 [Verbal Expressions] Narrator: もんだい3では、じょうきょうを よんで、しつもんを きいて ください。なんと いいますか。1から 3の なかか ら、いちばん いい ものを ひとつ えらんで ください。※この れんしゅうようの もんだいようしでは、えの かわりに じょ うきょうを もじで しめします。"
@@ -14243,7 +14243,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q13_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q13_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q13_sheet_v6.png",
                 "transcript_ja": "ナレーター：食堂で ごはんを 食べおわりました。なんと 言いますか。",
                 "explanation": {
                   "en": "After finishing a meal, say 'Gochisousama deshita.'"
@@ -14271,7 +14271,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q14_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q14_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q14_sheet_v6.png",
                 "transcript_ja": "ナレーター：朝、家を 出るとき、家族に なんと 言いますか。",
                 "explanation": {
                   "en": "When leaving home in the morning, say 'Ittekimasu.'"
@@ -14299,7 +14299,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q15_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q15_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q15_sheet_v6.png",
                 "transcript_ja": "ナレーター：友だちの 誕生日パーティーに 呼ばれました。行くとき、なんと 言いますか。",
                 "explanation": {
                   "en": "When attending a birthday, say 'Omedetou gozaimasu.'"
@@ -14327,7 +14327,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q16_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q16_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q16_sheet_v6.png",
                 "transcript_ja": "ナレーター：夜、寝るまえに 家族に なんと 言いますか。",
                 "explanation": {
                   "en": "Before going to bed, say 'Oyasuminasai.'"
@@ -14355,7 +14355,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock05/listening_q17_v6.mp3",
-                "image_url": "jlpt/n5/mock05/listening_q17_sheet_v5.png",
+                "image_url": "jlpt/n5/mock05/listening_q17_sheet_v6.png",
                 "transcript_ja": "ナレーター：電車の中で 足を ふまれてしまいました。なんと 言いますか。",
                 "explanation": {
                   "en": "When something happens or to get attention/apologize, say 'Sumimasen.' 問題4 [Quick Response] Narrator: もんだい4は、えなどが ありません。ぶんを きいて、1から 3の なかから、いちばん いい へんじを ひとつ えら んで ください。"
@@ -16744,7 +16744,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q1_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q1_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q1_sheet_v6.png",
                 "transcript_ja": "女：鈴木さん、掃除の前に ドアを 閉めて ください。\n男：はい、わかりました。ドアを 閉めますね。\n女：あ、そのまえに、机を きれいに かたづけて してください。\n男：はい、わかりました。",
                 "explanation": {
                   "en": "The woman asks him to clean the desk before closing the door."
@@ -16776,7 +16776,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q2_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q2_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q2_sheet_v6.png",
                 "transcript_ja": "男：いらっしゃいませ。なにを 飲みますか。ミルクと ジュースが ありますよ。\n女：そうですね。あたたかい ココアは ありますか。\n男：はい、あたたかい ココアが ありますよ。\n女：じゃ、それを お願いします。",
                 "explanation": {
                   "en": "She asks for hot cocoa and orders that."
@@ -16808,7 +16808,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q3_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q3_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q3_sheet_v6.png",
                 "transcript_ja": "女：おはようございます。きょうは バスで 来ましたか。\n男：いいえ、きょうは 電車が おくれていましたから、いそいで 地下鉄で 来ました。\n女：そうですか。おつかれさま。",
                 "explanation": {
                   "en": "He came by subway because the train was delayed."
@@ -16840,7 +16840,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q4_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q4_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q4_sheet_v6.png",
                 "transcript_ja": "男：今日の 午後、いっしょに 公園へ 行きませんか。\n女：公園は 今日は 雨ですから、やめましょう。\n男：あ、そうですか。じゃ、デパートへ かいものに 行きましょう。\n女：いいですね、行きましょう。",
                 "explanation": {
                   "en": "Park is raining, so they agree to go to the department store."
@@ -16872,7 +16872,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q5_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q5_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q5_sheet_v6.png",
                 "transcript_ja": "男：すみません、この みかんを 三こ ください。\n店員：はい、三こで 三百円です。あ、今なら 六こ買うと 五百円ですが、どうですか。\n男：じゃ、六こに します。\n店員：ありがとうございます。",
                 "explanation": {
                   "en": "He starts with 3, but changes to 6 for the better deal."
@@ -16904,7 +16904,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q6_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q6_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q6_sheet_v6.png",
                 "transcript_ja": "男：木村さんは いつ 日本へ 来ましたか。\n女：一昨年の 十月に 来ました。\n男：そうですか。もう 二年ぐらい ですね。\n女：ええ、そうですね。",
                 "explanation": {
                   "en": "She came in October of the year before last. 問題2 [Comprehension of Key Points] Narrator: もんだい2では、まず しつもんを きいて ください。そのあと、もんだいようしを みて ください。よむ じかんが あります。それから はなしを きいて、1から 4の なかから、いちばん いい ものを ひとつ えらんで ください。"
@@ -16944,7 +16944,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q7_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q7_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q7_sheet_v6.png",
                 "transcript_ja": "女：きのう、会社を やすみましたね。どうしましたか。\n男：ええ、おなかが 痛くて、ねつが ありましたから、家に いました。\n女：そうですか。今は 大丈夫ですか。\n男：はい、もう 元気です。",
                 "explanation": {
                   "en": "He stayed home because he had a stomachache and fever."
@@ -16976,7 +16976,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q8_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q8_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q8_sheet_v6.png",
                 "transcript_ja": "男：山田さんは 毎朝 起きてから なにを して いますか。\n女：そうですね。コーヒーを 飲んだり、新聞を 読んだり します。\n男：そうですか。テレビは 見ませんか。\n女：テレビは 夜に 見ます。",
                 "explanation": {
                   "en": "She drinks coffee or reads the newspaper every morning."
@@ -17008,7 +17008,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q9_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q9_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q9_sheet_v6.png",
                 "transcript_ja": "男：私の 家族は 父と 母と 弟と 私の 四人です。\n女：そうですか。弟さんは 学生ですか。\n男：はい、高校生です。",
                 "explanation": {
                   "en": "His family has four members (father, mother, younger brother, and himself)."
@@ -17040,7 +17040,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q10_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q10_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q10_sheet_v6.png",
                 "transcript_ja": "男：きのうの 晩、なにを しましたか。雨でしたね。\n女：ええ、外へ 出ないで、うちで ケーキを 作りました。\n男：そうですか。おいしかったですか。\n女：はい、とても おいしかったです。",
                 "explanation": {
                   "en": "She stayed home and baked a cake because it was raining."
@@ -17072,7 +17072,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q11_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q11_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q11_sheet_v6.png",
                 "transcript_ja": "男：新しい かさが ほしいです。\n女：どんな かさが いいですか。\n男：大きくて、黒い かさが いいです。",
                 "explanation": {
                   "en": "He wants a large, black umbrella."
@@ -17104,7 +17104,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q12_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q12_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q12_sheet_v6.png",
                 "transcript_ja": "男：来週の 月曜日に いっしょに テニスを しませんか。\n女：月曜日は 会議が ありますから、火曜日は どうですか。\n男：いいですね。火曜日に しましょう。",
                 "explanation": {
                   "en": "They change from Monday (meeting) to Tuesday. 問題3 [Verbal Expressions] Narrator: もんだい3では、じょうきょうを よんで、しつもんを きいて ください。なんと いいますか。1から 3の なかか ら、いちばん いい ものを ひとつ えらんで ください。※この れんしゅうようの もんだいようしでは、えの かわりに じょ うきょうを もじで しめします。"
@@ -17140,7 +17140,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q13_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q13_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q13_sheet_v6.png",
                 "transcript_ja": "ナレーター：レストランで 注文した 料理が きました。食べはじめます。なんと 言いますか。",
                 "explanation": {
                   "en": "Before eating a meal, say 'Itadakimasu.'"
@@ -17168,7 +17168,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q14_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q14_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q14_sheet_v6.png",
                 "transcript_ja": "ナレーター：学校から 帰ってきました。家の人に なんと 言いますか。",
                 "explanation": {
                   "en": "When returning home, say 'Tadaima.'"
@@ -17196,7 +17196,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q15_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q15_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q15_sheet_v6.png",
                 "transcript_ja": "ナレーター：先生に ていねいな 質問を します。はじめる時、なんと 言いますか。",
                 "explanation": {
                   "en": "When asking a teacher a question, say 'Sumimasen, shitsumon desu ga...'"
@@ -17224,7 +17224,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q16_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q16_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q16_sheet_v6.png",
                 "transcript_ja": "ナレーター：友だちが テストに 合格しました。なんと 言いますか。",
                 "explanation": {
                   "en": "When congratulating a friend, say 'Omedetou gozaimasu.'"
@@ -17252,7 +17252,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock06/listening_q17_v6.mp3",
-                "image_url": "jlpt/n5/mock06/listening_q17_sheet_v5.png",
+                "image_url": "jlpt/n5/mock06/listening_q17_sheet_v6.png",
                 "transcript_ja": "ナレーター：電車の中で 友だちに あいました。なんと 言いますか。",
                 "explanation": {
                   "en": "When meeting an acquaintance unexpectedly, say 'A, konnichiwa.' 問題4 [Quick Response] Narrator: もんだい4は、えなどが ありません。ぶんを きいて、1から 3の なかから、いちばん いい へんじを ひとつ えら んで ください。"
