@@ -2235,7 +2235,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q1_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q1_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q1_sheet_v6.png",
                 "transcript_ja": "学生：先生、あしたの テストは、えんぴつで かきますか。\n先生：いいえ、ボールペンで かいて ください。けしゴムは いりません。\n学生：わかりました。じしょは？\n先生：もって 来ても いいですよ。\n学生：じゃ、ボールペンと じしょを もって 行きます。",
                 "explanation": {
                   "en": "The teacher says to use a ballpoint pen (no eraser needed) and that a dictionary is allowed; the student decides to bring the pen and the dictionary.",
@@ -2268,7 +2268,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q2_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q2_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q2_sheet_v6.png",
                 "transcript_ja": "男：あした、えきで 五時に 会いませんか。\n女：ごめんなさい。五時は 会社が おわらないので…。六時は どうですか。\n男：六時だと レストランが いっぱいです。五時半は？\n女：五時半なら だいじょうぶです。\n男：じゃ、五時半に えきで。",
                 "explanation": {
                   "en": "5:00 doesn't work for her (work), 6:00 doesn't work for him (restaurant full); they agree on 5:30.",
@@ -2301,7 +2301,7 @@
                 "correct_sequence": null,
                 "points": 2,
                 "audio_url": "jlpt/n5/mock01/listening_q3_v6.mp3",
-                "image_url": "jlpt/n5/mock01/listening_q3_sheet_v5.png",
+                "image_url": "jlpt/n5/mock01/listening_q3_sheet_v6.png",
                 "transcript_ja": "女：田中さん、パーティーの じゅんびを しましょう。まず へやの そうじを おねがいします。\n男：はい。\n女：あ、やっぱり そうじは わたしが します。田中さんは いすを ならべて ください。\n男：いすですね。のみものは？\n女：のみものは あとで わたしが かいます。",
                 "explanation": {
                   "en": "She first asks for cleaning, then changes her mind: she will clean; he should arrange the chairs. She will buy drinks later.",
