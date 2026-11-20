@@ -1,0 +1,305 @@
+Q1 [Mondai 1 | Task-based Comprehension]
+Prompt: 男の人は このあと まず なにを しますか。
+Script:
+女：さとうさん、午後の かいぎの しりょうは もう できましたか。
+男：はい、できました。今から コピーを とります。
+女：ありがとう。あ、コピーの まえに、しゃちょうに 電話して ください。じかんが かわった ことを つたえて ください。
+男：わかりました。すぐ 電話します。
+Options:
+1. コピーを とる
+2. しゃちょうに 電話する
+3. しりょうを おくる
+4. かいぎしつへ 行く
+Answer: 2
+Explanation (EN): The woman asks him to call the company president before making copies.
+
+Q2 [Mondai 1 | Task-based Comprehension]
+Prompt: 女の人は どの くつを かいますか。
+Script:
+女：すみません、この 黒い くつの 23センチは ありますか。
+店員：少々 おまち ください。…すみません、黒の 23センチは うりきれです。24センチなら あります。
+女：24センチは 大きいですね。茶色は ありますか。
+店員：茶色の 23センチなら ございます。
+女：じゃ、それを ください。
+Options:
+1. 黒い 23センチの くつ
+2. 黒い 24センチの くつ
+3. 茶色い 23センチの くつ
+4. 茶色い 24センチの くつ
+Answer: 3
+Explanation (EN): Black 23cm is sold out and 24cm is too large; she buys the brown 23cm pair.
+
+Q3 [Mondai 1 | Task-based Comprehension]
+Prompt: 男の人は どうやって びょういんへ 行きますか。
+Script:
+男：すみません、みどりびょういんへ 行きたいんですが、バスが いいですか。
+女：そうですね、えきの まえから バスが 出て いますよ。でも、今は みちが こんで いますから、じかんが かかりますよ。
+男：そうですか。あるいて どの ぐらいですか。
+女：15ふん ぐらいです。まっすぐ 行くだけですから、かんたんですよ。
+男：じゃ、あるいて 行きます。
+Options:
+1. あるいて 行く
+2. バスで 行く
+3. タクシーで 行く
+4. でんしゃで 行く
+Answer: 1
+Explanation (EN): Roads are congested so the bus takes long; he decides to walk 15 minutes.
+
+Q4 [Mondai 1 | Task-based Comprehension]
+Prompt: ふたりは どこで ひるごはんを 食べますか。
+Script:
+男：おなかが すきましたね。えきの まえの カフェに 入りませんか。
+女：あそこは いつも こんで いますよ。デパートの レストランは どうですか。
+男：きょうは 天気が いいから、べんとうを かって こうえんで 食べませんか。
+女：いいですね！そうしましょう。
+Options:
+1. えきの まえの カフェ
+2. デパートの レストラン
+3. かいしゃの しょくどう
+4. こうえん
+Answer: 4
+Explanation (EN): The café is crowded; they agree to buy bento and eat in the park.
+
+Q5 [Mondai 1 | Task-based Comprehension]
+Prompt: 女の人は なんほん ペンを かいますか。
+Script:
+女：すみません、この ペンを 3ほん ください。
+店員：はい、3ほんで 300円です。あ、きょうは 5ほん かうと 400円に なりますよ。
+女：そうですか。じゃ、5ほん ください。あ、やっぱり もう 1ほん ください。ぜんぶで 6ほんです。
+店員：はい、ありがとうございます。
+Options:
+1. 2ほん
+2. 3ほん
+3. 5ほん
+4. 6ほん
+Answer: 4
+Explanation (EN): She starts with 3, increases to 5 for the discount, then adds 1 more for 6 total.
+
+Q6 [Mondai 1 | Task-based Comprehension]
+Prompt: 男の人は あした なんじに いえを 出ますか。
+Script:
+女：あしたの バスりょこう、しゅうごうは 八時半ですね。
+男：ええ、えきの まえに 八時半です。
+女：いえから えきまで どの ぐらい かかりますか。
+男：でんしゃで 30ぷんです。でも、あしたは ちょっと はやめに いえを 出ます。七時半に 出ます。
+Options:
+1. 七時
+2. 七時半
+3. 八時
+4. 八時半
+Answer: 2
+Explanation (EN): Meeting time is 8:30 and the train takes 30 minutes, so he leaves early at 7:30.
+
+Q7 [Mondai 2 | Comprehension of Key Points]
+Prompt: 女の人は どうして パーティーに 行きませんか。
+Script:
+男：らいしゅうの 土よう日、クラスの パーティーに 来ますか。
+女：ごめんなさい。その 日は かぞくと りょこうに 行くんです。
+男：そうですか。ざんねんですね。
+Options:
+1. しごとが いそがしいから
+2. かぜを ひいて いるから
+3. かぞくと りょこうに 行くから
+4. テストの べんきょうを するから
+Answer: 3
+Explanation (EN): She is going on a trip with her family that Saturday.
+
+Q8 [Mondai 2 | Comprehension of Key Points]
+Prompt: 男の人は まいしゅう 日よう日に なにを しますか。
+Script:
+女：たなかさんは やすみの 日、なにを して いますか。
+男：土よう日は よく ともだちと テニスを します。日よう日は どこにも 行かないで、へやを そうじします。
+Options:
+1. テニスを します
+2. えいがを みます
+3. りょうりを します
+4. へやを そうじします
+Answer: 4
+Explanation (EN): He plays tennis on Saturdays and cleans his room on Sundays.
+
+Q9 [Mondai 2 | Comprehension of Key Points]
+Prompt: 女の人は どの ぐらい 日本に いますか。
+Script:
+男：マリアさんは いつ 日本へ 来ましたか。
+女：きょねんの 十月です。
+男：そうですか。今は 四月ですから、ちょうど 半年ですね。
+女：はい、そうですね。
+Options:
+1. 三か月
+2. 一年
+3. 半年
+4. 二年
+Answer: 3
+Explanation (EN): She arrived last October and it is now April, which is half a year.
+
+Q10 [Mondai 2 | Comprehension of Key Points]
+Prompt: 男の人は きのうの よる なにを しましたか。
+Script:
+女：きのうの よる、電話しましたが、出ませんでしたね。
+男：あ、すみません。あたまが いたかったので、やくそくを キャンセルして、びょういんへ 行って いました。
+Options:
+1. ともだちと ごはんを 食べた
+2. うちで ほんを 読んだ
+3. かいしゃで しごとを した
+4. びょういんへ 行った
+Answer: 4
+Explanation (EN): He had a headache, canceled his plans, and went to the hospital.
+
+Q11 [Mondai 2 | Comprehension of Key Points]
+Prompt: 女の人は どの かばんが ほしいですか。
+Script:
+男：どんな かばんを さがして いますか。
+女：りょこうに つかいますから、大きいのが いいです。でも、おもいのは いやです。かるいのが ほしいです。
+Options:
+1. 大きくて かるい かばん
+2. 小さくて かるい かばん
+3. 大きくて やすい かばん
+4. 小さくて やすい かばん
+Answer: 1
+Explanation (EN): For travel, she wants a large bag that is also lightweight.
+
+Q12 [Mondai 2 | Comprehension of Key Points]
+Prompt: ふたりは なんよう日に ともだちの いえへ 行きますか。
+Script:
+男：金よう日に けんさんの いえに あそびに 行きませんか。
+女：金よう日は けんさんが アルバイトです。土よう日は どうですか。
+男：いいですね。土よう日の ごごに しましょう。
+Options:
+1. 金よう日
+2. 日よう日
+3. 土よう日
+4. 月よう日
+Answer: 3
+Explanation (EN): Ken has a part-time job on Friday, so they agree on Saturday afternoon.
+
+Q13 [Mondai 3 | Verbal Expressions]
+Prompt: ともだちの いえに はじめて 行きました。いえに はいる とき、なんと いいますか。
+Script:
+ナレーター：ともだちの いえに はじめて 行きました。いえに はいる とき、なんと いいますか。
+Options:
+1. おかえりなさい
+2. おじゃまします
+3. いってらっしゃい
+Answer: 2
+Explanation (EN): When entering someone's home, say 'Ojama shimasu.'
+
+Q14 [Mondai 3 | Verbal Expressions]
+Prompt: バスで おばあさんが たって います。せきを ゆずりたい とき、なんと いいますか。
+Script:
+ナレーター：バスで おばあさんが たって います。せきを ゆずりたい とき、なんと いいますか。
+Options:
+1. ここに すわっては いけません
+2. わたしが すわります
+3. どうぞ すわって ください
+Answer: 3
+Explanation (EN): To offer a seat politely, say 'Douzo suwatte kudasai.'
+
+Q15 [Mondai 3 | Verbal Expressions]
+Prompt: レストランで みずが ほしいです。てんいんに なんと いいますか。
+Script:
+ナレーター：レストランで みずが ほしいです。てんいんに なんと いいますか。
+Options:
+1. すみません、おみずを ください
+2. すみません、おみずを どうぞ
+3. すみません、おみずは いかがですか
+Answer: 1
+Explanation (EN): To ask a server for water, say 'Sumimasen, omizu o kudasai.'
+
+Q16 [Mondai 3 | Verbal Expressions]
+Prompt: ともだちが テストに ごうかくしました。なんと いいますか。
+Script:
+ナレーター：ともだちが テストに ごうかくしました。なんと いいますか。
+Options:
+1. おだいじに
+2. おめでとうございます
+3. ごちそうさまでした
+Answer: 2
+Explanation (EN): To congratulate someone on passing an exam, say 'Omedetou gozaimasu.'
+
+Q17 [Mondai 3 | Verbal Expressions]
+Prompt: にもつが おもくて もてません。ともだちに てつだって ほしい とき、なんと いいますか。
+Script:
+ナレーター：にもつが おもくて もてません。ともだちに てつだって ほしい とき、なんと いいますか。
+Options:
+1. てつだって あげましょうか
+2. てつだわなくても いいですか
+3. ちょっと てつだって もらえませんか
+Answer: 3
+Explanation (EN): To ask a friend for help, say 'Chotto tetsudatte moraemasen ka.'
+
+Q18 [Mondai 4 | Quick Response]
+Prompt: （おとこの ひとの しつもんを きいて、いい へんじを えらんで ください）
+Script:
+男：その かさ、だれのですか。
+Options:
+1. わたしのです。
+2. あしたのです。
+3. 駅のです。
+Answer: 1
+Explanation (EN): 'Whose umbrella is that?' -> 'It's mine.'
+
+Q19 [Mondai 4 | Quick Response]
+Prompt: （おんなの ひとの しつもんを きいて、いい へんじを えらんで ください）
+Script:
+女：すみません、ぎんこうは どこですか。
+Options:
+1. 九時から 三時までです。
+2. あの 白い ビルの となりです。
+3. はい、ぎんこうです。
+Answer: 2
+Explanation (EN): 'Where is the bank?' -> 'It is next to that white building.'
+
+Q20 [Mondai 4 | Quick Response]
+Prompt: （おとこの ひとの ことばを きいて、いい へんじを えらんで ください）
+Script:
+男：きょうは とても あついですね。
+Options:
+1. いいえ、あつかったです。
+2. はい、おげんきですか。
+3. ええ、ほんとうに そうですね。
+Answer: 3
+Explanation (EN): Natural agreement to a remark about today's hot weather.
+
+Q21 [Mondai 4 | Quick Response]
+Prompt: （おんなの ひとの しつもんを きいて、いい へんじを えらんで ください）
+Script:
+女：コーヒーと おちゃ、どちらが いいですか。
+Options:
+1. はい、いいですよ。
+2. コーヒーを おねがいします。
+3. どちらも 飲みました。
+Answer: 2
+Explanation (EN): Choosing one of two offered drinks politely.
+
+Q22 [Mondai 4 | Quick Response]
+Prompt: （おとこの ひとの しつもんを きいて、いい へんじを えらんで ください）
+Script:
+男：しゅくだいは もう おわりましたか。
+Options:
+1. はい、おわります。
+2. いいえ、おわりました。
+3. いいえ、これから します。
+Answer: 3
+Explanation (EN): 'Have you finished your homework yet?' -> 'No, I'm going to do it now.'
+
+Q23 [Mondai 4 | Quick Response]
+Prompt: （おんなの ひとの ことばを きいて、いい へんじを えらんで ください）
+Script:
+女：おたんじょうび、おめでとうございます。
+Options:
+1. こちらこそ。
+2. ありがとうございます。
+3. おめでとうございます。
+Answer: 2
+Explanation (EN): Thanking someone for birthday wishes.
+
+Q24 [Mondai 4 | Quick Response]
+Prompt: （おとこの ひとの しつもんを きいて、いい へんじを えらんで ください）
+Script:
+男：えきまで どの ぐらい かかりますか。
+Options:
+1. あるいて 十分ぐらいです。
+2. 二百円ぐらいです。
+3. 三回ぐらいです。
+Answer: 1
+Explanation (EN): 'How long does it take to the station?' -> 'About 10 minutes on foot.'

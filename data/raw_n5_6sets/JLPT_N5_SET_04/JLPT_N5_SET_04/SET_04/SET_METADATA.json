@@ -1,0 +1,818 @@
+{
+ "level": "N5",
+ "set": 4,
+ "status": "APPROVED",
+ "generated": "2026-11-18T23:30:00",
+ "counts": {
+  "vocab": 33,
+  "gr": 30,
+  "listen": 24
+ },
+ "total_questions": 87,
+ "section_minutes": {
+  "vocab": 20,
+  "gr": 40,
+  "listen": 30
+ },
+ "total_minutes": 90,
+ "difficulty_distribution": {
+  "s": 34,
+  "m": 37,
+  "d": 13,
+  "v": 3
+ },
+ "audio_files": 0,
+ "notes": "Counts are practice benchmarks, not official. Zero overlap with SET 01, SET 02, and SET 03.",
+ "questions": [
+  {
+   "id": "N5-04-V001",
+   "no": 1,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "f0978f43b5e4d56f"
+  },
+  {
+   "id": "N5-04-V002",
+   "no": 2,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 3,
+   "difficulty": "s",
+   "fingerprint": "4914758854810407"
+  },
+  {
+   "id": "N5-04-V003",
+   "no": 3,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 2,
+   "difficulty": "s",
+   "fingerprint": "8d4c63a32365bbf3"
+  },
+  {
+   "id": "N5-04-V004",
+   "no": 4,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "a37c52ae95b1bdfd"
+  },
+  {
+   "id": "N5-04-V005",
+   "no": 5,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "da9511a3ccc7f6ed"
+  },
+  {
+   "id": "N5-04-V006",
+   "no": 6,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 2,
+   "difficulty": "s",
+   "fingerprint": "1e3644e821b26c97"
+  },
+  {
+   "id": "N5-04-V007",
+   "no": 7,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 3,
+   "difficulty": "s",
+   "fingerprint": "529aa2e51c944276"
+  },
+  {
+   "id": "N5-04-V008",
+   "no": 8,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 2,
+   "difficulty": "s",
+   "fingerprint": "a6cda93a5b618d6f"
+  },
+  {
+   "id": "N5-04-V009",
+   "no": 9,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "1c2974a70c52beb5"
+  },
+  {
+   "id": "N5-04-V010",
+   "no": 10,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 2,
+   "difficulty": "s",
+   "fingerprint": "58445fcf51f35622"
+  },
+  {
+   "id": "N5-04-V011",
+   "no": 11,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 3,
+   "difficulty": "m",
+   "fingerprint": "7b206f1213c90f5b"
+  },
+  {
+   "id": "N5-04-V012",
+   "no": 12,
+   "section": "vocab",
+   "category": "Kanji Reading",
+   "answer": 3,
+   "difficulty": "d",
+   "fingerprint": "8ea967aca5ba5bf9"
+  },
+  {
+   "id": "N5-04-V013",
+   "no": 13,
+   "section": "vocab",
+   "category": "Orthography",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "236ea5e835392773"
+  },
+  {
+   "id": "N5-04-V014",
+   "no": 14,
+   "section": "vocab",
+   "category": "Orthography",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "a1f9a47469a6e8a5"
+  },
+  {
+   "id": "N5-04-V015",
+   "no": 15,
+   "section": "vocab",
+   "category": "Orthography",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "834f9b067797d3b7"
+  },
+  {
+   "id": "N5-04-V016",
+   "no": 16,
+   "section": "vocab",
+   "category": "Orthography",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "f35a3616df41ffcd"
+  },
+  {
+   "id": "N5-04-V017",
+   "no": 17,
+   "section": "vocab",
+   "category": "Orthography",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "a3e8c527fdadf090"
+  },
+  {
+   "id": "N5-04-V018",
+   "no": 18,
+   "section": "vocab",
+   "category": "Orthography",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "611e91a4dbb8325b"
+  },
+  {
+   "id": "N5-04-V019",
+   "no": 19,
+   "section": "vocab",
+   "category": "Orthography",
+   "answer": 1,
+   "difficulty": "v",
+   "fingerprint": "f0292390e234ff64"
+  },
+  {
+   "id": "N5-04-V020",
+   "no": 20,
+   "section": "vocab",
+   "category": "Orthography",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "31d92cefb5085f65"
+  },
+  {
+   "id": "N5-04-V021",
+   "no": 21,
+   "section": "vocab",
+   "category": "Contextually-defined Expressions",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "bfdc46bc1634a8c6"
+  },
+  {
+   "id": "N5-04-V022",
+   "no": 22,
+   "section": "vocab",
+   "category": "Contextually-defined Expressions",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "74dceebe896c9a94"
+  },
+  {
+   "id": "N5-04-V023",
+   "no": 23,
+   "section": "vocab",
+   "category": "Contextually-defined Expressions",
+   "answer": 2,
+   "difficulty": "s",
+   "fingerprint": "6a1cdc6f0f257e1a"
+  },
+  {
+   "id": "N5-04-V024",
+   "no": 24,
+   "section": "vocab",
+   "category": "Contextually-defined Expressions",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "3b4a0de317a1b1c3"
+  },
+  {
+   "id": "N5-04-V025",
+   "no": 25,
+   "section": "vocab",
+   "category": "Contextually-defined Expressions",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "ca85054c72218335"
+  },
+  {
+   "id": "N5-04-V026",
+   "no": 26,
+   "section": "vocab",
+   "category": "Contextually-defined Expressions",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "595ff2085db8f692"
+  },
+  {
+   "id": "N5-04-V027",
+   "no": 27,
+   "section": "vocab",
+   "category": "Contextually-defined Expressions",
+   "answer": 4,
+   "difficulty": "s",
+   "fingerprint": "78441855d7aae362"
+  },
+  {
+   "id": "N5-04-V028",
+   "no": 28,
+   "section": "vocab",
+   "category": "Contextually-defined Expressions",
+   "answer": 2,
+   "difficulty": "d",
+   "fingerprint": "759400b3b35ed563"
+  },
+  {
+   "id": "N5-04-V029",
+   "no": 29,
+   "section": "vocab",
+   "category": "Paraphrases",
+   "answer": 3,
+   "difficulty": "m",
+   "fingerprint": "79efab6e3e10dfca"
+  },
+  {
+   "id": "N5-04-V030",
+   "no": 30,
+   "section": "vocab",
+   "category": "Paraphrases",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "f661e5a8ec39540d"
+  },
+  {
+   "id": "N5-04-V031",
+   "no": 31,
+   "section": "vocab",
+   "category": "Paraphrases",
+   "answer": 1,
+   "difficulty": "d",
+   "fingerprint": "a8b45f1571328aab"
+  },
+  {
+   "id": "N5-04-V032",
+   "no": 32,
+   "section": "vocab",
+   "category": "Paraphrases",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "639ae48f0e4dc696"
+  },
+  {
+   "id": "N5-04-V033",
+   "no": 33,
+   "section": "vocab",
+   "category": "Paraphrases",
+   "answer": 3,
+   "difficulty": "v",
+   "fingerprint": "ab498b372070f3d8"
+  },
+  {
+   "id": "N5-04-G001",
+   "no": 1,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "9e10453756563758"
+  },
+  {
+   "id": "N5-04-G002",
+   "no": 2,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "f5a69be85e628194"
+  },
+  {
+   "id": "N5-04-G003",
+   "no": 3,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "21abb2e0cc2ac44e"
+  },
+  {
+   "id": "N5-04-G004",
+   "no": 4,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "6698e9e920615a8e"
+  },
+  {
+   "id": "N5-04-G005",
+   "no": 5,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 3,
+   "difficulty": "s",
+   "fingerprint": "2a854bd87fae979d"
+  },
+  {
+   "id": "N5-04-G006",
+   "no": 6,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "8a4264e1df6ea836"
+  },
+  {
+   "id": "N5-04-G007",
+   "no": 7,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "20f1a887230f16e7"
+  },
+  {
+   "id": "N5-04-G008",
+   "no": 8,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "c21c36dee7e54fd3"
+  },
+  {
+   "id": "N5-04-G009",
+   "no": 9,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 2,
+   "difficulty": "d",
+   "fingerprint": "7c989c5e2db97aef"
+  },
+  {
+   "id": "N5-04-G010",
+   "no": 10,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "a01caf7144ec52dc"
+  },
+  {
+   "id": "N5-04-G011",
+   "no": 11,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 1,
+   "difficulty": "d",
+   "fingerprint": "c841e53f9c4587bf"
+  },
+  {
+   "id": "N5-04-G012",
+   "no": 12,
+   "section": "gr",
+   "category": "Sentential Grammar 1 (Selecting Grammar Form)",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "545948501a5b7021"
+  },
+  {
+   "id": "N5-04-G013",
+   "no": 13,
+   "section": "gr",
+   "category": "Sentential Grammar 2 (Sentence Composition)",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "1f5eac0907b4881c"
+  },
+  {
+   "id": "N5-04-G014",
+   "no": 14,
+   "section": "gr",
+   "category": "Sentential Grammar 2 (Sentence Composition)",
+   "answer": 1,
+   "difficulty": "d",
+   "fingerprint": "1a87572f51ac6e87"
+  },
+  {
+   "id": "N5-04-G015",
+   "no": 15,
+   "section": "gr",
+   "category": "Sentential Grammar 2 (Sentence Composition)",
+   "answer": 3,
+   "difficulty": "m",
+   "fingerprint": "5bc928044e435cb4"
+  },
+  {
+   "id": "N5-04-G016",
+   "no": 16,
+   "section": "gr",
+   "category": "Sentential Grammar 2 (Sentence Composition)",
+   "answer": 2,
+   "difficulty": "d",
+   "fingerprint": "223decea64885f47"
+  },
+  {
+   "id": "N5-04-G017",
+   "no": 17,
+   "section": "gr",
+   "category": "Text Grammar",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "0b55fac4fc583813"
+  },
+  {
+   "id": "N5-04-G018",
+   "no": 18,
+   "section": "gr",
+   "category": "Text Grammar",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "092bd8300b7724ef"
+  },
+  {
+   "id": "N5-04-G019",
+   "no": 19,
+   "section": "gr",
+   "category": "Text Grammar",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "abde7cfbd3fb5845"
+  },
+  {
+   "id": "N5-04-G020",
+   "no": 20,
+   "section": "gr",
+   "category": "Text Grammar",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "00ca9413e0e8646f"
+  },
+  {
+   "id": "N5-04-G021",
+   "no": 21,
+   "section": "gr",
+   "category": "Text Grammar",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "c6c38ed962f94687"
+  },
+  {
+   "id": "N5-04-G022",
+   "no": 22,
+   "section": "gr",
+   "category": "Comprehension (Short Passages)",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "149ce5a1099149b6"
+  },
+  {
+   "id": "N5-04-G023",
+   "no": 23,
+   "section": "gr",
+   "category": "Comprehension (Short Passages)",
+   "answer": 3,
+   "difficulty": "m",
+   "fingerprint": "5c6be6052de04d28"
+  },
+  {
+   "id": "N5-04-G024",
+   "no": 24,
+   "section": "gr",
+   "category": "Comprehension (Short Passages)",
+   "answer": 1,
+   "difficulty": "d",
+   "fingerprint": "67d8768e694c0439"
+  },
+  {
+   "id": "N5-04-G025",
+   "no": 25,
+   "section": "gr",
+   "category": "Comprehension (Mid-size Passages)",
+   "answer": 3,
+   "difficulty": "s",
+   "fingerprint": "0b903198f2b7d4d1"
+  },
+  {
+   "id": "N5-04-G026",
+   "no": 26,
+   "section": "gr",
+   "category": "Comprehension (Mid-size Passages)",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "ddf62a63c658ee3b"
+  },
+  {
+   "id": "N5-04-G027",
+   "no": 27,
+   "section": "gr",
+   "category": "Comprehension (Mid-size Passages)",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "2bdb30b875811496"
+  },
+  {
+   "id": "N5-04-G028",
+   "no": 28,
+   "section": "gr",
+   "category": "Comprehension (Mid-size Passages)",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "0eff53772667fce8"
+  },
+  {
+   "id": "N5-04-G029",
+   "no": 29,
+   "section": "gr",
+   "category": "Information Retrieval",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "aaa6bf88d2c23459"
+  },
+  {
+   "id": "N5-04-G030",
+   "no": 30,
+   "section": "gr",
+   "category": "Information Retrieval",
+   "answer": 2,
+   "difficulty": "d",
+   "fingerprint": "179bbc6661e826d7"
+  },
+  {
+   "id": "N5-04-L001",
+   "no": 1,
+   "section": "listen",
+   "category": "Task-based Comprehension",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "9f1fabdce2f567ee"
+  },
+  {
+   "id": "N5-04-L002",
+   "no": 2,
+   "section": "listen",
+   "category": "Task-based Comprehension",
+   "answer": 3,
+   "difficulty": "d",
+   "fingerprint": "84dbdcc9d276d0fa"
+  },
+  {
+   "id": "N5-04-L003",
+   "no": 3,
+   "section": "listen",
+   "category": "Task-based Comprehension",
+   "answer": 4,
+   "difficulty": "m",
+   "fingerprint": "c8e65ae4b9b0e726"
+  },
+  {
+   "id": "N5-04-L004",
+   "no": 4,
+   "section": "listen",
+   "category": "Task-based Comprehension",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "4f554d6e51f1bf0f"
+  },
+  {
+   "id": "N5-04-L005",
+   "no": 5,
+   "section": "listen",
+   "category": "Task-based Comprehension",
+   "answer": 3,
+   "difficulty": "v",
+   "fingerprint": "d2119c8f1bb34ccc"
+  },
+  {
+   "id": "N5-04-L006",
+   "no": 6,
+   "section": "listen",
+   "category": "Task-based Comprehension",
+   "answer": 2,
+   "difficulty": "d",
+   "fingerprint": "f99a96fb1a52f3ca"
+  },
+  {
+   "id": "N5-04-L007",
+   "no": 7,
+   "section": "listen",
+   "category": "Comprehension of Key Points",
+   "answer": 2,
+   "difficulty": "s",
+   "fingerprint": "faf8d1aa9b1dad1d"
+  },
+  {
+   "id": "N5-04-L008",
+   "no": 8,
+   "section": "listen",
+   "category": "Comprehension of Key Points",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "ee56a513f517d67f"
+  },
+  {
+   "id": "N5-04-L009",
+   "no": 9,
+   "section": "listen",
+   "category": "Comprehension of Key Points",
+   "answer": 2,
+   "difficulty": "d",
+   "fingerprint": "576de3e7fb8d113d"
+  },
+  {
+   "id": "N5-04-L010",
+   "no": 10,
+   "section": "listen",
+   "category": "Comprehension of Key Points",
+   "answer": 2,
+   "difficulty": "m",
+   "fingerprint": "7002d87013f30682"
+  },
+  {
+   "id": "N5-04-L011",
+   "no": 11,
+   "section": "listen",
+   "category": "Comprehension of Key Points",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "20157a07a3d34fbd"
+  },
+  {
+   "id": "N5-04-L012",
+   "no": 12,
+   "section": "listen",
+   "category": "Comprehension of Key Points",
+   "answer": 3,
+   "difficulty": "m",
+   "fingerprint": "54412793934d13bc"
+  },
+  {
+   "id": "N5-04-L013",
+   "no": 13,
+   "section": "listen",
+   "category": "Verbal Expressions",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "ca6fe1d746125ae3"
+  },
+  {
+   "id": "N5-04-L014",
+   "no": 14,
+   "section": "listen",
+   "category": "Verbal Expressions",
+   "answer": 2,
+   "difficulty": "s",
+   "fingerprint": "dedd34697453ad4e"
+  },
+  {
+   "id": "N5-04-L015",
+   "no": 15,
+   "section": "listen",
+   "category": "Verbal Expressions",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "aaf8fa62fd3d4b9d"
+  },
+  {
+   "id": "N5-04-L016",
+   "no": 16,
+   "section": "listen",
+   "category": "Verbal Expressions",
+   "answer": 2,
+   "difficulty": "s",
+   "fingerprint": "dea712a0370263bc"
+  },
+  {
+   "id": "N5-04-L017",
+   "no": 17,
+   "section": "listen",
+   "category": "Verbal Expressions",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "9e5b66c59c71c0fc"
+  },
+  {
+   "id": "N5-04-L018",
+   "no": 18,
+   "section": "listen",
+   "category": "Quick Response",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "4c77eba8499a9d88"
+  },
+  {
+   "id": "N5-04-L019",
+   "no": 19,
+   "section": "listen",
+   "category": "Quick Response",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "a10ccbe8149ef2e6"
+  },
+  {
+   "id": "N5-04-L020",
+   "no": 20,
+   "section": "listen",
+   "category": "Quick Response",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "cd142e3a52525908"
+  },
+  {
+   "id": "N5-04-L021",
+   "no": 21,
+   "section": "listen",
+   "category": "Quick Response",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "3fd123699cc25418"
+  },
+  {
+   "id": "N5-04-L022",
+   "no": 22,
+   "section": "listen",
+   "category": "Quick Response",
+   "answer": 1,
+   "difficulty": "d",
+   "fingerprint": "892a7036e7f44df8"
+  },
+  {
+   "id": "N5-04-L023",
+   "no": 23,
+   "section": "listen",
+   "category": "Quick Response",
+   "answer": 1,
+   "difficulty": "s",
+   "fingerprint": "8967ba138ad0b346"
+  },
+  {
+   "id": "N5-04-L024",
+   "no": 24,
+   "section": "listen",
+   "category": "Quick Response",
+   "answer": 1,
+   "difficulty": "m",
+   "fingerprint": "0e01fa975c52adac"
+  }
+ ],
+ "status_reason": "Zero question overlap with SET 01/02/03 verified.",
+ "independent_difficulty_counts": {
+  "s": 34,
+  "m": 37,
+  "d": 13,
+  "v": 3
+ }
+}

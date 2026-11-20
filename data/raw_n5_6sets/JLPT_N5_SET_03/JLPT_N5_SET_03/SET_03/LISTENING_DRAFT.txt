@@ -1,0 +1,307 @@
+Q1 [Mondai 1 | Task-based Comprehension]
+Prompt: 男の人は このあと 最初に なにを しますか。
+Script:
+女：田中さん、会議の前に 窓を 開けて ください。
+男：はい、わかりました。窓を 開けますね。
+女：あ、そのまえに、ホワイトボードを きれいに してください。
+男：はい、わかりました。
+Options:
+1. 窓を 開ける
+2. ホワイトボードを きれいに する
+3. 机を かたづける
+4. ドアをしめる
+Answer: 2
+Explanation (EN): The woman asks him to clean the whiteboard before opening the windows.
+
+Q2 [Mondai 1 | Task-based Comprehension]
+Prompt: 女の人は なにを 飲みますか。
+Script:
+男：いらっしゃいませ。なにを 飲みますか。コーヒーと 紅茶が ありますよ。
+女：そうですね。あたたかい お茶は ありますか。
+男：はい、日本のお茶が ありますよ。
+女：じゃ、それを お願いします。
+Options:
+1. コーヒー
+2. 紅茶
+3. 日本のお茶
+4. ジュース
+Answer: 3
+Explanation (EN): She asks for hot Japanese green tea and orders that.
+
+Q3 [Mondai 1 | Task-based Comprehension]
+Prompt: 男の人は どうやって 学校へ 来ましたか。
+Script:
+女：おはようございます。きょうは でんしゃで 来ましたか。
+男：いいえ、きょうは あしたが テストですから、いそいで 自転車で 来ました。
+女：そうですか。おつかれさま。
+Options:
+1. あるいて
+2. バスで
+3. でんしゃで
+4. じてんしゃで
+Answer: 4
+Explanation (EN): He came by bicycle because of the test tomorrow.
+
+Q4 [Mondai 1 | Task-based Comprehension]
+Prompt: ふたりは 今日の 午後 どこへ 行きますか。
+Script:
+男：今日の 午後、いっしょに 図書館へ 行きませんか。
+女：図書館は 今日は お休みですよ。
+男：あ、そうですか。じゃ、スーパーへ かいものに 行きましょう。
+女：いいですね、行きましょう。
+Options:
+1. 図書館
+2. スーパー
+3. デパート
+4. 公園
+Answer: 2
+Explanation (EN): Library is closed, so they agree to go to the supermarket.
+
+Q5 [Mondai 1 | Task-based Comprehension]
+Prompt: 男の人は りんごを なんこ かいましたか。
+Script:
+男：すみません、この りんごを 四こ ください。
+店員：はい、四こで 四百円です。あ、今なら 五こ買うと 五百円ですが、どうですか。
+男：じゃ、五こに します。
+店員：ありがとうございます。
+Options:
+1. さんこ
+2. よんこ
+3. ごこ
+4. ろくこ
+Answer: 3
+Explanation (EN): He starts with 4, but changes to 5 for the better deal.
+
+Q6 [Mondai 1 | Task-based Comprehension]
+Prompt: 女の人は いつ 日本へ 来ましたか。
+Script:
+男：佐藤さんは いつ 日本へ 来ましたか。
+女：去年の 九月に 来ました。
+男：そうですか。もう 一年ぐらい ですね。
+女：ええ、そうですね。
+Options:
+1. 一年前の九月
+2. 去年の九月
+3. 今年の九月
+4. 一昨年の九月
+Answer: 2
+Explanation (EN): She came in September of last year.
+
+Q7 [Mondai 2 | Comprehension of Key Points]
+Prompt: 男の人は どうして 学校を やすみましたか。
+Script:
+女：きのう、学校を やすみましたね。どうしましたか。
+男：ええ、あたまが 痛くて、ねつが ありましたから、家に いました。
+女：そうですか。今は 大丈夫ですか。
+男：はい、もう 元気です。
+Options:
+1. しごとが いそがしかったから
+2. ねつが あったから
+3. ともだちと あそんだから
+4. 旅行に 行ったから
+Answer: 2
+Explanation (EN): He stayed home because he had a fever and headache.
+
+Q8 [Mondai 2 | Comprehension of Key Points]
+Prompt: 女の人は 毎晩 なにを して いますか。
+Script:
+男：山田さんは 毎晩 寝る前に なにを して いますか。
+女：そうですね。ラジオを 聞いたり、本を 読んだり します。
+男：そうですか。勉強は しませんか。
+女：勉強は 朝に します。
+Options:
+1. テレビを見る
+2. ラジオを聞くや本を読む
+3. 友だちに電話する
+4. 料理をする
+Answer: 2
+Explanation (EN): She listens to the radio or reads books before sleeping.
+
+Q9 [Mondai 2 | Comprehension of Key Points]
+Prompt: 男の人の 家族は 何人ですか。
+Script:
+男：私の 家族は 父と 母と 姉と 私の 四人です。
+女：そうですか。お姉さんは 学生ですか。
+男：いいえ、会社員です。
+Options:
+1. 三人
+2. 四人
+3. 五人
+4. 六人
+Answer: 2
+Explanation (EN): His family has four members (father, mother, older sister, and himself).
+
+Q10 [Mondai 2 | Comprehension of Key Points]
+Prompt: 女の人は きのうの 午後 なにを しましたか。
+Script:
+男：きのうの 午後、なにを しましたか。雨でしたね。
+女：ええ、外へ 出ないで、うちで たくさん 料理を 作りました。
+男：そうですか。おいしかったですか。
+女：はい、とても おいしかったです。
+Options:
+1. 外で スポーツを した
+2. うちで 料理を 作った
+3. デパートへ かいものに 行った
+4. 図書館で 勉強した
+Answer: 2
+Explanation (EN): She stayed home and cooked a lot because it was raining.
+
+Q11 [Mondai 2 | Comprehension of Key Points]
+Prompt: 男の人は どんな ペンが ほしいですか。
+Script:
+男：新しい ペンが ほしいです。
+女：どんな ペンが いいですか。
+男：赤くて、使いやすい ペンが いいです。
+Options:
+1. 赤くて 使いやすい ペン
+2. 青くて 長い ペン
+3. 黒くて 安い ペン
+4. 白くて 大きい ペン
+Answer: 1
+Explanation (EN): He wants a red, easy-to-use pen.
+
+Q12 [Mondai 2 | Comprehension of Key Points]
+Prompt: ふたりは 来週の 何曜日に 会いますか。
+Script:
+男：来週の 火曜日に いっしょに 映画を 見ませんか。
+女：火曜日は バイトが ありますから、水曜日は どうですか。
+男：いいですね。水曜日に しましょう。
+Options:
+1. 月よう日
+2. 火よう日
+3. 水よう日
+4. 木よう日
+Answer: 3
+Explanation (EN): They change from Tuesday (part-time job) to Wednesday.
+
+Q13 [Mondai 3 | Verbal Expressions]
+Prompt: 食堂で ごはんを 食べおわりました。なんと 言いますか。
+Script:
+ナレーター：食堂で ごはんを 食べおわりました。なんと 言いますか。
+Options:
+1. ごちそうさまでした
+2. いただきます
+3. いってきます
+Answer: 1
+Explanation (EN): After finishing a meal, say 'Gochisousama deshita.'
+
+Q14 [Mondai 3 | Verbal Expressions]
+Prompt: 朝、家を 出るとき、家族に なんと 言いますか。
+Script:
+ナレーター：朝、家を 出るとき、家族に なんと 言いますか。
+Options:
+1. ただいま
+2. いってきます
+3. おやすみ
+Answer: 2
+Explanation (EN): When leaving home in the morning, say 'Ittekimasu.'
+
+Q15 [Mondai 3 | Verbal Expressions]
+Prompt: 友だちの 誕生日パーティーに 呼ばれました。行くとき、なんと 言いますか。
+Script:
+ナレーター：友だちの 誕生日パーティーに 呼ばれました。行くとき、なんと 言いますか。
+Options:
+1. おめでとうございます
+2. お疲れ様です
+3. はじめまして
+Answer: 1
+Explanation (EN): When attending a birthday, say 'Omedetou gozaimasu.'
+
+Q16 [Mondai 3 | Verbal Expressions]
+Prompt: 夜、寝るまえに 家族に なんと 言いますか。
+Script:
+ナレーター：夜、寝るまえに 家族に なんと 言いますか。
+Options:
+1. おはようございます
+2. おやすみなさい
+3. こんにちは
+Answer: 2
+Explanation (EN): Before going to bed, say 'Oyasuminasai.'
+
+Q17 [Mondai 3 | Verbal Expressions]
+Prompt: 電車の中で 足を ふまれてしまいました。なんと 言いますか。
+Script:
+ナレーター：電車の中で 足を ふまれてしまいました。なんと 言いますか。
+Options:
+1. すみません
+2. どういたしまして
+3. おめでとう
+Answer: 1
+Explanation (EN): When something happens or to get attention/apologize, say 'Sumimasen.'
+
+Q18 [Mondai 4 | Quick Response]
+Prompt: （おとこの ひとの しつもんを きいて、いい へんじを えらんで ください）
+Script:
+男：いま 何時ですか。
+Options:
+1. 十時半です。
+2. 十時間です。
+3. 十日です。
+Answer: 1
+Explanation (EN): 'What time is it now?' -> 'It's half past ten.'
+
+Q19 [Mondai 4 | Quick Response]
+Prompt: （おんなの ひとの しつもんを きいて、いい へんじを えらんで ください）
+Script:
+女：この かばんは だれの ですか。
+Options:
+1. 私の です。
+2. 東京です。
+3. 大きいです。
+Answer: 1
+Explanation (EN): 'Whose bag is this?' -> 'It's mine.'
+
+Q20 [Mondai 4 | Quick Response]
+Prompt: （おとこの ひとの ことばを きいて、いい へんじを えらんで ください）
+Script:
+男：はじめまして、どうぞ よろしく お願いします。
+Options:
+1. こちらこそ、よろしくお願いします。
+2. はい、さようなら。
+3. どういたしまして。
+Answer: 1
+Explanation (EN): Polite response to self-introduction.
+
+Q21 [Mondai 4 | Quick Response]
+Prompt: （おんなの ひとの しつもんを きいて、いい へんじを えらんで ください）
+Script:
+女：きのうは なにを 食べましたか。
+Options:
+1. ラーメンを 食べました。
+2. おいしかったです。
+3. おなかが すきました。
+Answer: 1
+Explanation (EN): 'What did you eat yesterday?' -> 'I ate ramen.'
+
+Q22 [Mondai 4 | Quick Response]
+Prompt: （おとこの ひとの しつもんを きいて、いい へんじを えらんで ください）
+Script:
+男：あしたは どこへ 行きますか。
+Options:
+1. 図書館へ 行きます。
+2. あしたは 日よう日です。
+3. 三時に 行きます。
+Answer: 1
+Explanation (EN): 'Where are you going tomorrow?' -> 'I'm going to the library.'
+
+Q23 [Mondai 4 | Quick Response]
+Prompt: （おんなの ひとの ことばを きいて、いい へんじを えらんで ください）
+Script:
+女：どうも ありがとうございます。
+Options:
+1. いいえ、どういたしまして。
+2. こちらこそ。
+3. はい、わかりました。
+Answer: 1
+Explanation (EN): Responding to 'Thank you' -> 'You're welcome.'
+
+Q24 [Mondai 4 | Quick Response]
+Prompt: （おとこの ひとの しつもんを きいて、いい へんじを えらんで ください）
+Script:
+男：日本の りょうりは どうですか。
+Options:
+1. おいしいですが、すこし 高いです。
+2. 明日 食べます。
+3. わかりません。
+Answer: 1
+Explanation (EN): 'How is Japanese food?' -> 'It's delicious, but a little expensive.'
