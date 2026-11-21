@@ -13,6 +13,7 @@ import argparse
 import base64
 import html
 import io
+import math
 import json
 import os
 import re
@@ -624,7 +625,93 @@ def draw_speaker_arrow(draw: ImageDraw.ImageDraw, tip_x: int, tip_y: int, from_l
     draw.polygon(head, fill=ink)
 
 
-def compose_four_block_sheet(panel_images: List[Image.Image], out_path: Path) -> None:
+
+KANJI_NUM_MAP: Dict[str, int] = {
+    "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6,
+    "七": 7, "八": 8, "九": 9, "十": 10, "十一": 11, "十二": 12,
+}
+
+
+def parse_japanese_clock_time(text: str) -> Optional[Tuple[int, int]]:
+    cleaned = clean_text(text)
+    m_colon = re.search(r"\b(\d{1,2})\s*[:：]\s*(\d{2})\b", cleaned)
+    if m_colon:
+        return int(m_colon.group(1)), int(m_colon.group(2))
+    m_ja = re.search(
+        r"(十二|十一|十|九|八|七|六|五|四|三|二|一|\d{1,2})\s*時"
+        r"(?:\s*(半|(?:[二三四五]?十)?[一二三四五六七八九]?\s*分|\d{1,2}\s*分))?",
+        cleaned,
+    )
+    if not m_ja:
+        return None
+    h_raw = m_ja.group(1)
+    hour = int(h_raw) if h_raw.isdigit() else KANJI_NUM_MAP.get(h_raw, 12)
+    min_raw = (m_ja.group(2) or "").strip()
+    minute = 0
+    if min_raw == "半":
+        minute = 30
+    elif min_raw:
+        m_digits = re.search(r"\d+", min_raw)
+        if m_digits:
+            minute = int(m_digits.group(0))
+        else:
+            m_clean = min_raw.replace("分", "").strip()
+            if "十" in m_clean:
+                parts = m_clean.split("十")
+                tens = KANJI_NUM_MAP.get(parts[0], 1) if parts[0] else 1
+                ones = KANJI_NUM_MAP.get(parts[1], 0) if len(parts) > 1 and parts[1] else 0
+                minute = tens * 10 + ones
+            else:
+                minute = KANJI_NUM_MAP.get(m_clean, 0)
+    return hour, minute
+
+
+def draw_jlpt_clock_badge(
+    draw: ImageDraw.ImageDraw, cx: int, cy: int, radius: int, hour: int, minute: int
+) -> None:
+    ink = "#141414"
+    pad = 6
+    draw.rounded_rectangle(
+        [cx - radius - pad, cy - radius - pad, cx + radius + pad, cy + radius + pad],
+        radius=10,
+        fill="#FFFFFF",
+        outline=ink,
+        width=2,
+    )
+    draw.ellipse(
+        [cx - radius, cy - radius, cx + radius, cy + radius],
+        fill="#FFFFFF",
+        outline=ink,
+        width=3,
+    )
+    for tick in range(12):
+        angle = math.radians(tick * 30 - 90)
+        inner_r = radius - (9 if tick % 3 == 0 else 5)
+        outer_r = radius - 2
+        draw.line(
+            [
+                (cx + int(round(inner_r * math.cos(angle))), cy + int(round(inner_r * math.sin(angle)))),
+                (cx + int(round(outer_r * math.cos(angle))), cy + int(round(outer_r * math.sin(angle)))),
+            ],
+            fill=ink,
+            width=3 if tick % 3 == 0 else 2,
+        )
+    h_angle = math.radians(((hour % 12) + minute / 60.0) * 30.0 - 90.0)
+    m_angle = math.radians(minute * 6.0 - 90.0)
+    draw.line(
+        [(cx, cy), (cx + int(round(radius * 0.52 * math.cos(h_angle))), cy + int(round(radius * 0.52 * math.sin(h_angle))))],
+        fill=ink,
+        width=5,
+    )
+    draw.line(
+        [(cx, cy), (cx + int(round(radius * 0.78 * math.cos(m_angle))), cy + int(round(radius * 0.78 * math.sin(m_angle))))],
+        fill=ink,
+        width=3,
+    )
+    draw.ellipse([cx - 4, cy - 4, cx + 4, cy + 4], fill=ink)
+
+
+def compose_four_block_sheet(panel_images: List[Image.Image], options: List[Dict[str, Any]], out_path: Path) -> None:
     W, H = 1000, 760
     margin, gap = 12, 14
     box_w = (W - margin * 2 - gap) // 2
@@ -645,6 +732,10 @@ def compose_four_block_sheet(panel_images: List[Image.Image], out_path: Path) ->
         draw.rectangle([x0, y0, x1, y1], outline="#141414", width=3)
         draw.rectangle([x0 + 6, y0 + 6, x0 + 44, y0 + 50], fill="#FFFFFF")
         draw.text((x0 + 14, y0 + 8), str(idx + 1), fill="#141414", font=num_font)
+        if idx < len(options):
+            tm = parse_japanese_clock_time(options[idx].get("text", ""))
+            if tm is not None:
+                draw_jlpt_clock_badge(draw, x1 - 54, y0 + 54, 40, tm[0], tm[1])
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(out_path, format="PNG", optimize=True)
@@ -769,7 +860,7 @@ def main() -> None:
                             panels = generate_panels_for_question(
                                 http_client, plan["panels"][:4], f"{code} Q{local_idx}", state
                             )
-                            compose_four_block_sheet(panels, local_png)
+                            compose_four_block_sheet(panels, q["options"], local_png)
 
                     upload_storage_with_retry(local_png, storage_path)
                     q["image_url"] = storage_path
