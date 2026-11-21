@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-v10 JLPT N5 Listening Textbook Illustration Generator (_sheet_v10.png):
+v10.1 JLPT N5 Listening Textbook Illustration Generator (_sheet_v10.png):
 - Maps every option (1..4) and single-scene scenario (Q13..Q17) directly to its
-  exact Japanese question reference without injecting classroom whiteboards.
+  exact Japanese question reference without classroom whiteboards or duplicate clocks.
+- Automatically strips AI-drawn clocks when deterministic analog clock / day
+  calendar badges are stamped in the top-right corner.
 - Uses Cloudflare FLUX.1-Schnell + SDXL-Lightning first, then general (non-waifu)
   AI Horde models (640x512).
-- Enforces quality validation against dark/NSFW blocks, cropped heads, split
-  diptychs, and floating pseudo-kanji scribbles.
 """
 
 import argparse
 import base64
 import html
 import io
-import math
 import json
+import math
 import os
 import re
 import time
@@ -47,9 +47,28 @@ GENERAL_HORDE_MODELS: List[str] = [
 ]
 
 FONT_CANDIDATES: List[str] = [
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    "/usr/share/fonts/truetype/noto/NotoSansJP-Regular.ttf",
+    "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+    "/system/fonts/NotoSansCJK-Regular.ttc",
+    "/system/fonts/DroidSansFallback.ttf",
     "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-    "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf",
     "/system/fonts/Roboto-Regular.ttf",
+]
+
+KANJI_NUM_MAP: Dict[str, int] = {
+    "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6,
+    "七": 7, "八": 8, "九": 9, "十": 10, "十一": 11, "十二": 12,
+}
+
+DAY_KANJI_RULES: List[Tuple[str, str]] = [
+    ("月よう", "月"), ("月曜", "月"),
+    ("火よう", "火"), ("火曜", "火"),
+    ("水よう", "水"), ("水曜", "水"),
+    ("木よう", "木"), ("木曜", "木"),
+    ("金よう", "金"), ("金曜", "金"),
+    ("土よう", "土"), ("土曜", "土"),
+    ("日よう", "日"), ("日曜", "日"),
 ]
 
 STYLE_SUFFIX = (
@@ -78,18 +97,18 @@ EXACT_N5_SCENES: Dict[Tuple[int, int], Dict[str, Any]] = {
     },
     (1, 2): {
         "panels": [
-            "man and woman meeting at a train station ticket gate beneath one round analog clock showing 6:30",
-            "man and woman meeting at a train station ticket gate beneath one round analog clock showing 5:00",
-            "man and woman meeting at a train station ticket gate beneath one round analog clock showing 6:00",
-            "man and woman meeting at a train station ticket gate beneath one round analog clock showing 5:30",
+            "man and woman meeting at a train station ticket gate, plain clean wall background, no clock",
+            "man and woman meeting at a train station ticket gate, plain clean wall background, no clock",
+            "man and woman meeting at a train station ticket gate, plain clean wall background, no clock",
+            "man and woman meeting at a train station ticket gate, plain clean wall background, no clock",
         ]
     },
     (1, 5): {
         "panels": [
-            "four friends standing together at a restaurant entrance beneath one round wall clock showing 7:00",
-            "four friends standing together at a restaurant entrance beneath one round wall clock showing 5:30",
-            "four friends standing together at a restaurant entrance beneath one round wall clock showing 6:00",
-            "five friends standing together at a restaurant entrance beneath one round wall clock showing 5:30",
+            "group of four friends standing side by side at a restaurant entrance, 4 people clearly visible, plain clean wall background, no clock",
+            "group of four friends standing side by side at a restaurant entrance, 4 people clearly visible, plain clean wall background, no clock",
+            "group of four friends standing side by side at a restaurant entrance, 4 people clearly visible, plain clean wall background, no clock",
+            "group of five friends standing side by side at a restaurant entrance, 5 people clearly visible, plain clean wall background, no clock",
         ]
     },
     (1, 6): {
@@ -126,10 +145,10 @@ EXACT_N5_SCENES: Dict[Tuple[int, int], Dict[str, Any]] = {
     },
     (1, 10): {
         "panels": [
-            "man and woman talking in an office beneath one wall calendar showing Friday and one round clock showing 7:00",
-            "man and woman talking in an office beneath one wall calendar showing Thursday and one round clock showing 7:00",
-            "man and woman talking in an office beneath one wall calendar showing Friday and one round clock showing 8:00",
-            "man and woman talking in an office beneath one wall calendar showing Thursday and one round clock showing 8:00",
+            "Japanese man and woman coworkers standing and talking politely in a clean office, plain white wall background, no clock, no calendar",
+            "Japanese man and woman coworkers standing and talking politely in a clean office, plain white wall background, no clock, no calendar",
+            "Japanese man and woman coworkers standing and talking politely in a clean office, plain white wall background, no clock, no calendar",
+            "Japanese man and woman coworkers standing and talking politely in a clean office, plain white wall background, no clock, no calendar",
         ]
     },
     (1, 11): {
@@ -196,6 +215,48 @@ def load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
 def clean_text(raw: str) -> str:
     no_rt = re.sub(r"<rt[^>]*>.*?</rt>", "", raw or "", flags=re.I | re.S)
     return re.sub(r"<[^>]+>", "", html.unescape(no_rt)).strip()
+
+
+def parse_japanese_clock_time(text: str) -> Optional[Tuple[int, int]]:
+    cleaned = clean_text(text)
+    m_colon = re.search(r"\b(\d{1,2})\s*[:：]\s*(\d{2})\b", cleaned)
+    if m_colon:
+        return int(m_colon.group(1)), int(m_colon.group(2))
+    m_ja = re.search(
+        r"(十二|十一|十|九|八|七|六|五|四|三|二|一|\d{1,2})\s*時"
+        r"(?:\s*(半|(?:[二三四五]?十)?[一二三四五六七八九]?\s*分|\d{1,2}\s*分))?",
+        cleaned,
+    )
+    if not m_ja:
+        return None
+    h_raw = m_ja.group(1)
+    hour = int(h_raw) if h_raw.isdigit() else KANJI_NUM_MAP.get(h_raw, 12)
+    min_raw = (m_ja.group(2) or "").strip()
+    minute = 0
+    if min_raw == "半":
+        minute = 30
+    elif min_raw:
+        m_digits = re.search(r"\d+", min_raw)
+        if m_digits:
+            minute = int(m_digits.group(0))
+        else:
+            m_clean = min_raw.replace("分", "").strip()
+            if "十" in m_clean:
+                parts = m_clean.split("十")
+                tens = KANJI_NUM_MAP.get(parts[0], 1) if parts[0] else 1
+                ones = KANJI_NUM_MAP.get(parts[1], 0) if len(parts) > 1 and parts[1] else 0
+                minute = tens * 10 + ones
+            else:
+                minute = KANJI_NUM_MAP.get(m_clean, 0)
+    return hour, minute
+
+
+def parse_japanese_day_kanji(text: str) -> Optional[str]:
+    cleaned = clean_text(text)
+    for token, kanji in DAY_KANJI_RULES:
+        if token in cleaned:
+            return kanji
+    return None
 
 
 def classify_layout(category: str, question_type: str, local_idx: int) -> Optional[str]:
@@ -294,10 +355,10 @@ def plan_visual_prompts(
             "questions, dining table close-ups for food questions, clothing store hangers with M/L tags "
             "for shirt size/color questions, station/family travel scenes for absence reasons). "
             "NEVER add a whiteboard unless the question is about a classroom.\n"
-            "2. If options specify BOTH a day of the week and a clock time, show ONE wall calendar "
-            "and ONE round clock in the upper wall above the people.\n"
-            "3. If options specify a count of people (e.g. 3, 4, 5, 6 people), draw that EXACT count "
-            "of distinct people clearly visible.\n"
+            "2. NEVER describe clocks, watches, or calendar kanji inside the scene text (clocks and "
+            "day calendars are overlaid separately); describe a plain clean background wall instead.\n"
+            "3. If options specify a count of people (e.g. 3, 4, 5, 6 people), state that EXACT count "
+            "of distinct people standing side by side.\n"
             "4. Zero floating text, zero speech bubbles.\n"
             'Return ONLY JSON: {"panels": ["scene 1", "scene 2", "scene 3", "scene 4"]}'
         )
@@ -452,13 +513,28 @@ def normalize_and_validate_panel(raw_bytes: bytes) -> Tuple[Image.Image, bool, s
     return auto_zoom_monochrome(cleaned), True, "ok"
 
 
-def build_frontloaded_prompt(scene_desc: str) -> str:
+def build_frontloaded_prompt(scene_desc: str, suppress_ai_clock: bool = False) -> Tuple[str, str]:
     clean_scene = re.sub(r"\s+", " ", str(scene_desc)).strip().rstrip(".")
-    return f"{clean_scene}, {STYLE_SUFFIX}"
+    neg = NEGATIVE_PROMPT
+    if suppress_ai_clock:
+        clean_scene = re.sub(
+            r"\b(?:beneath|under|with)?\s*(?:one\s+)?(?:round\s+|analog\s+|wall\s+|station\s+)?clock(?:\s+showing\s+\d{1,2}:\d{2})?",
+            "",
+            clean_scene,
+            flags=re.I,
+        )
+        clean_scene = re.sub(r"\s+,", ",", clean_scene).strip().rstrip(",")
+        if "no clock" not in clean_scene.lower():
+            clean_scene += ", plain clean wall background, no clock"
+        neg += ", clock, wall clock, analog clock, digital clock, wristwatch, alarm clock"
+    return f"{clean_scene}, {STYLE_SUFFIX}", neg
 
 
 def generate_panel_cloudflare(
-    client: httpx.Client, scene_desc: str, state: Dict[str, bool]
+    client: httpx.Client,
+    scene_desc: str,
+    state: Dict[str, bool],
+    suppress_ai_clock: bool = False,
 ) -> Optional[Image.Image]:
     if not CF_ACCOUNT_ID or not CF_API_TOKEN:
         state["cf_flux_exhausted"] = True
@@ -466,7 +542,7 @@ def generate_panel_cloudflare(
         return None
 
     headers = {"Authorization": f"Bearer {CF_API_TOKEN}", "Content-Type": "application/json"}
-    prompt = build_frontloaded_prompt(scene_desc)
+    prompt, neg = build_frontloaded_prompt(scene_desc, suppress_ai_clock=suppress_ai_clock)
 
     if not state["cf_flux_exhausted"]:
         flux_url = f"https://api.cloudflare.com/client/v4/accounts/{CF_ACCOUNT_ID}/ai/run/@cf/black-forest-labs/flux-1-schnell"
@@ -500,7 +576,7 @@ def generate_panel_cloudflare(
                     headers=headers,
                     json={
                         "prompt": prompt,
-                        "negative_prompt": NEGATIVE_PROMPT,
+                        "negative_prompt": neg,
                         "width": 640,
                         "height": 512,
                     },
@@ -525,10 +601,14 @@ def generate_panel_cloudflare(
     return None
 
 
-def generate_panel_aihorde_general(client: httpx.Client, scene_desc: str) -> Image.Image:
-    positive = build_frontloaded_prompt(scene_desc)
+def generate_panel_aihorde_general(
+    client: httpx.Client,
+    scene_desc: str,
+    suppress_ai_clock: bool = False,
+) -> Image.Image:
+    positive, neg = build_frontloaded_prompt(scene_desc, suppress_ai_clock=suppress_ai_clock)
     payload: Dict[str, Any] = {
-        "prompt": f"{positive} ### {NEGATIVE_PROMPT}",
+        "prompt": f"{positive} ### {neg}",
         "models": GENERAL_HORDE_MODELS,
         "params": {
             "sampler_name": "k_euler_a",
@@ -545,7 +625,7 @@ def generate_panel_aihorde_general(client: httpx.Client, scene_desc: str) -> Ima
     }
     headers = {
         "apikey": HORDE_API_KEY,
-        "Client-Agent": "NihonSync-JLPT:6.1:github.com/biki76/nihonsync-jlpt",
+        "Client-Agent": "NihonSync-JLPT:6.2:github.com/biki76/nihonsync-jlpt",
         "Content-Type": "application/json",
     }
 
@@ -598,13 +678,19 @@ def generate_panels_for_question(
     scene_descs: List[str],
     label: str,
     state: Dict[str, bool],
+    suppress_clock_flags: Optional[List[bool]] = None,
 ) -> List[Image.Image]:
     panels: List[Image.Image] = []
     for idx, desc in enumerate(scene_descs, start=1):
+        no_clock = (
+            suppress_clock_flags[idx - 1]
+            if suppress_clock_flags and idx - 1 < len(suppress_clock_flags)
+            else False
+        )
         print(f"    [{label} • Panel {idx}/{len(scene_descs)}] Scene: {desc}")
-        img = generate_panel_cloudflare(client, desc, state)
+        img = generate_panel_cloudflare(client, desc, state, suppress_ai_clock=no_clock)
         if img is None:
-            img = generate_panel_aihorde_general(client, desc)
+            img = generate_panel_aihorde_general(client, desc, suppress_ai_clock=no_clock)
         panels.append(img)
     return panels
 
@@ -625,52 +711,11 @@ def draw_speaker_arrow(draw: ImageDraw.ImageDraw, tip_x: int, tip_y: int, from_l
     draw.polygon(head, fill=ink)
 
 
-
-KANJI_NUM_MAP: Dict[str, int] = {
-    "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6,
-    "七": 7, "八": 8, "九": 9, "十": 10, "十一": 11, "十二": 12,
-}
-
-
-def parse_japanese_clock_time(text: str) -> Optional[Tuple[int, int]]:
-    cleaned = clean_text(text)
-    m_colon = re.search(r"\b(\d{1,2})\s*[:：]\s*(\d{2})\b", cleaned)
-    if m_colon:
-        return int(m_colon.group(1)), int(m_colon.group(2))
-    m_ja = re.search(
-        r"(十二|十一|十|九|八|七|六|五|四|三|二|一|\d{1,2})\s*時"
-        r"(?:\s*(半|(?:[二三四五]?十)?[一二三四五六七八九]?\s*分|\d{1,2}\s*分))?",
-        cleaned,
-    )
-    if not m_ja:
-        return None
-    h_raw = m_ja.group(1)
-    hour = int(h_raw) if h_raw.isdigit() else KANJI_NUM_MAP.get(h_raw, 12)
-    min_raw = (m_ja.group(2) or "").strip()
-    minute = 0
-    if min_raw == "半":
-        minute = 30
-    elif min_raw:
-        m_digits = re.search(r"\d+", min_raw)
-        if m_digits:
-            minute = int(m_digits.group(0))
-        else:
-            m_clean = min_raw.replace("分", "").strip()
-            if "十" in m_clean:
-                parts = m_clean.split("十")
-                tens = KANJI_NUM_MAP.get(parts[0], 1) if parts[0] else 1
-                ones = KANJI_NUM_MAP.get(parts[1], 0) if len(parts) > 1 and parts[1] else 0
-                minute = tens * 10 + ones
-            else:
-                minute = KANJI_NUM_MAP.get(m_clean, 0)
-    return hour, minute
-
-
 def draw_jlpt_clock_badge(
     draw: ImageDraw.ImageDraw, cx: int, cy: int, radius: int, hour: int, minute: int
 ) -> None:
     ink = "#141414"
-    pad = 6
+    pad = 5
     draw.rounded_rectangle(
         [cx - radius - pad, cy - radius - pad, cx + radius + pad, cy + radius + pad],
         radius=10,
@@ -711,7 +756,27 @@ def draw_jlpt_clock_badge(
     draw.ellipse([cx - 4, cy - 4, cx + 4, cy + 4], fill=ink)
 
 
-def compose_four_block_sheet(panel_images: List[Image.Image], options: List[Dict[str, Any]], out_path: Path) -> None:
+def draw_jlpt_day_badge(draw: ImageDraw.ImageDraw, cx: int, cy: int, day_kanji: str) -> None:
+    ink = "#141414"
+    hw, hh = 34, 38
+    x0, y0, x1, y1 = cx - hw, cy - hh, cx + hw, cy + hh
+    draw.rounded_rectangle([x0, y0 + 6, x1, y1], radius=8, fill="#FFFFFF", outline=ink, width=2)
+    draw.rectangle([x0, y0 + 6, x1, y0 + 21], fill=ink)
+    draw.rectangle([x0 + 14, y0, x0 + 21, y0 + 11], fill="#FFFFFF", outline=ink, width=2)
+    draw.rectangle([x1 - 21, y0, x1 - 14, y0 + 11], fill="#FFFFFF", outline=ink, width=2)
+
+    day_font = load_font(34)
+    bbox = draw.textbbox((0, 0), day_kanji, font=day_font)
+    tw = bbox[2] - bbox[0]
+    th = bbox[3] - bbox[1]
+    tx = cx - tw // 2 - bbox[0]
+    ty = (y0 + 21 + y1) // 2 - th // 2 - bbox[1]
+    draw.text((tx, ty), day_kanji, fill=ink, font=day_font)
+
+
+def compose_four_block_sheet(
+    panel_images: List[Image.Image], options: List[Dict[str, Any]], out_path: Path
+) -> None:
     W, H = 1000, 760
     margin, gap = 12, 14
     box_w = (W - margin * 2 - gap) // 2
@@ -732,10 +797,18 @@ def compose_four_block_sheet(panel_images: List[Image.Image], options: List[Dict
         draw.rectangle([x0, y0, x1, y1], outline="#141414", width=3)
         draw.rectangle([x0 + 6, y0 + 6, x0 + 44, y0 + 50], fill="#FFFFFF")
         draw.text((x0 + 14, y0 + 8), str(idx + 1), fill="#141414", font=num_font)
+
         if idx < len(options):
-            tm = parse_japanese_clock_time(options[idx].get("text", ""))
-            if tm is not None:
+            opt_txt = options[idx].get("text", "")
+            tm = parse_japanese_clock_time(opt_txt)
+            day_k = parse_japanese_day_kanji(opt_txt)
+            if tm is not None and day_k is not None:
+                draw_jlpt_clock_badge(draw, x1 - 50, y0 + 50, 36, tm[0], tm[1])
+                draw_jlpt_day_badge(draw, x1 - 130, y0 + 50, day_k)
+            elif tm is not None:
                 draw_jlpt_clock_badge(draw, x1 - 54, y0 + 54, 40, tm[0], tm[1])
+            elif day_k is not None:
+                draw_jlpt_day_badge(draw, x1 - 48, y0 + 50, day_k)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(out_path, format="PNG", optimize=True)
@@ -817,7 +890,7 @@ def main() -> None:
             code = meta["exam_code"]
             padded = f"{set_num:02d}"
             db_ids = get_ordered_listening_db_ids(code)
-            print(f"\n=== Generating v10 Question-Exact Textbook Illustrations for {code} ===")
+            print(f"\n=== Generating v10.1 Question-Exact Textbook Illustrations for {code} ===")
 
             listening_sec = next(s for s in exam["sections"] if s["section_code"] == "LISTENING")
             local_idx = 0
@@ -857,8 +930,16 @@ def main() -> None:
                             )
                             compose_single_scene_sheet(imgs[0], side, posture, local_png)
                         else:
+                            suppress_flags = [
+                                parse_japanese_clock_time(o.get("text", "")) is not None
+                                for o in q["options"][:4]
+                            ]
                             panels = generate_panels_for_question(
-                                http_client, plan["panels"][:4], f"{code} Q{local_idx}", state
+                                http_client,
+                                plan["panels"][:4],
+                                f"{code} Q{local_idx}",
+                                state,
+                                suppress_clock_flags=suppress_flags,
                             )
                             compose_four_block_sheet(panels, q["options"], local_png)
 
@@ -871,7 +952,7 @@ def main() -> None:
 
             compiled_path.write_text(json.dumps(exams, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    print("\nDONE: v10 question-exact JLPT textbook illustrations synced to Supabase!")
+    print("\nDONE: v10.1 JLPT textbook illustrations synced to Supabase!")
 
 
 if __name__ == "__main__":
