@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Stages and inspects N5 (01-20) and N4 (01-05, 06-10) ZIP drafts."""
+"""Stages and inspects N5 (01-20) and N4 (01-05, 06-10) ZIP drafts safely."""
 
 import json
+import os
 import shutil
 import sys
 import zipfile
@@ -12,13 +13,18 @@ from typing import Dict, List, Tuple
 
 UPLOADS_DIR = Path("data/uploads")
 STAGED_DIR = Path("data/staged_drafts")
+MAX_ZIP_FILES = 2000
+MAX_ZIP_BYTES = 250 * 1024 * 1024
 
 SOURCE_DIRS: Tuple[Path, ...] = (
     Path("/public/nihonsync-jlpt/data/uploads"),
+    Path("/public/nihonsync-jlpt"),
+    Path("/sdcard/Android/media/com.foxdebug.acodefree/nihonsync-jlpt"),
+    Path("/sdcard/Android/media/com.foxdebug.acodefree"),
+    Path("/storage/emulated/0/Android/media/com.foxdebug.acodefree/nihonsync-jlpt"),
+    Path("/sdcard/Android/data/com.foxdebug.acodefree/files/nihonsync-jlpt"),
     Path("/storage/emulated/0/App Project/Mocktest Questions"),
     Path("/sdcard/App Project/Mocktest Questions"),
-    Path("/public/App Project/Mocktest Questions"),
-    Path("/public/nihonsync-jlpt"),
 )
 
 
@@ -27,44 +33,81 @@ class ProbeReport:
     readable_zips: List[Path]
     blocked_paths: List[str]
     missing_dirs: List[str]
+    empty_dirs: List[str]
 
 
 def test_zip_readability(path: Path) -> Tuple[bool, str]:
-    """Verifies OS read permission and ZIP header magic bytes."""
+    """Verifies OS read permission and ZIP magic bytes."""
     try:
         with path.open("rb") as fh:
             header = fh.read(4)
-        if not header.startswith(b"PK"):
-            return False, "not a valid ZIP header"
-        return True, "ok"
+        return (True, "ok") if header.startswith(b"PK") else (False, "invalid ZIP header")
     except PermissionError:
-        return False, "PermissionError (Android Scoped Storage)"
+        return False, "EACCES (Android Scoped Storage)"
     except OSError as exc:
         return False, f"OSError: {exc}"
 
 
-def scan_source_directories() -> ProbeReport:
-    """Scans candidate storage folders and classifies readable vs blocked."""
+def collect_zips_bounded(root: Path, max_depth: int, blocked: List[str]) -> List[Path]:
+    """Collects .zip files up to max_depth without swallowing PermissionError."""
+    found: List[Path] = []
+    stack: List[Tuple[Path, int]] = [(root, 0)]
+    while stack:
+        current, depth = stack.pop()
+        try:
+            entries = sorted(current.iterdir())
+        except PermissionError:
+            blocked.append(f"{current} -> EACCES (directory list denied)")
+            continue
+        except OSError as exc:
+            blocked.append(f"{current} -> {exc}")
+            continue
+        for entry in entries:
+            if entry.is_file() and entry.suffix.lower() == ".zip":
+                found.append(entry)
+            elif entry.is_dir() and depth < max_depth and entry.name not in {
+                ".git", "node_modules", ".next", ".venv", "staged_drafts",
+            }:
+                stack.append((entry, depth + 1))
+    return found
+
+
+def scan_source_directories(cli_paths: List[str]) -> ProbeReport:
+    """Explicitly distinguishes EACCES, ENOENT, empty dirs, and readable ZIPs."""
     readable: List[Path] = []
     blocked: List[str] = []
     missing: List[str] = []
+    empty: List[str] = []
     seen_names: set[str] = set()
+
+    for raw in cli_paths:
+        p = Path(raw)
+        ok, reason = test_zip_readability(p)
+        if ok:
+            seen_names.add(p.name)
+            readable.append(p)
+        else:
+            blocked.append(f"{p} -> {reason}")
 
     for directory in SOURCE_DIRS:
         try:
-            if not directory.exists():
-                missing.append(str(directory))
-                continue
-            entries = sorted(directory.iterdir())
+            os.stat(directory)
+        except FileNotFoundError:
+            missing.append(str(directory))
+            continue
         except PermissionError:
-            blocked.append(f"{directory} (directory read denied)")
+            blocked.append(f"{directory} -> EACCES (stat denied by Scoped Storage)")
             continue
         except OSError as exc:
-            blocked.append(f"{directory} ({exc})")
+            blocked.append(f"{directory} -> {exc}")
             continue
 
-        for item in entries:
-            if item.suffix.lower() != ".zip" or item.name in seen_names:
+        zips = collect_zips_bounded(directory, max_depth=1, blocked=blocked)
+        if not zips:
+            empty.append(str(directory))
+            continue
+        for item in zips:
+            if item.name in seen_names:
                 continue
             ok, reason = test_zip_readability(item)
             if ok:
@@ -73,11 +116,11 @@ def scan_source_directories() -> ProbeReport:
             else:
                 blocked.append(f"{item} -> {reason}")
 
-    return ProbeReport(readable, blocked, missing)
+    return ProbeReport(readable, blocked, missing, empty)
 
 
 def stage_to_uploads(zip_path: Path) -> Path:
-    """Copies readable external ZIP into data/uploads/ for stable reuse."""
+    """Copies readable external ZIP into data/uploads/."""
     UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
     target = (UPLOADS_DIR / zip_path.name).resolve()
     source = zip_path.resolve()
@@ -87,8 +130,33 @@ def stage_to_uploads(zip_path: Path) -> Path:
     return target
 
 
+def safe_extract_zip(zip_path: Path, out_dir: Path) -> None:
+    """Extracts ZIP while blocking Zip-Slip traversal and oversized payloads."""
+    base = out_dir.resolve()
+    total_bytes = 0
+    with zipfile.ZipFile(zip_path, "r") as zf:
+        infos = zf.infolist()
+        if len(infos) > MAX_ZIP_FILES:
+            raise ValueError(f"Archive exceeds {MAX_ZIP_FILES} file limit ({len(infos)})")
+        for info in infos:
+            member_path = Path(info.filename)
+            if member_path.is_absolute():
+                raise ValueError(f"Blocked absolute ZIP path: {info.filename}")
+            dest = (base / member_path).resolve()
+            if not dest.is_relative_to(base):
+                raise ValueError(f"Blocked Zip-Slip traversal path: {info.filename}")
+            if info.is_dir():
+                dest.mkdir(parents=True, exist_ok=True)
+                continue
+            total_bytes += info.file_size
+            if total_bytes > MAX_ZIP_BYTES:
+                raise ValueError(f"Archive exceeds {MAX_ZIP_BYTES} byte uncompressed limit")
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            with zf.open(info, "r") as src, dest.open("wb") as dst:
+                shutil.copyfileobj(src, dst)
+
+
 def infer_level_tag(zip_name: str, rel_paths: List[str]) -> str:
-    """Infers JLPT level tag from archive name or inner file paths."""
     haystack = (zip_name + " " + " ".join(rel_paths[:20])).upper()
     if "N4" in haystack and "N5" not in haystack:
         return "N4"
@@ -98,7 +166,6 @@ def infer_level_tag(zip_name: str, rel_paths: List[str]) -> str:
 
 
 def preview_json(path: Path, rel_label: str) -> None:
-    """Prints top-level keys and a bounded JSON snippet."""
     print(f"\n  [JSON SAMPLE] {rel_label}")
     raw = path.read_text(encoding="utf-8", errors="replace")
     try:
@@ -115,13 +182,11 @@ def preview_json(path: Path, rel_label: str) -> None:
 
 
 def preview_text(path: Path, rel_label: str) -> None:
-    """Prints the opening excerpt of a Markdown or plain text file."""
     print(f"\n  [TEXT SAMPLE] {rel_label}")
     print(path.read_text(encoding="utf-8", errors="replace")[:1000])
 
 
 def preview_pdf(path: Path, rel_label: str) -> None:
-    """Extracts page count and a short text excerpt if pypdf is available."""
     print(f"\n  [PDF SAMPLE] {rel_label}")
     try:
         from pypdf import PdfReader
@@ -138,17 +203,15 @@ def preview_pdf(path: Path, rel_label: str) -> None:
 
 
 def extract_and_inspect(staged_zip: Path) -> None:
-    """Extracts one ZIP into data/staged_drafts/ and prints schema details."""
     out_dir = STAGED_DIR / staged_zip.stem
     if out_dir.exists():
         shutil.rmtree(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     try:
-        with zipfile.ZipFile(staged_zip, "r") as zf:
-            zf.extractall(out_dir)
-    except zipfile.BadZipFile as exc:
-        print(f"ERROR: Corrupt ZIP {staged_zip.name}: {exc}")
+        safe_extract_zip(staged_zip, out_dir)
+    except (zipfile.BadZipFile, ValueError) as exc:
+        print(f"ERROR extracting {staged_zip.name}: {exc}")
         return
 
     files = sorted(p for p in out_dir.rglob("*") if p.is_file())
@@ -163,36 +226,34 @@ def extract_and_inspect(staged_zip: Path) -> None:
     for rel in rel_paths[:25]:
         print(f"  - {rel}")
 
-    jsons = [p for p in files if p.suffix.lower() == ".json"]
-    texts = [p for p in files if p.suffix.lower() in {".md", ".txt"}]
-    pdfs = [p for p in files if p.suffix.lower() == ".pdf"]
-
-    if jsons:
-        preview_json(jsons[0], str(jsons[0].relative_to(out_dir)))
-    if texts:
-        preview_text(texts[0], str(texts[0].relative_to(out_dir)))
-    if pdfs:
-        preview_pdf(pdfs[0], str(pdfs[0].relative_to(out_dir)))
+    for ext, fn in ((".json", preview_json), (".md", preview_text), (".txt", preview_text), (".pdf", preview_pdf)):
+        matches = [p for p in files if p.suffix.lower() == ext]
+        if matches:
+            fn(matches[0], str(matches[0].relative_to(out_dir)))
 
 
-def print_scoped_storage_help(report: ProbeReport) -> None:
-    """Explains exact next step if Android Scoped Storage blocks external reads."""
-    print("NO READABLE ZIP ARCHIVES FOUND.")
-    if report.blocked_paths:
-        print("\nBLOCKED BY ANDROID SCOPED STORAGE:")
-        for line in report.blocked_paths:
-            print(f"  ! {line}")
-    print("\nACTION REQUIRED (via Acode File Sidebar):")
-    print("  1. Open Internal Storage -> App Project -> Mocktest Questions")
-    print("  2. Copy your 3 ZIP files (1 N5 + 2 N4) into:")
-    print("     nihonsync-jlpt/data/uploads/")
-    print("  3. Re-run: python3 scripts/stage_and_inspect_zips.py")
+def print_diagnostics(report: ProbeReport) -> None:
+    print("NO READABLE ZIP ARCHIVES FOUND.\n")
+    print("DIAGNOSTIC REPORT:")
+    for label, items in (
+        ("BLOCKED (EACCES)", report.blocked_paths),
+        ("EMPTY (0 .zip files)", report.empty_dirs),
+        ("NOT FOUND (ENOENT)", report.missing_dirs),
+    ):
+        if items:
+            print(f"  [{label}]")
+            for line in items:
+                print(f"    - {line}")
+    print("\nCOPY YOUR 3 ZIPS TO ONE OF THESE PROOT-READABLE FOLDERS:")
+    print("  1. Android/media/com.foxdebug.acodefree/nihonsync-jlpt")
+    print("  2. /public/nihonsync-jlpt/data/uploads")
+    print("Then re-run: python3 scripts/stage_and_inspect_zips.py")
 
 
 def main() -> None:
-    report = scan_source_directories()
+    report = scan_source_directories(sys.argv[1:])
     if not report.readable_zips:
-        print_scoped_storage_help(report)
+        print_diagnostics(report)
         sys.exit(1)
 
     print(f"FOUND {len(report.readable_zips)} READABLE ZIP ARCHIVE(S):")
