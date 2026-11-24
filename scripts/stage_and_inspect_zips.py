@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stages and inspects N5 (01-20) and N4 (01-05, 06-10) ZIP drafts safely."""
+"""Locates, stages, and inspects N5/N4 ZIP drafts in Acode storage."""
 
 import json
 import os
@@ -7,262 +7,186 @@ import shutil
 import sys
 import zipfile
 from collections import Counter
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Set, Tuple
 
 UPLOADS_DIR = Path("data/uploads")
 STAGED_DIR = Path("data/staged_drafts")
-MAX_ZIP_FILES = 2000
-MAX_ZIP_BYTES = 250 * 1024 * 1024
+MAX_FILES = 3000
+MAX_BYTES = 350 * 1024 * 1024
 
-SOURCE_DIRS: Tuple[Path, ...] = (
+SKIP_DIRS = {
+    ".git", "node_modules", ".next", ".venv", "staged_drafts",
+    "raw_n5_6sets", "generated_listening_audio",
+    "generated_listening_sheets", "generated_listening_sheets_v6",
+}
+
+SCAN_ROOTS: Tuple[Path, ...] = (
     Path("/public/nihonsync-jlpt/data/uploads"),
     Path("/public/nihonsync-jlpt"),
-    Path("/sdcard/Android/media/com.foxdebug.acodefree/nihonsync-jlpt"),
+    Path("/public"),
     Path("/sdcard/Android/media/com.foxdebug.acodefree"),
-    Path("/storage/emulated/0/Android/media/com.foxdebug.acodefree/nihonsync-jlpt"),
-    Path("/sdcard/Android/data/com.foxdebug.acodefree/files/nihonsync-jlpt"),
-    Path("/storage/emulated/0/App Project/Mocktest Questions"),
-    Path("/sdcard/App Project/Mocktest Questions"),
+    Path("/sdcard/Android/media/com.foxdebug.acode"),
+    Path("/sdcard/Android/data/com.foxdebug.acodefree/files"),
+    Path("/sdcard/Android/data/com.foxdebug.acode/files"),
 )
 
 
-@dataclass(frozen=True)
-class ProbeReport:
-    readable_zips: List[Path]
-    blocked_paths: List[str]
-    missing_dirs: List[str]
-    empty_dirs: List[str]
-
-
-def test_zip_readability(path: Path) -> Tuple[bool, str]:
-    """Verifies OS read permission and ZIP magic bytes."""
+def is_readable_zip(path: Path) -> Tuple[bool, str]:
     try:
         with path.open("rb") as fh:
-            header = fh.read(4)
-        return (True, "ok") if header.startswith(b"PK") else (False, "invalid ZIP header")
+            return (True, "ok") if fh.read(4).startswith(b"PK") else (False, "bad header")
     except PermissionError:
-        return False, "EACCES (Android Scoped Storage)"
+        return False, "EACCES"
     except OSError as exc:
-        return False, f"OSError: {exc}"
+        return False, str(exc)
 
 
-def collect_zips_bounded(root: Path, max_depth: int, blocked: List[str]) -> List[Path]:
-    """Collects .zip files up to max_depth without swallowing PermissionError."""
+def walk_zips(root: Path, max_depth: int, blocked: List[str]) -> List[Path]:
     found: List[Path] = []
     stack: List[Tuple[Path, int]] = [(root, 0)]
     while stack:
-        current, depth = stack.pop()
+        cur, depth = stack.pop()
         try:
-            entries = sorted(current.iterdir())
-        except PermissionError:
-            blocked.append(f"{current} -> EACCES (directory list denied)")
-            continue
+            entries = sorted(cur.iterdir())
         except OSError as exc:
-            blocked.append(f"{current} -> {exc}")
+            blocked.append(f"{cur} -> {exc}")
             continue
-        for entry in entries:
-            if entry.is_file() and entry.suffix.lower() == ".zip":
-                found.append(entry)
-            elif entry.is_dir() and depth < max_depth and entry.name not in {
-                ".git", "node_modules", ".next", ".venv", "staged_drafts",
-            }:
-                stack.append((entry, depth + 1))
+        for item in entries:
+            if item.is_file() and item.suffix.lower() == ".zip":
+                found.append(item)
+            elif item.is_dir() and depth < max_depth and item.name not in SKIP_DIRS:
+                stack.append((item, depth + 1))
     return found
 
 
-def scan_source_directories(cli_paths: List[str]) -> ProbeReport:
-    """Explicitly distinguishes EACCES, ENOENT, empty dirs, and readable ZIPs."""
-    readable: List[Path] = []
-    blocked: List[str] = []
-    missing: List[str] = []
-    empty: List[str] = []
-    seen_names: set[str] = set()
-
-    for raw in cli_paths:
-        p = Path(raw)
-        ok, reason = test_zip_readability(p)
-        if ok:
-            seen_names.add(p.name)
-            readable.append(p)
-        else:
-            blocked.append(f"{p} -> {reason}")
-
-    for directory in SOURCE_DIRS:
-        try:
-            os.stat(directory)
-        except FileNotFoundError:
-            missing.append(str(directory))
-            continue
-        except PermissionError:
-            blocked.append(f"{directory} -> EACCES (stat denied by Scoped Storage)")
-            continue
-        except OSError as exc:
-            blocked.append(f"{directory} -> {exc}")
-            continue
-
-        zips = collect_zips_bounded(directory, max_depth=1, blocked=blocked)
-        if not zips:
-            empty.append(str(directory))
-            continue
-        for item in zips:
-            if item.name in seen_names:
-                continue
-            ok, reason = test_zip_readability(item)
-            if ok:
-                seen_names.add(item.name)
-                readable.append(item)
-            else:
-                blocked.append(f"{item} -> {reason}")
-
-    return ProbeReport(readable, blocked, missing, empty)
-
-
-def stage_to_uploads(zip_path: Path) -> Path:
-    """Copies readable external ZIP into data/uploads/."""
-    UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
-    target = (UPLOADS_DIR / zip_path.name).resolve()
-    source = zip_path.resolve()
-    if source != target:
-        shutil.copy2(source, target)
-        print(f"STAGED COPY: {source} -> {target}")
-    return target
-
-
-def safe_extract_zip(zip_path: Path, out_dir: Path) -> None:
-    """Extracts ZIP while blocking Zip-Slip traversal and oversized payloads."""
+def safe_extract(zip_path: Path, out_dir: Path) -> None:
     base = out_dir.resolve()
-    total_bytes = 0
+    total = 0
     with zipfile.ZipFile(zip_path, "r") as zf:
         infos = zf.infolist()
-        if len(infos) > MAX_ZIP_FILES:
-            raise ValueError(f"Archive exceeds {MAX_ZIP_FILES} file limit ({len(infos)})")
+        if len(infos) > MAX_FILES:
+            raise ValueError(f"Too many files ({len(infos)})")
         for info in infos:
-            member_path = Path(info.filename)
-            if member_path.is_absolute():
-                raise ValueError(f"Blocked absolute ZIP path: {info.filename}")
-            dest = (base / member_path).resolve()
+            rel = Path(info.filename)
+            if rel.is_absolute():
+                raise ValueError(f"Absolute path blocked: {info.filename}")
+            dest = (base / rel).resolve()
             if not dest.is_relative_to(base):
-                raise ValueError(f"Blocked Zip-Slip traversal path: {info.filename}")
+                raise ValueError(f"Path traversal blocked: {info.filename}")
             if info.is_dir():
                 dest.mkdir(parents=True, exist_ok=True)
                 continue
-            total_bytes += info.file_size
-            if total_bytes > MAX_ZIP_BYTES:
-                raise ValueError(f"Archive exceeds {MAX_ZIP_BYTES} byte uncompressed limit")
+            total += info.file_size
+            if total > MAX_BYTES:
+                raise ValueError("Archive exceeds size limit")
             dest.parent.mkdir(parents=True, exist_ok=True)
             with zf.open(info, "r") as src, dest.open("wb") as dst:
                 shutil.copyfileobj(src, dst)
 
 
-def infer_level_tag(zip_name: str, rel_paths: List[str]) -> str:
-    haystack = (zip_name + " " + " ".join(rel_paths[:20])).upper()
-    if "N4" in haystack and "N5" not in haystack:
-        return "N4"
-    if "N5" in haystack and "N4" not in haystack:
-        return "N5"
-    return "UNKNOWN"
+def preview_file(path: Path, label: str) -> None:
+    ext = path.suffix.lower()
+    print(f"\n  [{ext.upper()} SAMPLE] {label}")
+    if ext == ".json":
+        raw = path.read_text(encoding="utf-8", errors="replace")
+        try:
+            obj = json.loads(raw)
+            if isinstance(obj, dict):
+                print("  TOP KEYS:", list(obj.keys()))
+            elif isinstance(obj, list):
+                keys = list(obj[0].keys()) if obj and isinstance(obj[0], dict) else []
+                print(f"  ARRAY LEN: {len(obj)} | ITEM[0] KEYS: {keys}")
+            print(json.dumps(obj, ensure_ascii=False, indent=2)[:1200])
+        except json.JSONDecodeError as exc:
+            print(f"  JSON ERROR: {exc}\n{raw[:800]}")
+    elif ext in {".md", ".txt"}:
+        print(path.read_text(encoding="utf-8", errors="replace")[:900])
+    elif ext == ".pdf":
+        try:
+            from pypdf import PdfReader
+
+            r = PdfReader(str(path))
+            print(f"  PAGES: {len(r.pages)}")
+            txt = "\n".join((r.pages[i].extract_text() or "") for i in range(min(2, len(r.pages))))
+            print(txt[:900])
+        except Exception as exc:
+            print(f"  PDF preview skipped: {exc}")
 
 
-def preview_json(path: Path, rel_label: str) -> None:
-    print(f"\n  [JSON SAMPLE] {rel_label}")
-    raw = path.read_text(encoding="utf-8", errors="replace")
-    try:
-        parsed = json.loads(raw)
-        if isinstance(parsed, dict):
-            print("  TOP KEYS:", list(parsed.keys()))
-        elif isinstance(parsed, list):
-            first_keys = list(parsed[0].keys()) if parsed and isinstance(parsed[0], dict) else []
-            print(f"  ARRAY LEN: {len(parsed)} | ITEM[0] KEYS: {first_keys}")
-        print(json.dumps(parsed, ensure_ascii=False, indent=2)[:1200])
-    except json.JSONDecodeError as exc:
-        print(f"  JSON ERROR: {exc}")
-        print(raw[:900])
+def inspect_archive(src_zip: Path) -> None:
+    UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+    staged = (UPLOADS_DIR / src_zip.name).resolve()
+    if src_zip.resolve() != staged:
+        shutil.copy2(src_zip, staged)
+        print(f"STAGED: {src_zip} -> {staged}")
 
-
-def preview_text(path: Path, rel_label: str) -> None:
-    print(f"\n  [TEXT SAMPLE] {rel_label}")
-    print(path.read_text(encoding="utf-8", errors="replace")[:1000])
-
-
-def preview_pdf(path: Path, rel_label: str) -> None:
-    print(f"\n  [PDF SAMPLE] {rel_label}")
-    try:
-        from pypdf import PdfReader
-
-        reader = PdfReader(str(path))
-        print(f"  PAGES: {len(reader.pages)}")
-        excerpt = "\n".join(
-            (reader.pages[i].extract_text() or "")
-            for i in range(min(2, len(reader.pages)))
-        )
-        print(excerpt[:900])
-    except Exception as exc:
-        print(f"  PDF preview skipped: {exc}")
-
-
-def extract_and_inspect(staged_zip: Path) -> None:
-    out_dir = STAGED_DIR / staged_zip.stem
+    out_dir = STAGED_DIR / staged.stem
     if out_dir.exists():
         shutil.rmtree(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     try:
-        safe_extract_zip(staged_zip, out_dir)
+        safe_extract(staged, out_dir)
     except (zipfile.BadZipFile, ValueError) as exc:
-        print(f"ERROR extracting {staged_zip.name}: {exc}")
+        print(f"ERROR extracting {staged.name}: {exc}")
         return
 
     files = sorted(p for p in out_dir.rglob("*") if p.is_file())
-    rel_paths = [str(p.relative_to(out_dir)) for p in files]
-    ext_counts: Dict[str, int] = dict(Counter(p.suffix.lower() or "(none)" for p in files))
-    level_tag = infer_level_tag(staged_zip.name, rel_paths)
+    rels = [str(p.relative_to(out_dir)) for p in files]
+    exts: Dict[str, int] = dict(Counter(p.suffix.lower() or "(none)" for p in files))
+    metas = [p for p in files if p.name == "SET_METADATA.json"]
 
-    print("\n" + "=" * 68)
-    print(f"ARCHIVE: {staged_zip.name} | LEVEL: {level_tag} | FILES: {len(files)}")
-    print(f"EXTENSIONS: {ext_counts}")
+    print("\n" + "=" * 64)
+    print(f"ARCHIVE: {staged.name} | FILES: {len(files)} | METAS: {len(metas)}")
+    print(f"EXTENSIONS: {exts}")
     print("SAMPLE PATHS (first 25):")
-    for rel in rel_paths[:25]:
+    for rel in rels[:25]:
         print(f"  - {rel}")
 
-    for ext, fn in ((".json", preview_json), (".md", preview_text), (".txt", preview_text), (".pdf", preview_pdf)):
-        matches = [p for p in files if p.suffix.lower() == ext]
+    for ext in (".json", ".txt", ".md", ".pdf"):
+        matches = metas if (ext == ".json" and metas) else [p for p in files if p.suffix.lower() == ext]
         if matches:
-            fn(matches[0], str(matches[0].relative_to(out_dir)))
-
-
-def print_diagnostics(report: ProbeReport) -> None:
-    print("NO READABLE ZIP ARCHIVES FOUND.\n")
-    print("DIAGNOSTIC REPORT:")
-    for label, items in (
-        ("BLOCKED (EACCES)", report.blocked_paths),
-        ("EMPTY (0 .zip files)", report.empty_dirs),
-        ("NOT FOUND (ENOENT)", report.missing_dirs),
-    ):
-        if items:
-            print(f"  [{label}]")
-            for line in items:
-                print(f"    - {line}")
-    print("\nCOPY YOUR 3 ZIPS TO ONE OF THESE PROOT-READABLE FOLDERS:")
-    print("  1. Android/media/com.foxdebug.acodefree/nihonsync-jlpt")
-    print("  2. /public/nihonsync-jlpt/data/uploads")
-    print("Then re-run: python3 scripts/stage_and_inspect_zips.py")
+            preview_file(matches[0], str(matches[0].relative_to(out_dir)))
 
 
 def main() -> None:
-    report = scan_source_directories(sys.argv[1:])
-    if not report.readable_zips:
-        print_diagnostics(report)
+    readable: List[Path] = []
+    blocked: List[str] = []
+    seen: Set[str] = set()
+
+    for root in SCAN_ROOTS:
+        try:
+            os.stat(root)
+        except OSError:
+            continue
+        for zp in walk_zips(root, max_depth=4, blocked=blocked):
+            if zp.name in seen:
+                continue
+            ok, reason = is_readable_zip(zp)
+            if ok:
+                seen.add(zp.name)
+                readable.append(zp)
+            else:
+                blocked.append(f"{zp} -> {reason}")
+
+    if not readable:
+        print("NO READABLE ZIP ARCHIVES FOUND.")
+        if blocked:
+            print("BLOCKED:", blocked[:10])
+        print("\nVISIBLE TOP-LEVEL ENTRIES:")
+        for d in SCAN_ROOTS[:5]:
+            if d.is_dir():
+                names = sorted(p.name for p in d.iterdir())[:20]
+                print(f"  - {d}: {names}")
         sys.exit(1)
 
-    print(f"FOUND {len(report.readable_zips)} READABLE ZIP ARCHIVE(S):")
-    for item in report.readable_zips:
-        print(f"  - {item} ({item.stat().st_size:,} bytes)")
+    print(f"FOUND {len(readable)} READABLE ZIP ARCHIVE(S):")
+    for zp in readable:
+        print(f"  - {zp} ({zp.stat().st_size:,} bytes)")
 
-    for item in report.readable_zips:
-        staged = stage_to_uploads(item)
-        extract_and_inspect(staged)
+    for zp in readable:
+        inspect_archive(zp)
 
 
 if __name__ == "__main__":
