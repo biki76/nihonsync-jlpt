@@ -38,3 +38,6 @@ next-env.d.ts
 .env.local
 data/uploads/
 data/staged_drafts/
+data/compiled_n5_n4_30sets.json
+scripts/__pycache__/
+data/generated_listening_sheets_v*/

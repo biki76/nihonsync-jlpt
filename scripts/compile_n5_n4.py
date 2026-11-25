@@ -85,7 +85,7 @@ def read_pdf_lines(pdf_path: Path, start_page: int = 0) -> List[str]:
     lines: List[str] = []
     for idx in range(start_page, len(reader.pages)):
         for raw in (reader.pages[idx].extract_text() or "").splitlines():
-            line = raw.strip()
+            line = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", raw).strip()
             if line and not FOOTER_RE.match(line):
                 lines.append(line)
     return lines
