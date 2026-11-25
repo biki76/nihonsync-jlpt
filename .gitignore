@@ -43,3 +43,4 @@ scripts/__pycache__/
 data/generated_listening_sheets_v*/
 data/generated_listening_audio/
 data/audio_sync_checkpoint.json
+data/visuals_v10_checkpoint.json
