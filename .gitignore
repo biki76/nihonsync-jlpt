@@ -41,3 +41,5 @@ data/staged_drafts/
 data/compiled_n5_n4_30sets.json
 scripts/__pycache__/
 data/generated_listening_sheets_v*/
+data/generated_listening_audio/
+data/audio_sync_checkpoint.json
