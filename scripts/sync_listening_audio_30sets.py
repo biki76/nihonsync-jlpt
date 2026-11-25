@@ -361,21 +361,28 @@ def print_live_coverage(sb: Client, target_levels: List[str]) -> None:
     mgs = fetch_paginated(sb, "mondai_groups", "section_id", [s["id"] for s in secs], "id,section_id")
     qs = fetch_paginated(sb, "questions", "mondai_group_id", [m["id"] for m in mgs], "id,mondai_group_id,audio_url")
 
-    exam_by_id = {e["id"]: e["level"] for e in exams}
-    sec_to_lvl = {s["id"]: exam_by_id[s["exam_id"]] for s in secs}
-    mg_to_lvl = {m["id"]: sec_to_lvl[m["section_id"]] for m in mgs}
+    def bucket_label(e: Dict[str, Any]) -> str:
+        lvl, num = str(e["level"]), int(e["test_number"])
+        if lvl == "N4":
+            return "N4 (curated 01-10)" if num <= 10 else "N4 (placeholder 11-20)"
+        return f"{lvl} (curated 01-20)"
 
-    totals: Dict[str, List[int]] = {lvl: [0, 0] for lvl in target_levels}
+    exam_bucket = {e["id"]: bucket_label(e) for e in exams}
+    sec_to_bucket = {s["id"]: exam_bucket[s["exam_id"]] for s in secs}
+    mg_to_bucket = {m["id"]: sec_to_bucket[m["section_id"]] for m in mgs}
+
+    totals: Dict[str, List[int]] = {}
     for q in qs:
-        lvl = mg_to_lvl[q["mondai_group_id"]]
-        totals[lvl][1] += 1
-        if q.get("audio_url"):
-            totals[lvl][0] += 1
+        b = mg_to_bucket[q["mondai_group_id"]]
+        totals.setdefault(b, [0, 0])
+        totals[b][1] += 1
+        if (q.get("audio_url") or "").endswith(f"_{AUDIO_VERSION}.mp3"):
+            totals[b][0] += 1
 
-    print("\n=== LIVE AUDIO COVERAGE IN SUPABASE ===")
-    for lvl in sorted(totals):
-        done, total = totals[lvl]
-        print(f"  {lvl}: {done}/{total} listening questions have audio_url")
+    print("\n=== LIVE v7 AUDIO COVERAGE IN SUPABASE ===")
+    for b in sorted(totals):
+        done, total = totals[b]
+        print(f"  {b:<24}: {done}/{total} have _{AUDIO_VERSION}.mp3")
 
 
 async def run(args: argparse.Namespace) -> None:
